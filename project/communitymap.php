@@ -13,7 +13,7 @@ body, html {
 </style>
 <!-- Load in classes and Libraries -->
 <?php
-  require_once( "header_class.php");       // css and headers
+  require_once("header_class.php");       // css and headers
   $H = new header( "Prototype", "Database Prototype");
   $H->show_header( );
  ?>
