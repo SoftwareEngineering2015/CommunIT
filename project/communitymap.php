@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+ 
 <!-- Load In Google Maps -->
 <!-- Key is Derek Lai's Google API KEY for accessing a broader spectrum of Google APIs-->
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCTUwndh9ZED3trNlGZqcCEjkAb5-bpoUw"></script>
@@ -14,6 +14,9 @@ body, html {
 <!-- Load in classes and Libraries -->
 <?php
   require_once( "header_class.php");       // css and headers
+ // require_once( "db_class.php");           // db class
+  //require_once("INVENTORY_CONFIG.php");    // main configuration 
+  //require_once("inventory_lib.php");       // output functions
   $H = new header( "Prototype", "Database Prototype");
   $H->show_header( );
  ?>
@@ -76,7 +79,7 @@ function geocodeAddress(geocoder, resultsMap) {
 
 // Zoom to 15 when clicking on marker and opens the infow window if its closed
       google.maps.event.addListener(marker,'click',function() {
-        map.setZoom(12);
+        map.setZoom(18);
         map.setCenter(marker.getPosition());
         infowindow.open(map,marker);
       });
@@ -94,6 +97,7 @@ function geocodeLatLng(geocoder, map, infowindow) {
   var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
   geocoder.geocode({'location': latlng}, function(results, status) {
     if (status === google.maps.GeocoderStatus.OK) {
+      map.setCenter(results[0].geometry.location);
       if (results[1]) {
         map.setZoom(11);
         var marker = new google.maps.Marker({
@@ -102,6 +106,15 @@ function geocodeLatLng(geocoder, map, infowindow) {
         });
         infowindow.setContent( 'Getting Location By Geocode: </br>' + results[1].formatted_address);
         infowindow.open(map, marker);
+
+// Zoom to 15 when clicking on marker and opens the infow window if its closed
+      google.maps.event.addListener(marker,'click',function() {
+        map.setZoom(12);
+        map.setCenter(marker.getPosition());
+        infowindow.open(map,marker);
+      });
+
+
       } else {
         window.alert('No results found');
       }
@@ -155,6 +168,16 @@ google.maps.event.addDomListener(window, 'load', initialize);
       <div>
         <input id="latlng" type="text" value="41.7605849,-88.3200715">
         <input id="submitG" type="button" value="Reverse Geocode">
+      </div>
+
+      <div class="col-sm-4" style="background-color: #EEEEEE; height:60%; width:95%; font-size: 20px;">
+          Address: 501 S Calumet Ave Aurora, IL 60506 </br>
+          Residents: Joey Calzone, Penny Calzone, Walter Calzone </br>
+          Emergency Number: 630-555-1234 </br>
+          Phone Number One: 630-555-4321 </br>
+          E-mail: Email01@aol.com </br>
+          <hr>
+
       </div>
     </div>
 
