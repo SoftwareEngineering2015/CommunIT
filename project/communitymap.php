@@ -24,6 +24,7 @@ function initialize() {
   var mapProp = {
     //Need To Center at Center of Neighborhood
     //Decides default center of Google Maps
+    //We should change these coordinates to account residence from database
     center:new google.maps.LatLng(41.7605556, -88.3200),
     zoom:12,
     mapTypeId:google.maps.MapTypeId.ROADMAP
