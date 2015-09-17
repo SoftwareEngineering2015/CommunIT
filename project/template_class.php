@@ -1,17 +1,18 @@
 <?php
 
-class header {
+class template {
   function __construct( $title, $h1 ) {
     $this->TITLE = $title;
     $this->h1 = $h1;
   }
-
-  function show_header( ) {
+ 
+  function show_template( ) {
   	print "<html>\n<head> <title> $this->TITLE </title></head>";
   	print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
-   
+   }
+ }
     //Conatins the Site's Header Nav Bar
-    print'
+?>
       <nav class="navbar navbar-default">
         <div class="container-fluid">
         <div class="navbar-header">
@@ -21,13 +22,16 @@ class header {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="home.php">Project Home</a>
+          <a class="navbar-brand" href="communitymap.php">CommunIT</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li><a href="#">LinkOneHere</a></li>
-            <li><a href="#">LinkTwoHere</a></li>
+            <li><a href="login.php">Login</a></li>
+        
+          <!--
+            <li><a href="#"></a></li>
+
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -40,17 +44,16 @@ class header {
                 <li><a href="#">One more separated link</a></li>
               </ul>
             </li>
+          -->
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
-          <li><a href="#">LinkThreeHere</a></li>
-        </ul>
+          <!--Clear User Variable -->
+          <li><a href="logout.php">Logout</a></li>
+          </ul>
       </div>
     </div>
   </nav>
- ';
 
-  }
 
-}
-?>
+

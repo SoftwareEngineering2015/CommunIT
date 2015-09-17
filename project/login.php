@@ -1,8 +1,8 @@
 <head>
  <?php
-  require_once( "header_class.php");       // css and headers
-  $H = new header( "Prototype", "Database Prototype");
-  $H->show_header( );
+  require_once( "template_class.php");       // css and headers
+  $H = new template( "Prototype", "Database Prototype");
+  $H->show_template( );
  ?>
 </head>
 <style>

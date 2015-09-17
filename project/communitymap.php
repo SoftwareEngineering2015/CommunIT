@@ -5,21 +5,26 @@
 <!-- Load In Google Maps -->
 <!-- Key is Derek Lai's Google API KEY for accessing a broader spectrum of Google APIs-->
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCTUwndh9ZED3trNlGZqcCEjkAb5-bpoUw"></script>
+<!-- Load in classes and Libraries -->
+<?php
+  require_once( "template_class.php");       // css and headers
+ // require_once( "db_class.php");           // db class
+  //require_once("INVENTORY_CONFIG.php");    // main configuration 
+  //require_once("inventory_lib.php");       // output functions
+  $H = new template( "Prototype", "Database Prototype");
+  $H->show_template( );
+ ?>
+
 <style>
 body, html {
   height: 100%;
   width: 100%;
 }
+    body {
+   background-color: #1A4C80; 
+}
 </style>
-<!-- Load in classes and Libraries -->
-<?php
-  require_once( "header_class.php");       // css and headers
- // require_once( "db_class.php");           // db class
-  //require_once("INVENTORY_CONFIG.php");    // main configuration 
-  //require_once("inventory_lib.php");       // output functions
-  $H = new header( "Prototype", "Database Prototype");
-  $H->show_header( );
- ?>
+
 
  <!-- Load In Google Maps -->
 <script>

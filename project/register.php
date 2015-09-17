@@ -8,6 +8,7 @@
   .input {
     border: 2px solid black;
   }
+
 </style>
 <form class="form-horizontal">
 <fieldset>
