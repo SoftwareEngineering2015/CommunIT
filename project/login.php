@@ -1,17 +1,13 @@
 <head>
  <?php
   require_once( "template_class.php");       // css and headers
-  $H = new template( "Prototype", "Database Prototype");
+  $H = new template("Prototype", "Database Prototype");
   $H->show_template( );
  ?>
 </head>
 <style>
     body {
     background: url('images/background.jpg') no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
 }
 </style>
 <body>
@@ -22,8 +18,11 @@
         <div class="container">
             <div class="col-md-6 col-md-offset-3"><br /><br />
                 <div class="panel panel-default" style="border: 3px solid black">
-                    <div class="panel-heading"> <b class="" style="color: #000000"> Oij's Neighborhood Login </b>
-                    </div>
+
+                    <div class="panel-heading"> <b class="" style="color: #000000">
+                    <!--Inline PHP Variable of Community Name--> Oij's Neighborhood Login 
+                    </b></div>
+                    
                     <div class="panel-body">
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
@@ -45,7 +44,9 @@
                             </div>
                         </form>
                     </div>
-                    <div class="panel-footer"><b style="color: #000000"> Not Registered? <a href="register.php" class="">Register Here</a></b>
+                  <!--  
+                  <div class="panel-footer"><b style="color: #000000"> Not Registered? <a href="register.php" class="">Register Here</a></b>
+                   -->
                     </div>
                 </div>
             </form>
