@@ -1,57 +1,39 @@
-<head>
- <?php
-  require_once( "template_class.php");       // css and headers
-  $H = new template("Prototype", "Database Prototype");
-  $H->show_template( );
- ?>
-</head>
-<style>
-    body {
-    background: url('images/background.jpg') no-repeat center center fixed; 
+<?php
+session_start(); // Starting Session
+
+if(isset($_SESSION['login_user'])){
+header("location: myhome.php");
 }
-</style>
-<body>
 
-    <div class="container">
-
-      <form class="form-signin">
-        <div class="container">
-            <div class="col-md-6 col-md-offset-3"><br /><br />
-                <div class="panel panel-default" style="border: 3px solid black">
-
-                    <div class="panel-heading"> <b class="" style="color: #000000">
-                    <!--Inline PHP Variable of Community Name--> Oij's Neighborhood Login 
-                    </b></div>
-                    
-                    <div class="panel-body">
-                        <form class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <b for="loginID" class="col-sm-3 control-label" style="color: #000000">Login ID</b>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="loginID" placeholder="Login ID" required="" style="border: 2px solid black"> <br />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <b for="inputPassword3" class="col-sm-3 control-label" style="color: #000000">Password</b>
-                                <div class="col-sm-9">
-                                    <input type="password" class="form-control" id="inputPassword3" placeholder="Password" required="" style="border: 2px solid black"> <br />
-                                </div>
-                            </div>
-                            <div class="form-group last">
-                                <div class="col-sm-offset-3 col-sm-9">
-                                    <button type="submit" class="btn btn-primary btn-lg" style="border: 2px solid black; width: 100%;">Sign In</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                  <!--  
-                  <div class="panel-footer"><b style="color: #000000"> Not Registered? <a href="register.php" class="">Register Here</a></b>
-                   -->
-                    </div>
-                </div>
-            </form>
-
-        </div> <!-- /container -->
-    </div>
-</div>
-</body>
+$error=''; // Variable To Store Error Message
+if (isset($_POST['submit'])) {
+if (empty($_POST['username']) || empty($_POST['password'])) {
+$error = "Username or Password is invalid";
+}
+else
+{
+// Define $username and $password
+$username=$_POST['username'];
+$password=$_POST['password'];
+// Establishing Connection with Server by passing server_name, user_id and password as a parameter
+$connection = mysql_connect("localhost", "root", "");
+// To protect MySQL injection for Security purpose
+$username = stripslashes($username);
+$password = stripslashes($password);
+$username = mysql_real_escape_string($username);
+$password = mysql_real_escape_string($password);
+// Selecting Database
+$db = mysql_select_db("communit", $connection);
+// SQL query to fetch information of registerd users and finds user match.
+$query = mysql_query("select * from residences where password='$password' AND username='$username'", $connection);
+$rows = mysql_num_rows($query);
+if ($rows == 1) {
+$_SESSION['login_user']=$username; // Initializing Session
+header("location: home.php"); // Redirecting To Other Page
+} else {
+$error = "Username or Password is invalid";
+}
+mysql_close($connection); // Closing Connection
+}
+}
+?>

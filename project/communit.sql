@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 17, 2015 at 01:51 AM
+-- Generation Time: Sep 17, 2015 at 08:01 AM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -29,20 +29,22 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `residences` (
 `residence_id` int(255) NOT NULL,
   `address` varchar(255) NOT NULL,
-  `login` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `residences`
 --
 
-INSERT INTO `residences` (`residence_id`, `address`, `login`, `password`) VALUES
-(1, '501 S Calumet Ave Aurora, IL 60506', 'House001', 'password'),
-(2, '502 S Calumet Ave Aurora, IL 60506', 'House002', 'password'),
-(3, '503 S Calumet Ave Aurora, IL 60506', 'House003', 'password'),
-(4, '504 S Calumet Ave Aurora, IL 60506', 'House004', 'password'),
-(5, '505 S Calumet Ave Aurora, IL 60506', 'House005', 'password');
+INSERT INTO `residences` (`residence_id`, `address`, `username`, `password`) VALUES
+(1, '', 'admin', 'password'),
+(2, '', 'guest', 'password'),
+(3, '501 S Calumet Ave Aurora, IL 60506', 'house001', 'password'),
+(4, '502 S Calumet Ave Aurora, IL 60506', 'house002', 'password'),
+(5, '503 S Calumet Ave Aurora, IL 60506', 'house003', 'password'),
+(6, '504 S Calumet Ave Aurora, IL 60506', 'house005', 'password'),
+(7, '505 S Calumet Ave Aurora, IL 60506', 'house004', 'password');
 
 -- --------------------------------------------------------
 
@@ -67,11 +69,11 @@ CREATE TABLE IF NOT EXISTS `residents` (
 --
 
 INSERT INTO `residents` (`resident_id`, `fk_residence_id`, `first_name`, `last_name`, `birth_date`, `emergency_number`, `phone_one`, `phone_two`, `email_address`) VALUES
-(1, 1, 'Joey', 'Calzone', '1970-01-20', '444-555-8888', '432-555-3356', '111-555-3221', 'Email001@aol.com'),
-(2, 1, 'Penny', 'Calzone', '1973-01-20', '345-555-6785', '444-555-6789', '334-555-9876', 'Email002@aol.com'),
-(3, 1, 'Walter', 'Calzone', '1997-05-12', '222-555-3334', '876-555-9999', '', 'Email003@aol.com'),
-(4, 2, 'Samantha', 'Rigatoni', '1986-12-03', '323-555-6565', '565-555-8865', '432-555-9987', 'Email004@aol.com'),
-(5, 2, 'Watson', 'Rigatoni', '1987-09-21', '432-555-9876', '124-555-3732', '', 'Email005@aol.com');
+(1, 3, 'Joey', 'Calzone', '1970-01-20', '444-555-8888', '432-555-3356', '111-555-3221', 'Email001@aol.com'),
+(2, 3, 'Penny', 'Calzone', '1973-01-20', '345-555-6785', '444-555-6789', '334-555-9876', 'Email002@aol.com'),
+(3, 3, 'Walter', 'Calzone', '1997-05-12', '222-555-3334', '876-555-9999', '', 'Email003@aol.com'),
+(4, 4, 'Samantha', 'Rigatoni', '1986-12-03', '323-555-6565', '565-555-8865', '432-555-9987', 'Email004@aol.com'),
+(5, 5, 'Watson', 'Rigatoni', '1987-09-21', '432-555-9876', '124-555-3732', '', 'Email005@aol.com');
 
 --
 -- Indexes for dumped tables
@@ -97,7 +99,7 @@ ALTER TABLE `residents`
 -- AUTO_INCREMENT for table `residences`
 --
 ALTER TABLE `residences`
-MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- Constraints for dumped tables
 --

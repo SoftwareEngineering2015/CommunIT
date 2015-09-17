@@ -12,9 +12,6 @@ class template {
  }
     //Conatins the Site's Header Nav Bar
 ?>
-<?php
-include('session.php');
-?>
       <nav class="navbar navbar-default">
         <div class="container-fluid">
         <div class="navbar-header">
@@ -24,7 +21,7 @@ include('session.php');
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="communitymap.php">CommunIT</a>
+          <a class="navbar-brand" href="communitymap.php" >CommunIT</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -53,6 +50,8 @@ include('session.php');
           -->
           </ul>
 
+          
+
           <?php
           if(isset($_SESSION['login_user'])){
             print'
@@ -62,6 +61,7 @@ include('session.php');
           </ul>';
           }
           ?>
+
       </div>
     </div>
   </nav>

@@ -1,10 +1,8 @@
 <head>
   <?php
   require_once( "template_class.php");       // css and headers
- // require_once( "db_class.php");           // db class
-  //require_once("INVENTORY_CONFIG.php");    // main configuration 
-  //require_once("inventory_lib.php");       // output functions
-  $H = new template( "Prototype", "Database Prototype");
+  
+  $H = new template( "Prototype");
   $H->show_template( );
  ?>
 </head>
