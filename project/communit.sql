@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 17, 2015 at 08:01 AM
+-- Generation Time: Sep 18, 2015 at 09:37 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -19,6 +19,47 @@ SET time_zone = "+00:00";
 --
 -- Database: `communit`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `configuration`
+--
+
+CREATE TABLE IF NOT EXISTS `configuration` (
+  `community_name` varchar(255) DEFAULT 'Community',
+  `max_per_residence` int(255) DEFAULT '10'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `head_residents`
+--
+
+CREATE TABLE IF NOT EXISTS `head_residents` (
+  `head_resident_id` int(255) NOT NULL,
+  `fk_residence_id` int(255) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `birth_date` date NOT NULL,
+  `emergency_number` varchar(255) NOT NULL,
+  `phone_one` varchar(255) DEFAULT NULL,
+  `phone_two` varchar(255) DEFAULT NULL,
+  `email_address` varchar(255) DEFAULT NULL,
+  `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `head_residents`
+--
+
+INSERT INTO `head_residents` (`head_resident_id`, `fk_residence_id`, `first_name`, `last_name`, `birth_date`, `emergency_number`, `phone_one`, `phone_two`, `email_address`, `date_added`) VALUES
+(1, 3, 'Joey', 'Calzone', '1970-01-20', '444-555-8888', '432-555-3356', '111-555-3221', 'Email001@aol.com', '2015-09-17 11:40:39'),
+(2, 4, 'Penny', 'Calzone', '1973-01-20', '345-555-6785', '444-555-6789', '334-555-9876', 'Email002@aol.com', '2015-09-17 11:40:39'),
+(3, 5, 'Walter', 'Calzone', '1997-05-12', '222-555-3334', '876-555-9999', '', 'Email003@aol.com', '2015-09-17 11:40:39'),
+(4, 6, 'Samantha', 'Rigatoni', '1986-12-03', '323-555-6565', '565-555-8865', '432-555-9987', 'Email004@aol.com', '2015-09-17 11:40:39'),
+(5, 7, 'Watson', 'Rigatoni', '1987-09-21', '432-555-9876', '124-555-3732', '', 'Email005@aol.com', '2015-09-17 11:40:39');
 
 -- --------------------------------------------------------
 
@@ -49,35 +90,28 @@ INSERT INTO `residences` (`residence_id`, `address`, `username`, `password`) VAL
 -- --------------------------------------------------------
 
 --
--- Table structure for table `residents`
+-- Table structure for table `sub_residents`
 --
 
-CREATE TABLE IF NOT EXISTS `residents` (
-  `resident_id` int(255) NOT NULL,
-  `fk_residence_id` int(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `sub_residents` (
+`sub_residents_id` int(255) NOT NULL,
+  `fk_head_id` int(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `birth_date` date NOT NULL,
-  `emergency_number` varchar(255) NOT NULL,
-  `phone_one` varchar(255) DEFAULT NULL,
-  `phone_two` varchar(255) DEFAULT NULL,
-  `email_address` varchar(255) DEFAULT NULL
+  `phone_number` varchar(255) DEFAULT NULL,
+  `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `residents`
---
-
-INSERT INTO `residents` (`resident_id`, `fk_residence_id`, `first_name`, `last_name`, `birth_date`, `emergency_number`, `phone_one`, `phone_two`, `email_address`) VALUES
-(1, 3, 'Joey', 'Calzone', '1970-01-20', '444-555-8888', '432-555-3356', '111-555-3221', 'Email001@aol.com'),
-(2, 3, 'Penny', 'Calzone', '1973-01-20', '345-555-6785', '444-555-6789', '334-555-9876', 'Email002@aol.com'),
-(3, 3, 'Walter', 'Calzone', '1997-05-12', '222-555-3334', '876-555-9999', '', 'Email003@aol.com'),
-(4, 4, 'Samantha', 'Rigatoni', '1986-12-03', '323-555-6565', '565-555-8865', '432-555-9987', 'Email004@aol.com'),
-(5, 5, 'Watson', 'Rigatoni', '1987-09-21', '432-555-9876', '124-555-3732', '', 'Email005@aol.com');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `head_residents`
+--
+ALTER TABLE `head_residents`
+ ADD PRIMARY KEY (`head_resident_id`), ADD KEY `fk_residence_id` (`fk_residence_id`);
 
 --
 -- Indexes for table `residences`
@@ -86,10 +120,10 @@ ALTER TABLE `residences`
  ADD PRIMARY KEY (`residence_id`);
 
 --
--- Indexes for table `residents`
+-- Indexes for table `sub_residents`
 --
-ALTER TABLE `residents`
- ADD PRIMARY KEY (`resident_id`), ADD KEY `fk_residence_id` (`fk_residence_id`);
+ALTER TABLE `sub_residents`
+ ADD PRIMARY KEY (`sub_residents_id`), ADD KEY `sub_resident_id_idx` (`fk_head_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -101,14 +135,25 @@ ALTER TABLE `residents`
 ALTER TABLE `residences`
 MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
+-- AUTO_INCREMENT for table `sub_residents`
+--
+ALTER TABLE `sub_residents`
+MODIFY `sub_residents_id` int(255) NOT NULL AUTO_INCREMENT;
+--
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `residents`
+-- Constraints for table `head_residents`
 --
-ALTER TABLE `residents`
-ADD CONSTRAINT `residents_ibfk_1` FOREIGN KEY (`fk_residence_id`) REFERENCES `residences` (`residence_id`);
+ALTER TABLE `head_residents`
+ADD CONSTRAINT `head_residents_ibfk_1` FOREIGN KEY (`fk_residence_id`) REFERENCES `residences` (`residence_id`);
+
+--
+-- Constraints for table `sub_residents`
+--
+ALTER TABLE `sub_residents`
+ADD CONSTRAINT `sub_resident_id` FOREIGN KEY (`fk_head_id`) REFERENCES `head_residents` (`head_resident_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
