@@ -1,8 +1,20 @@
 <?php
 session_start(); // Starting Session
 
+
 if(isset($_SESSION['login_user'])){
-header("location: myhome.php");
+
+	if(($_SESSION['login_user']) == "admin"){
+		header("location: admin.php");
+		exit();
+	}
+	elseif(($_SESSION['login_user']) == "guest"){
+		header("location: communitymap.php");
+	}
+	else{
+		header("location: myhome.php");
+	}
+
 }
 
 $error=''; // Variable To Store Error Message

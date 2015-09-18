@@ -5,6 +5,14 @@
   require_once( "template_class.php");       // css and headers
   $H = new template( "My Home" );
   $H->show_template( );
+
+	if($login_session == "admin"){
+		header("location: admin.php");
+	}
+	elseif($login_session == "guest"){
+		header("location: communitymap.php");
+	}
+
  ?>
 </head>
 <body>

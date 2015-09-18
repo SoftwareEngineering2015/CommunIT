@@ -10,11 +10,12 @@ class template {
   	print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
    }
  }
-    //Conatins the Site's Header Nav Bar
+    
 ?>
 <?php
 include('session.php');
 ?>
+<!--Conatins the Site's Header Nav Bar-->
       <nav class="navbar navbar-default">
         <div class="container-fluid">
         <div class="navbar-header">
@@ -30,7 +31,7 @@ include('session.php');
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
           <?php
-          if(isset($_SESSION['login_user'])){
+          if((isset($_SESSION['login_user'])) && ( $login_session != "admin") && ( $login_session != "guest")) {
             print'<li><a href="myhome.php">My Home</a></li>';
           }
           ?>       
@@ -53,15 +54,25 @@ include('session.php');
           -->
           </ul>
 
-          <?php
-          if(isset($_SESSION['login_user'])){
-            print'
+
           <ul class="nav navbar-nav navbar-right">
+
+        <?php
+          if(isset($_SESSION['login_user'])){
+            if($login_session == "admin"){
+            print'
+            <!--Go to the Admin Page -->
+            <li><a href="admin.php">Admin</a></li>
+            ';
+            }
+            print'
             <!--Clear User Variable -->
             <li><a href="logout.php">Logout</a></li>
-          </ul>';
-          }
-          ?>
+            ';}
+
+        ?>
+
+          </ul>
       </div>
     </div>
   </nav>

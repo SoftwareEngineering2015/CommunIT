@@ -26,12 +26,7 @@ class template {
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-          <?php
-          if(isset($_SESSION['login_user'])){
-            print'<li><a href="myhome.php">My Home</a></li>';
-          }
-          ?>       
-        
+
           <!--
             <li><a href="#"></a></li>
 

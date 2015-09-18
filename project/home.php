@@ -2,13 +2,27 @@
 <?php
 include('login.php'); // Includes Login Script
 
-if(isset($_SESSION['login_user'])){
-	header("location: myhome.php");
-}
-
   require_once( "home_template_class.php");       // css and headers
   $H = new template( "Homepage" );
   $H->show_template( );
+
+if(isset($_SESSION['login_user'])){
+
+	if(($_SESSION['login_user']) == "admin"){
+		header("location: admin.php");
+		exit();
+	}
+	elseif(($_SESSION['login_user']) == "guest"){
+		header("location: communitymap.php");
+		exit();
+	}
+	else{
+		header("location: myhome.php");
+	}
+
+}
+
+
   
 ?>
 
