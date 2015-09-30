@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <!-- Load In Google Maps -->
@@ -31,7 +31,6 @@ var myCenter=new google.maps.LatLng(41.7605556, -88.3200);
 function initialize()
 {
 
-
 var mapProp = {
   center:myCenter,
   zoom:10,
@@ -40,6 +39,7 @@ var mapProp = {
 
   map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 
+
   google.maps.event.addListener(map, 'click', function(event) {
     placeMarker(event.latLng);
   });
@@ -47,6 +47,7 @@ var mapProp = {
   var geocoder = new google.maps.Geocoder();
 
   var infowindow = new google.maps.InfoWindow;
+
 /*
   document.getElementById('submitG').addEventListener('click', function() {
     geocodeLatLng(geocoder, map, infowindow);
@@ -61,34 +62,29 @@ var mapProp = {
       $P = new manage_db;
       $P->connect_db();
 // Check connection
-      $sqlResidences = "SELECT address, latitude, longitude, emergency_contact FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL";
-      $P->do_query($sqlResidences);
-      $result = mysql_query($sqlResidences); 
+      $sql = "SELECT address FROM residences WHERE address IS NOT NULL";
+      $P->do_query($sql);
+        //$P->fetch_assoc();
+        //$result = $P->DATA;
+ 
+      //print "<br> DATA=<pre>"; print_r( $P->DATA ); //exit;
 
-     // $sqlResidents = "";
-     // $P->do_query($sqlResidents);
-     // $result = mysql_query($sqlResidents);     
+
+      $result = mysql_query($sql);
 ?>
 
 var addresses = [];
-var emergencies = [];
-var latitudes = [];
-var longitudes = [];
-
 <?php while ($row = mysql_fetch_assoc($result)) { ?>
 addresses.push(<?php echo '"'. $row['address'] .'"'?>);
-emergencies.push(<?php echo '"'. $row['emergency_contact'] .'"'?>);
-latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
-longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>);
 <?php } ?>
 
-/*
+
 for(i in addresses) {
     var address = addresses[i];
     geocoder.geocode( { 'address': address}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             map.setCenter(results[0].geometry.location);
-                    map.setZoom(18);
+                    map.setZoom(19);
 
             var marker = new google.maps.Marker({
                 map: map, 
@@ -101,68 +97,38 @@ for(i in addresses) {
             });
 
            //Sets the infor window on the marker 
-            info0window.open(map,marker);
+            infowindow.open(map,marker);
+
+            //Sets events that occur when a user clicks a marker
+            google.maps.event.addListener(marker,'click',function() {
+              map.setCenter(marker.getPosition());
+              panorama = new google.maps.StreetViewPanorama(
+                document.getElementById('street-view'),
+                {
+                  position: {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()},
+                  pov: {heading: 0, pitch: 0},
+                  zoom: 1
+                });
+            });
 
         } else {
             // alert("Geocode was not successful for the following reason: " + status);
         }
     });
 }
-*/
-
-//addresses.push(<?php echo '"' . $row['address'].', '.$row['latitude'].', '.$row['longitude'] . '"'?>);
-
-for(i in addresses) {
-     var lat = latitudes[i];
-     var log = longitudes[i];
-     var latlng = new google.maps.LatLng(lat, log);
-
-         map.setCenter(latlng);
-         map.setZoom(19);
-
-            var marker = new google.maps.Marker({
-                map: map, 
-                position: latlng
-            });
-
-            //Creates an info Window showing Latitude and Longitude
-            var infowindow = new google.maps.InfoWindow({
-              content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Latitude: ' + latitudes[i] + '<br>Longitude: ' + longitudes[i]
-            });
-            infowindow.open(map,marker);
 
 
-           //Sets the infor window on the marker
-          google.maps.event.addListener(marker,'click',function() { 
-            infowindow.open(map,marker);
-            panorama = new google.maps.StreetViewPanorama(
-              document.getElementById('street-view'),
-              {
-                position: latlng,
-                pov: {heading: 0, pitch: 0},
-                zoom: 1
-              });
-
-
-
-          });
-    }
+function isInfoWindowOpen(infoWindow){
+    var map = infoWindow.getMap();
+    return (map !== null && typeof map !== "undefined");
+}
 
 }
 
-
 /*
 
-var lat = resultP[i].get("lat");
-var log = resultP[i].get("long");
-var latlng = new google.maps.LatLng(lat, log);
-var marker = new google.maps.Marker({
-    map: map,
-    position: latlng 
-});
 
 */
-
 
 
 
@@ -236,7 +202,8 @@ function geocodeLatLng(geocoder, map, infowindow) {
   });
 }
 
-
+*/
+/*
 function placeMarker(location) {
 
 //Adds a Marker where the User Clicks
@@ -255,7 +222,7 @@ function placeMarker(location) {
 
 // Zoom to 15 when clicking on marker
   google.maps.event.addListener(marker,'click',function() {
-    map.setZoom(12);
+    map.setZoom(19);
     map.setCenter(marker.getPosition());
     infowindow.open(map,marker);
     });
@@ -267,6 +234,7 @@ function placeMarker(location) {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
+
 </script>
 
 
@@ -274,8 +242,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 <body>
 
-  <div class="container" style="width:100%; height:95%;">
-    <div class="col-sm-4" style="background-color: #19A3FF; height:100%;">
+  <div class="container-fluid col-xs-12" style="width:100%; height:95%;">
+    <div class="col-xs-4" style="background-color: #19A3FF; height:100%; min-width: 400px; max-width: 400px; border-style: solid; border-color: #1482CC;">
   <!--Side Panel Div
     <div class="col-sm-4" style="background-color: #19A3FF; height:100%;">
       <div>
@@ -290,21 +258,24 @@ google.maps.event.addDomListener(window, 'load', initialize);
 <!--Information here needs to be grabbed from the database-->
         <div  style="text-align: center;  color: #FFFFFF; text-style: bold;
               text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
-              font-size: 300%;">
-          CommunityName
+              font-size: 300%; width: 100%">
+          <b>CommunityName</b>
         </div>
 
-      <div id='street-view' class="col-sm-12" style="background-color: #EEEEEE; height: 20%; width: 100%">
+      <div id='street-view' class="col-xs-12" style="background-color: #EEEEEE; height: 20%; width: 100%">
       </div>
       <div> &nbsp </div>
 
 
 
-      <div class="col-sm-12" style="background-color: #EEEEEE; font-size: 100%;">
+      <div class="col-xs-12" style="background-color: #EEEEEE; font-size: 100%;">
         
-        <span class="col-sm-12" Style="text-align: center; font-size: 25px;"><b>501 S Calumet Ave Aurora, IL 60506</b></span>
+        <div class="col-xs-12 table-responsive" style="text-align: center; font-size: 25px;">
+        <b>501 S Calumet Ave Aurora, IL 60506</b>
+        </div>
+
         </br>
-         </br>
+
         <table class="table table-striped table-hover ">
             <tr>
               <td><b>Emergency Contact:</b></td>
@@ -318,9 +289,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
               <td><b>E-Mail:</b></td>
               <td><a href="mailto:email01@aol.com">Email01@aol.com</a></td>
             </tr>
-             <tr>
-              <td><b>Residents:</b></td>
-            </tr>
+        </table>
+        <table class="table table-striped table-hover ">
+            <th><b>Residents:</b></th>
+            <th></th>
             <tr>
               <td>Joey Calzone</td>
               <td>(630)-867-5309</td>
@@ -338,21 +310,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
     </div>
 
   <!--Google Map Div-->
-    <div class="col-sm-8" id="googleMap" style="position: relative; height:100%;" ></div>
+    <div class="col-xs-8" id="googleMap" style="position: relative; height:100%; border-style: solid; border-color: #1482CC;" ></div>
   </div>
+
+  <div>&nbsp</div>
 
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

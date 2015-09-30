@@ -32,9 +32,15 @@ if(isset($_SESSION['login_user'])){
 <head>
 
 <style>
-    body {
-    background: url('images/background.jpg') no-repeat center center fixed; 
+
+body {
+background: url('images/background.jpg') no-repeat fixed;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
 }
+
 </style>
 
 </head>
@@ -47,7 +53,8 @@ if(isset($_SESSION['login_user'])){
     -2px 2px 0 #000000,
     2px 2px 0 #000000;  
 	 ">
-		<div style="font-size: 1000%;"> CommunIT </div>
+	 	
+		<div style="font-size: 1000%;">  <img src="images/logo_02.png" alt="CommunIT" style="width:150px; height:150px;"> CommunIT </img> </div>
 		<div style="font-size: 350%;"> Community Manager </div>
 	</div>
 

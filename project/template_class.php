@@ -14,9 +14,10 @@ class template {
 ?>
 <?php
 include('session.php');
+include('db_class.php')
 ?>
 <!--Conatins the Site's Header Nav Bar-->
-      <nav class="navbar navbar-default">
+      <nav class="navbar navbar-default" style="position: absolute; top: 0px;">
         <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -31,10 +32,20 @@ include('session.php');
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
           <?php
-          if((isset($_SESSION['login_user'])) && ( $login_session != "admin") && ( $login_session != "guest")) {
-            print'<li><a href="myhome.php">My Home</a></li>';
-          }
-          ?>       
+            if((isset($_SESSION['login_user'])) && ( $login_session != "admin") && ( $login_session != "guest")) {
+              print'<li><a href="myhome.php">My Home</a></li>';
+            }
+          ?>
+          <?php
+            if(isset($_SESSION['login_user'])){
+              if($login_session == "admin"){
+              print'
+              <!--Go to the Admin Page -->
+              <li><a href="admin.php">Admin</a></li>
+              ';
+              }
+            }
+          ?>
         
           <!--
             <li><a href="#"></a></li>
@@ -56,21 +67,14 @@ include('session.php');
 
 
           <ul class="nav navbar-nav navbar-right">
-
-        <?php
-          if(isset($_SESSION['login_user'])){
-            if($login_session == "admin"){
-            print'
-            <!--Go to the Admin Page -->
-            <li><a href="admin.php">Admin</a></li>
-            ';
-            }
-            print'
-            <!--Clear User Variable -->
-            <li><a href="logout.php">Logout</a></li>
-            ';}
-
-        ?>
+          
+          <?php
+            if(isset($_SESSION['login_user'])){
+              print'
+              <!--Clear User Variable -->
+              <li><a href="logout.php">Logout</a></li>
+              ';}
+          ?>
 
           </ul>
       </div>

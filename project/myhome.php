@@ -22,7 +22,7 @@
 
 	<div>
 	<br/>
-		<a href="communitymap.php" class="col-xs-8 col-xs-offset-2 btn btn-primary btn-lg" style="font-size: 500%; height: 50%;">Go to <br/> CommunIT Map</a>
+		<a href="communitymap.php" class="col-xs-8 col-xs-offset-2 btn btn-primary btn-lg" style="font-size: 100%; height: 10%;">Go to <br/> CommunIT Map</a>
 	</div>
 
 </body>
