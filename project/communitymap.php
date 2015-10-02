@@ -70,11 +70,19 @@ var mapProp = {
      // $P->do_query($sqlResidents);
      // $result = mysql_query($sqlResidents);     
 ?>
-
-var addresses = [];
-var emergencies = [];
-var latitudes = [];
-var longitudes = [];
+    //holds addresses from database
+    var addresses = [];
+    //holds emergency numbers from database
+    var emergencies = [];
+    //holds latitude and longitude location from database
+    var latitudes = [];
+    var longitudes = [];
+    //holds created markers
+    var markers = [];
+    //holds created infowindows
+    var infowindows = [];
+    //holds latlng location data
+    var latlng = [];
 
 <?php while ($row = mysql_fetch_assoc($result)) { ?>
 addresses.push(<?php echo '"'. $row['address'] .'"'?>);
@@ -116,39 +124,35 @@ for(i in addresses) {
 for(i in addresses) {
      var lat = latitudes[i];
      var log = longitudes[i];
-     var latlng = new google.maps.LatLng(lat, log);
-
-         map.setCenter(latlng);
-         map.setZoom(19);
-
-            var marker = new google.maps.Marker({
-                map: map, 
-                position: latlng
-            });
-
-            //Creates an info Window showing Latitude and Longitude
-            var infowindow = new google.maps.InfoWindow({
-              content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Latitude: ' + latitudes[i] + '<br>Longitude: ' + longitudes[i]
-            });
-            infowindow.open(map,marker);
-
-
-           //Sets the infor window on the marker
-          google.maps.event.addListener(marker,'click',function() { 
-            infowindow.open(map,marker);
-            panorama = new google.maps.StreetViewPanorama(
+     latlng.push(new google.maps.LatLng(lat, log));
+    //sets initial position
+         map.setCenter(latlng[i]);
+    //sets initial zoom
+         map.setZoom(17);
+    //creates a marker in the markers array
+    markers.push(new google.maps.Marker({
+        map: map, 
+        position: latlng[i],
+        title: addresses[i],
+        //animation: "BOUNCE"
+    }));
+    //Creates an info Window in the infowindows array
+    infowindows.push(new google.maps.InfoWindow({
+        content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Latitude: ' + latitudes[i] + '<br>Longitude: ' + longitudes[i]
+    }));
+    //invoke the addlistener function
+    addlistener(i);
+    }
+    //This function accepts an index from the iterated for loop. This function then creates a click listener based on the objects in the arrays at the passed index
+    function addlistener(x){ google.maps.event.addListener(markers[x], 'click',function() { 
+        infowindows[x].open(map,markers[x]); panorama = new google.maps.StreetViewPanorama(
               document.getElementById('street-view'),
               {
-                position: latlng,
+                position: latlng[x],
                 pov: {heading: 0, pitch: 0},
                 zoom: 1
               });
-
-
-
-          });
-    }
-
+    });}
 }
 
 
