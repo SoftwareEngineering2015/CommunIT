@@ -39,10 +39,9 @@ var mapProp = {
   };
 
   map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-    //for testing purposes... this places a marker upon mouseclick
+
   google.maps.event.addListener(map, 'click', function(event) {
     placeMarker(event.latLng);
-    
   });
 
   var geocoder = new google.maps.Geocoder();
@@ -184,7 +183,6 @@ function geocodeAddress(geocoder, resultsMap) {
       
 //Creates an info Window showing Latitude and Longitude
       var infowindow = new google.maps.InfoWindow({
-          //put address and emergency numbers here?
         content: 'Getting Location By Address: </br>' + 'Latitude: ' + results[0].geometry.location.lat() + '<br>Longitude: ' + results[0].geometry.location.lng()
       });
 
@@ -203,6 +201,8 @@ function geocodeAddress(geocoder, resultsMap) {
     }
   });
 }
+
+
 function geocodeLatLng(geocoder, map, infowindow) {
   var input = document.getElementById('latlng').value;
   var latlngStr = input.split(',', 2);
