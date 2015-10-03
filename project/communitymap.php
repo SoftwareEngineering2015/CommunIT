@@ -23,6 +23,7 @@ body, html {
 <script>
 var map;
 var panorama;
+var iconbase = 'images/';
 //Sets the default center of the Map
 //Should change to Community Location (if set)
 var myCenter=new google.maps.LatLng(41.7605556, -88.3200);
@@ -67,12 +68,17 @@ This puts a marker based on the string in submitG
     var infowindows = [];
     //holds parsed latlng location data
     var latlng = [];
+    //holds latitude and longitude location from database
+    var latitudes = [];
+    var longitudes = [];
     
     //pulls in from database and populates arrays 
     <?php while ($row = mysql_fetch_assoc($result)) { ?>
     addresses.push(<?php echo '"'. $row['address'] .'"'?>);
     emergencies.push(<?php echo '"'. $row['emergency_contact'] .'"'?>);
     //populates the latlng array by creating an object based on the queryd data
+    latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
+    longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
     latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
     phone_one.push(<?php echo '"'. $row['phone_one'] .'"'?>);
     email_address.push(<?php echo '"'. $row['email_address'] .'"'?>);
@@ -88,13 +94,16 @@ This puts a marker based on the string in submitG
         markers.push(new google.maps.Marker({
             map: map, 
             position: latlng[i],
-            title: addresses[i]//,
+            title: addresses[i],
+            icon: iconbase + 'house_pin.png'//,
             //animation: BOUNCE
         }));
         //Creates an info Window in the infowindows array
         infowindows.push(new google.maps.InfoWindow({
-            content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Lat/Lng: ' + latlng[i]
+            content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Latitude: ' + latitudes[i] + '<br/>Longitude: ' + longitudes[i] + '<br/>Lat/Lng: ' + latlng[i]
         }));
+
+
         //invoke the addlistener function
         addlistener(i);
     }
@@ -115,7 +124,8 @@ This puts a marker based on the string in submitG
         document.getElementById("phone_panel").innerHTML = phone_one[x];
         document.getElementById("email_panel").innerHTML = email_address[x];
     }
-}//----------------------END OF INITIALIZE FUNCTION
+}
+//----------------------END OF INITIALIZE FUNCTION
 
 //what in the world does this do?
 google.maps.event.addDomListener(window, 'load', initialize);
