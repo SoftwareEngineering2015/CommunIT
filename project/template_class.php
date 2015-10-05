@@ -8,7 +8,8 @@ class template {
   function show_template( ) {
   	print "<html>\n<head> <title> $this->TITLE </title></head>";
   	print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
-    print '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>';
+    print "<script src='js/jquery-1.11.3.js'></script>";
+    print "<script src='js/bootstrap.min.js'></script>";
    }
  }
     
@@ -36,7 +37,10 @@ include('db_class.php')
           <?php
             if((isset($_SESSION['login_user'])) && ( $login_session != "admin") && ( $login_session != "guest")) {
               print'<li><a href="myhome.php">My Home</a></li>';
+             // print'<li><a href="editprofile.php">Edit Profile</a></li>';
+            
             }
+
           ?>
           <?php
             if(isset($_SESSION['login_user'])){

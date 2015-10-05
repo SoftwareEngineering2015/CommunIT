@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 05, 2015 at 05:11 AM
+-- Generation Time: Oct 06, 2015 at 01:08 AM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -49,7 +49,6 @@ CREATE TABLE IF NOT EXISTS `head_residents` (
   `fk_residence_id` int(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
-  `birth_date` date NOT NULL,
   `emergency_contact` varchar(255) NOT NULL,
   `phone_one` varchar(255) DEFAULT NULL,
   `email_address` varchar(255) DEFAULT NULL,
@@ -60,12 +59,12 @@ CREATE TABLE IF NOT EXISTS `head_residents` (
 -- Dumping data for table `head_residents`
 --
 
-INSERT INTO `head_residents` (`head_resident_id`, `fk_residence_id`, `first_name`, `last_name`, `birth_date`, `emergency_contact`, `phone_one`, `email_address`, `date_added`) VALUES
-(1, 3, 'Joey', 'Calzone', '1970-01-20', '444-555-8888', '432-555-3356', 'Email001@aol.com', '2015-09-17 11:40:39'),
-(2, 4, 'Penny', 'Pasta', '1973-01-20', '345-555-6785', '444-555-6789', 'Email002@aol.com', '2015-09-17 11:40:39'),
-(3, 5, 'Mikey', 'Meatball', '1997-05-12', '222-555-3334', '876-555-9999', 'Email003@aol.com', '2015-09-17 11:40:39'),
-(4, 6, 'Samantha', 'Spaghetti', '1986-12-03', '323-555-6565', '565-555-8865', 'Email004@aol.com', '2015-09-17 11:40:39'),
-(5, 7, 'Richard', 'Rigatoni', '1987-09-21', '432-555-9876', '124-555-3732', 'Email005@aol.com', '2015-09-17 11:40:39');
+INSERT INTO `head_residents` (`head_resident_id`, `fk_residence_id`, `first_name`, `last_name`, `emergency_contact`, `phone_one`, `email_address`, `date_added`) VALUES
+(1, 3, 'Joey', 'Calzone', '444-555-8888', '432-555-3356', 'Email001@aol.com', '2015-09-17 11:40:39'),
+(2, 4, 'Penny', 'Pasta', '345-555-6785', '444-555-6789', 'Email002@aol.com', '2015-09-17 11:40:39'),
+(3, 5, 'Mikey', 'Meatball', '222-555-3334', '876-555-9999', 'Email003@aol.com', '2015-09-17 11:40:39'),
+(4, 6, 'Samantha', 'Spaghetti', '323-555-6565', '565-555-8865', 'Email004@aol.com', '2015-09-17 11:40:39'),
+(5, 7, 'Richard', 'Rigatoni', '432-555-9876', '124-555-3732', 'Email005@aol.com', '2015-09-17 11:40:39');
 
 -- --------------------------------------------------------
 
@@ -79,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `residences` (
   `latitude` varchar(255) DEFAULT NULL,
   `longitude` varchar(255) DEFAULT NULL,
   `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL DEFAULT 'password'
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
@@ -106,22 +105,23 @@ CREATE TABLE IF NOT EXISTS `sub_residents` (
   `fk_head_id` int(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
-  `birth_date` date NOT NULL,
   `phone_number` varchar(255) DEFAULT NULL,
+  `email_address` varchar(255) DEFAULT NULL,
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `sub_residents`
 --
 
-INSERT INTO `sub_residents` (`sub_residents_id`, `fk_head_id`, `first_name`, `last_name`, `birth_date`, `phone_number`, `date_added`) VALUES
-(1, 1, 'Boris', 'Lakowsky', '1960-10-21', '555-555-5555', '2015-10-04 19:23:01'),
-(2, 1, 'Peter', 'Peterson', '1930-01-20', '555-555-5555', '2015-10-04 19:23:01'),
-(3, 2, 'Tom', 'Johnson', '1975-05-23', '555-555-5555', '2015-10-04 19:23:01'),
-(4, 2, 'John', 'Tomson', '1983-03-23', '555-555-5555', '2015-10-04 19:23:01'),
-(5, 3, 'Mark', 'Walberg', '1984-02-15', '555-555-5555', '2015-10-04 19:23:01'),
-(6, 1, 'Sergiy', 'Steniedas', '1989-10-03', '555-555-5555', '2015-10-04 23:55:52');
+INSERT INTO `sub_residents` (`sub_residents_id`, `fk_head_id`, `first_name`, `last_name`, `phone_number`, `email_address`, `date_added`) VALUES
+(1, 1, 'Boris', 'Lakowsky', '555-555-5555', NULL, '2015-10-04 19:23:01'),
+(2, 1, 'Peter', 'Peterson', '555-555-5555', NULL, '2015-10-04 19:23:01'),
+(3, 2, 'Tom', 'Johnson', '555-555-5555', NULL, '2015-10-04 19:23:01'),
+(4, 2, 'John', 'Tomson', '555-555-5555', NULL, '2015-10-04 19:23:01'),
+(5, 3, 'Mark', 'Walberg', '555-555-5555', NULL, '2015-10-04 19:23:01'),
+(7, 5, 'Howard', 'Johnson', '555-555-5555', NULL, '2015-10-05 23:01:45'),
+(8, 5, 'Charlie', 'Donut', '333-555-9999', NULL, '2015-10-05 23:03:01');
 
 --
 -- Indexes for dumped tables
@@ -158,7 +158,7 @@ MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 -- AUTO_INCREMENT for table `sub_residents`
 --
 ALTER TABLE `sub_residents`
-MODIFY `sub_residents_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `sub_residents_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- Constraints for dumped tables
 --

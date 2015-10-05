@@ -1,7 +1,7 @@
  <!DOCTYPE html>
 <html>
 <head>
-<!-- Key is Derek Lai's Google API KEY for accessing a broader spectrum of Google APIs-->
+<!-- Google API KEY for accessing a broader spectrum of Google APIs-->
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCTUwndh9ZED3trNlGZqcCEjkAb5-bpoUw"></script>
 <!-- Load in classes and Libraries -->
 <?php
@@ -49,23 +49,25 @@ This puts a marker based on the string in submitG
       $P = new manage_db;
       $P->connect_db();
 //Gets the information of a residence and it's head resident 
-      $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, FORMAT(DATEDIFF(CURDATE(), head_residents.birth_date) / 365.25,0) as 'age', address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL";
+      $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL";
       $P->do_query($sqlResidences);
       $resultResidences = mysql_query($sqlResidences);    
     ?>
 //Gets the information of the sub residents
-  <?php $sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number, FORMAT(DATEDIFF(CURDATE(), birth_date) / 365.25,0) as 'age' FROM sub_residents";
+  <?php $sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number FROM sub_residents";
     $P->do_query($sqlResidents);
     $resultResidents = mysql_query($sqlResidents);  
   ?>
 
-  <?php $sqlConfig = "SELECT community_name FROM configuration";
+  <?php $sqlConfig = "SELECT community_name, max_per_residence FROM configuration";
     $P->do_query($sqlConfig);
     $resultConfig = mysql_query($sqlConfig);  
   ?>
 
     //Holds the community's name
     var communityname = [];
+    //The limit of residents per residence
+    var max_residents = [];
     //holds addresses from database
     var addresses = [];
     //holds phone1 number
@@ -74,14 +76,14 @@ This puts a marker based on the string in submitG
     var emergencies = [];
     //holds email addresses from database
     var email_address = [];
+
     //Holds information of the head_residents
     var head_resident_ids = [];
     var head_full_names = [];
-    var head_age = [];
+
     //Holds the information of the sub_residents
     var sub_full_names = [];
     var sub_phone_numbers = [];
-    var sub_age = [];
 
     //holds created markers
     var markers = [];
@@ -95,6 +97,7 @@ This puts a marker based on the string in submitG
 
   <?php while ($row3 = mysql_fetch_assoc($resultConfig)) { ?>
     communityname.push(<?php echo '"'. $row3['community_name'] .'"'?>);
+    max_residents.push(<?php echo '"'. $row3['max_per_residence'] .'"'?>);
   <?php } ?>
 
     document.getElementById("community_name").innerHTML = "<b>" + communityname[0]+ "</b>";
@@ -102,7 +105,6 @@ This puts a marker based on the string in submitG
   <?php while ($row2 = mysql_fetch_assoc($resultResidents)) { ?>
     sub_full_names.push(<?php echo '"'. $row2['sub_full_name'] .'"'?>);
     sub_phone_numbers.push(<?php echo '"'. $row2['phone_number'] .'"'?>);
-    sub_age.push(<?php echo '"'. $row2['age'] .'"'?>);
   <?php } ?>
     
     //pulls in from database and populates arrays 
@@ -111,7 +113,6 @@ This puts a marker based on the string in submitG
     emergencies.push(<?php echo '"'. $row['emergency_contact'] .'"'?>);
     head_resident_ids.push(<?php echo '"'. $row['head_resident_id'] .'"'?>);
     head_full_names.push(<?php echo '"'. $row['head_full_name'] .'"'?>);
-    head_age.push(<?php echo '"'. $row['age'] .'"'?>);
     //populates the latlng array by creating an object based on the queryd data
     latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
     longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
@@ -126,18 +127,19 @@ This puts a marker based on the string in submitG
         //sets initial position
              map.setCenter(latlng[i]);
         //sets initial zoom
-             map.setZoom(17);
+             map.setZoom(18);
         //creates a marker in the markers array
         markers.push(new google.maps.Marker({
             map: map, 
             position: latlng[i],
             title: addresses[i],
-            icon: iconbase + 'house_pin.png'//,
-            //animation: BOUNCE
+            icon: iconbase + 'house_pin.png',
+            animation: google.maps.Animation.DROP
         }));
         //Creates an info Window in the infowindows array
         infowindows.push(new google.maps.InfoWindow({
-            content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Latitude: ' + latitudes[i] + '<br/>Longitude: ' + longitudes[i] + '<br/>Lat/Lng: ' + latlng[i]
+           // content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Latitude: ' + latitudes[i] + '<br/>Longitude: ' + longitudes[i] + '<br/>Lat/Lng: ' + latlng[i]
+            content: '<div style="font-size: 120%"> <b style="font-size: 100%">Address: </b>' + addresses[i] + '<br/><b style="font-size: 100%">Emergency Contact: </b> <span style="color: red;">' +emergencies[i]+'</span></div>'
         }));
 
 
@@ -146,13 +148,24 @@ This puts a marker based on the string in submitG
     }
     //This function accepts an index from the iterated for loop. This function then creates a click listener based on the objects in the arrays at the passed index
     function addlistener(x){ google.maps.event.addListener(markers[x], 'click',function() { 
-        infowindows[x].open(map,markers[x]); populatetable(x);panorama = new google.maps.StreetViewPanorama(
+        infowindows[x].open(map,markers[x]); 
+        populatetable(x);
+        markers[x].setAnimation(google.maps.Animation.BOUNCE);
+        panorama = new google.maps.StreetViewPanorama(
               document.getElementById('street-view'),
               {
                 position: latlng[x],
                 pov: {heading: 0, pitch: 0},
-                zoom: 1
+                zoom: 1,
+                linksControl: false,
+                addressControl: false
               });
+        google.maps.event.addListener(markers[x],'mousedown',function() {
+          infowindows[x].close(map,markers[x]); 
+          markers[x].setAnimation(google.maps.Animation.NULL);
+        });
+        
+
     });}
     //this function is called in the marker event listener, and it populates the left pane table with the correct information
     function populatetable(x){
@@ -165,17 +178,10 @@ This puts a marker based on the string in submitG
 
       //Can't get it to show all of them, only the last one. This seems to be a reacurring problem for me XD
         for (j in sub_full_names) {  
-          document.getElementById("sub_residents").innerHTML = "<td>" +sub_full_names[j] + "</td> <td>" +sub_phone_numbers[j]+ "</td>";
-       // document.getElementById("sub_age").innerHTML = sub_age[j];
+        //  document.getElementById("sub_residents").innerHTML = "<td>" +sub_full_names[j] + "</td> <td>" +sub_phone_numbers[j]+ "</td>";
        // document.getElementById("sub_phone").innerHTML = sub_phone_numbers[j];
-       /* document.getElementById("sub_residents").innerHTML = "
-              <td>"+sub_full_names[j]+"</td>
-              <td>"+sub_age[j]+"</td>
-              <td>"+sub_phone_numbers[j]+"</td>
-              </tr>
-              <tr>
-          ");
-        */
+       // document.getElementById("sub_residents_"+j+"").innerHTML = "<td>"+sub_full_names[j]+"</td><td>"+sub_phone_numbers[j]+"</td>";
+        
       }
     }
 }
@@ -208,7 +214,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
               font-size: 300%;">
         </div>
 
-      <div id='street-view' class="col-sm-12" style="background-color: #EEEEEE; height: 20%; width: 100%">
+      <div id='street-view' class="col-sm-12" style="background-color: #EEEEEE; height: 20%; width: 100%; text-align: center; font-size: 25px;">
+       Select a Residence
       </div>
       <div> &nbsp </div>
 
@@ -229,8 +236,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
             </tr>
             <tr id='head_resident'>
             </tr>
-            <tr id='sub_residents'>
-            </tr>
+            <!-- <tr id='sub_residents'>-->
+            <script>
+            /*
+            var i = 1;
+            window.alert("cows");
+            for (max_residents[0]){
+              window.alert("cows");
+              document.write("<tr id='sub_residents_'"+i+"> cows</tr>");
+              i++;
+            }
+            */
+            </script>
+            <!--</tr>-->
         </table> 
       </div>
     </div>
