@@ -24,13 +24,14 @@ body, html {
 <script>
 var map;
 var panorama;
-var iconbase = 'images/';
+var iconBase = 'images/';
 //Sets the default center of the Map
 //Should change to Community Location (if set)
 var myCenter=new google.maps.LatLng(41.7605556, -88.3200);
 
 function initialize()
 {
+
 
 var mapProp = {
   center:myCenter,
@@ -39,16 +40,15 @@ var mapProp = {
   };
 
   map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-
-
+    //for testing purposes... this places a marker upon mouseclick
   google.maps.event.addListener(map, 'click', function(event) {
     placeMarker(event.latLng);
+    
   });
 
   var geocoder = new google.maps.Geocoder();
 
   var infowindow = new google.maps.InfoWindow;
-
 /*
   document.getElementById('submitG').addEventListener('click', function() {
     geocodeLatLng(geocoder, map, infowindow);
@@ -63,76 +63,68 @@ var mapProp = {
       $P = new manage_db;
       $P->connect_db();
 // Check connection
-      $sql = "SELECT address FROM residences WHERE address IS NOT NULL";
-      $P->do_query($sql);
-        //$P->fetch_assoc();
-        //$result = $P->DATA;
- 
-      //print "<br> DATA=<pre>"; print_r( $P->DATA ); //exit;
+      $sqlResidences = "SELECT address, latitude, longitude, emergency_contact FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL";
+      $P->do_query($sqlResidences);
+      $result = mysql_query($sqlResidences); 
 
-
-      $result = mysql_query($sql);
+     // $sqlResidents = "";
+     // $P->do_query($sqlResidents);
+     // $result = mysql_query($sqlResidents);     
 ?>
+    //holds addresses from database
+    var addresses = [];
+    //holds emergency numbers from database
+    var emergencies = [];
+    //holds latitude and longitude location from database
+    var latitudes = [];
+    var longitudes = [];
+    //holds created markers
+    var markers = [];
+    //holds created infowindows
+    var infowindows = [];
+    //holds latlng location data
+    var latlng = [];
 
-var addresses = [];
 <?php while ($row = mysql_fetch_assoc($result)) { ?>
 addresses.push(<?php echo '"'. $row['address'] .'"'?>);
+emergencies.push(<?php echo '"'. $row['emergency_contact'] .'"'?>);
+latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
+longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>);
 <?php } ?>
 
-
 for(i in addresses) {
-    var address = addresses[i];
-    geocoder.geocode( { 'address': address}, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-            map.setCenter(results[0].geometry.location);
-                    map.setZoom(19);
-
-            var marker = new google.maps.Marker({
-                map: map, 
-                position: results[0].geometry.location,
-                icon: iconbase + 'house_pin.png'
-            });
-
-            //Creates an info Window showing Latitude and Longitude
-            var infowindow = new google.maps.InfoWindow({
-              content: 'Getting Location By Address: </br>' + 'Latitude: ' + results[0].geometry.location.lat() + '<br>Longitude: ' + results[0].geometry.location.lng()
-            });
-
-           //Sets the infor window on the marker 
-            infowindow.open(map,marker);
-
-            //Sets events that occur when a user clicks a marker
-            google.maps.event.addListener(marker,'click',function() {
-              map.setCenter(marker.getPosition());
-              panorama = new google.maps.StreetViewPanorama(
-                document.getElementById('street-view'),
-                {
-                  position: {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()},
-                  pov: {heading: 0, pitch: 0},
-                  zoom: 1
-                });
-            });
-
-        } else {
-            // alert("Geocode was not successful for the following reason: " + status);
-        }
-    });
+     var lat = latitudes[i];
+     var log = longitudes[i];
+     latlng.push(new google.maps.LatLng(lat, log));
+    //sets initial position
+         map.setCenter(latlng[i]);
+    //sets initial zoom
+         map.setZoom(17);
+    //creates a marker in the markers array
+    markers.push(new google.maps.Marker({
+        map: map, 
+        position: latlng[i],
+        title: addresses[i],
+        icon: iconBase + 'house_pin.png'
+    }));
+    //Creates an info Window in the infowindows array
+    infowindows.push(new google.maps.InfoWindow({
+        content: 'Address: ' + addresses[i] + '<br/>Emergency Contact: ' + emergencies[i] + '<br/>Latitude: ' + latitudes[i] + '<br>Longitude: ' + longitudes[i]
+    }));
+    //invoke the addlistener function
+    addlistener(i);
+    }
+    //This function accepts an index from the iterated for loop. This function then creates a click listener based on the objects in the arrays at the passed index
+    function addlistener(x){ google.maps.event.addListener(markers[x], 'click',function() { 
+        infowindows[x].open(map,markers[x]); panorama = new google.maps.StreetViewPanorama(
+              document.getElementById('street-view'),
+              {
+                position: latlng[x],
+                pov: {heading: 0, pitch: 0},
+                zoom: 1
+              });
+    });}
 }
-
-
-function isInfoWindowOpen(infoWindow){
-    var map = infoWindow.getMap();
-    return (map !== null && typeof map !== "undefined");
-}
-
-}
-
-/*
-
-
-*/
-
-
 
 
 /*
@@ -151,6 +143,7 @@ function geocodeAddress(geocoder, resultsMap) {
       
 //Creates an info Window showing Latitude and Longitude
       var infowindow = new google.maps.InfoWindow({
+          //put address and emergency numbers here?
         content: 'Getting Location By Address: </br>' + 'Latitude: ' + results[0].geometry.location.lat() + '<br>Longitude: ' + results[0].geometry.location.lng()
       });
 
@@ -169,8 +162,6 @@ function geocodeAddress(geocoder, resultsMap) {
     }
   });
 }
-
-
 function geocodeLatLng(geocoder, map, infowindow) {
   var input = document.getElementById('latlng').value;
   var latlngStr = input.split(',', 2);
@@ -204,8 +195,7 @@ function geocodeLatLng(geocoder, map, infowindow) {
   });
 }
 
-*/
-/*
+
 function placeMarker(location) {
 
 //Adds a Marker where the User Clicks
@@ -224,7 +214,7 @@ function placeMarker(location) {
 
 // Zoom to 15 when clicking on marker
   google.maps.event.addListener(marker,'click',function() {
-    map.setZoom(19);
+    map.setZoom(12);
     map.setCenter(marker.getPosition());
     infowindow.open(map,marker);
     });
@@ -236,7 +226,6 @@ function placeMarker(location) {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
-
 </script>
 
 
@@ -244,8 +233,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 <body>
 
-  <div class="container-fluid col-xs-12" style="width:100%; height:95%;">
-    <div class="col-xs-4" style="background-color: #19A3FF; height:100%; min-width: 400px; max-width: 400px; border-style: solid; border-color: #1482CC;">
+  <div class="container" style="width:100%; height:95%;">
+    <div class="col-sm-4" style="background-color: #19A3FF; height:100%;">
   <!--Side Panel Div
     <div class="col-sm-4" style="background-color: #19A3FF; height:100%;">
       <div>
@@ -260,24 +249,21 @@ google.maps.event.addDomListener(window, 'load', initialize);
 <!--Information here needs to be grabbed from the database-->
         <div  style="text-align: center;  color: #FFFFFF; text-style: bold;
               text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
-              font-size: 300%; width: 100%">
-          <b>CommunityName</b>
+              font-size: 300%;">
+          CommunityName
         </div>
 
-      <div id='street-view' class="col-xs-12" style="background-color: #EEEEEE; height: 20%; width: 100%">
+      <div id='street-view' class="col-sm-12" style="background-color: #EEEEEE; height: 20%; width: 100%">
       </div>
       <div> &nbsp </div>
 
 
 
-      <div class="col-xs-12" style="background-color: #EEEEEE; font-size: 100%;">
+      <div class="col-sm-12" style="background-color: #EEEEEE; font-size: 100%;">
         
-        <div class="col-xs-12 table-responsive" style="text-align: center; font-size: 25px;">
-        <b>501 S Calumet Ave Aurora, IL 60506</b>
-        </div>
-
+        <span class="col-sm-12" Style="text-align: center; font-size: 25px;"><b>501 S Calumet Ave Aurora, IL 60506</b></span>
         </br>
-
+         </br>
         <table class="table table-striped table-hover ">
             <tr>
               <td><b>Emergency Contact:</b></td>
@@ -291,10 +277,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
               <td><b>E-Mail:</b></td>
               <td><a href="mailto:email01@aol.com">Email01@aol.com</a></td>
             </tr>
-        </table>
-        <table class="table table-striped table-hover ">
-            <th><b>Residents:</b></th>
-            <th></th>
+             <tr>
+              <td><b>Residents:</b></td>
+            </tr>
             <tr>
               <td>Joey Calzone</td>
               <td>(630)-867-5309</td>
@@ -312,11 +297,22 @@ google.maps.event.addDomListener(window, 'load', initialize);
     </div>
 
   <!--Google Map Div-->
-    <div class="col-xs-8" id="googleMap" style="position: relative; height:100%; border-style: solid; border-color: #1482CC;" ></div>
+    <div class="col-sm-8" id="googleMap" style="position: relative; height:100%;" ></div>
   </div>
 
-  <div>&nbsp</div>
 
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+

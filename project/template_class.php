@@ -8,6 +8,7 @@ class template {
   function show_template( ) {
   	print "<html>\n<head> <title> $this->TITLE </title></head>";
   	print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
+    print '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>';
    }
  }
     
@@ -17,6 +18,7 @@ include('session.php');
 include('db_class.php')
 ?>
 <!--Conatins the Site's Header Nav Bar-->
+
       <nav class="navbar navbar-default">
         <div class="container-fluid">
         <div class="navbar-header">
@@ -80,6 +82,14 @@ include('db_class.php')
       </div>
     </div>
   </nav>
+  <!--
+  <div>
+  &nbsp
+  <br/>
+  <br/>
+  <br/>
+  </div>
+-->
 
 
 
