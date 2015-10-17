@@ -38,12 +38,7 @@ function initialize(){
     //this creates our map
     map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
     var geocoder = new google.maps.Geocoder();
-/*
-This puts a marker based on the string in submitG
-  document.getElementById('submitG').addEventListener('click', function() {
-    geocodeLatLng(geocoder, map, infowindow);
-  });
-*/
+
   <?php
 // Create connection
       $P = new manage_db;
@@ -53,22 +48,27 @@ This puts a marker based on the string in submitG
       $P->do_query($sqlResidences);
       $resultResidences = mysql_query($sqlResidences);    
     ?>
-//Gets the information of the sub residents
-  <?php $sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number FROM sub_residents";
-    $P->do_query($sqlResidents);
-    $resultResidents = mysql_query($sqlResidents);  
-  ?>
-
+    
+    //Gets the information of the sub residents
+      <?php
+$sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number, fk_head_id FROM sub_residents";
+        $P->do_query($sqlResidents);
+        $resultResidents = mysql_query($sqlResidents);  
+      ?>
+    
+    //Gets the configuration information
   <?php $sqlConfig = "SELECT community_name, max_per_residence FROM configuration";
     $P->do_query($sqlConfig);
     $resultConfig = mysql_query($sqlConfig);  
   ?>
-
+    //These arrays hold information from the database. In general the different 'groups' of information are tied together based on index
+    //CONFIGURATION INFORMATION
     //Holds the community's name
     var communityname = [];
     //The limit of residents per residence
     var max_residents = [];
-    //holds addresses from database
+    
+    //RESIDENCE AND HEAD RESIDENT INFORMATION
     var addresses = [];
     //holds phone1 number
     var phone_one = [];
@@ -76,15 +76,6 @@ This puts a marker based on the string in submitG
     var emergencies = [];
     //holds email addresses from database
     var email_address = [];
-
-    //Holds information of the head_residents
-    var head_resident_ids = [];
-    var head_full_names = [];
-
-    //Holds the information of the sub_residents
-    var sub_full_names = [];
-    var sub_phone_numbers = [];
-
     //holds created markers
     var markers = [];
     //holds created infowindows
@@ -93,21 +84,34 @@ This puts a marker based on the string in submitG
     var latlng = [];
     //holds latitude and longitude location from database
     var latitudes = [];
-    var longitudes = [];
-
+    var longitudes = []; 
+    var head_resident_ids = [];
+    var head_full_names = [];
+    
+    //SUB RESIDENT INFORMATION
+    //Holds the information of the sub_residents
+    var sub_full_names = [];
+    var sub_phone_numbers = [];
+    //this array holds the key of the head resident at the same index as sub-residents 
+    var sub_head_tie = [];
+    
+    //populates configuration data from database
   <?php while ($row3 = mysql_fetch_assoc($resultConfig)) { ?>
     communityname.push(<?php echo '"'. $row3['community_name'] .'"'?>);
     max_residents.push(<?php echo '"'. $row3['max_per_residence'] .'"'?>);
   <?php } ?>
-
-    document.getElementById("community_name").innerHTML = "<b>" + communityname[0]+ "</b>";
-
-  <?php while ($row2 = mysql_fetch_assoc($resultResidents)) { ?>
+    
+    //populates subresident data from database
+    <?php while ($row2 = mysql_fetch_assoc($resultResidents)) { ?>
     sub_full_names.push(<?php echo '"'. $row2['sub_full_name'] .'"'?>);
     sub_phone_numbers.push(<?php echo '"'. $row2['phone_number'] .'"'?>);
+    sub_head_tie.push(<?php echo '"'. $row2['fk_head_id'] .'"'?>);
   <?php } ?>
+
+    //specify the community name on the page
+    document.getElementById("community_name").innerHTML = "<b>" + communityname[0]+ "</b>";
     
-    //pulls in from database and populates arrays 
+    //populates residence data from database
     <?php while ($row = mysql_fetch_assoc($resultResidences)) { ?>
     addresses.push(<?php echo '"'. $row['address'] .'"'?>);
     emergencies.push(<?php echo '"'. $row['emergency_contact'] .'"'?>);
@@ -142,7 +146,6 @@ This puts a marker based on the string in submitG
             content: '<div style="font-size: 120%"> <b style="font-size: 100%">Address: </b>' + addresses[i] + '<br/><b style="font-size: 100%">Emergency Contact: </b> <span style="color: red;">' +emergencies[i]+'</span></div>'
         }));
 
-
         //invoke the addlistener function
         addlistener(i);
     }
@@ -167,22 +170,29 @@ This puts a marker based on the string in submitG
         
 
     });}
-    //this function is called in the marker event listener, and it populates the left pane table with the correct information
+    //this function is called in the marker event listener, and it populates the information pane table with the correct information
     function populatetable(x){
+        //these call various ids in the information pane and add html to them
         document.getElementById("address_panel").innerHTML = "<b>"+addresses[x]+"</b>";
         document.getElementById("em_phone_panel").innerHTML = "<td><b>Emergency Contact:</b></td> <td>" + emergencies[x] + "</td>";
         document.getElementById("phone_panel").innerHTML = "<td><b>Phone Number:</b></td> <td>" + phone_one[x] + "</td>";
         document.getElementById("email_panel").innerHTML = "<td><b>E-mail:</b></td> <td>" + "<a href='mailto:"+email_address[x]+"'>"+email_address[x]+"</a> </td>";
-        document.getElementById("residenttitle").innerHTML =  "<b>Residents:</b>";
+        document.getElementById("head_resident_header").innerHTML =  "Head Resident:";
         document.getElementById("head_resident").innerHTML = "<td>" + head_full_names[x] + "</td> <td>" + phone_one[x] + "</td>";
-
-      //Can't get it to show all of them, only the last one. This seems to be a reacurring problem for me XD
-        for (j in sub_full_names) {  
-        //  document.getElementById("sub_residents").innerHTML = "<td>" +sub_full_names[j] + "</td> <td>" +sub_phone_numbers[j]+ "</td>";
-       // document.getElementById("sub_phone").innerHTML = sub_phone_numbers[j];
-       // document.getElementById("sub_residents_"+j+"").innerHTML = "<td>"+sub_full_names[j]+"</td><td>"+sub_phone_numbers[j]+"</td>";
-        
-      }
+        document.getElementById("sub_resident_header").innerHTML =  "Sub-Residents:";
+        //variable setup for the loop
+        var i = 0, htmltext = "";
+        //this loop iterates through all sub-residents and puts the correct sub-residents in a table with the id of sub_residents
+        //this loop is dependent on the fact that we will not allow any head residents to ever have more than the max sub residents, otherwise this loop will potentially not function properly
+        while(i<=(sub_head_tie.length)){
+            //window.alert("i is : "+i+" sub_head_tie length is: "+(sub_head_tie.length)+ "max_residents is :  "+max_residents);
+            if(sub_head_tie[i] == head_resident_ids[x]){
+            htmltext+= "<tr><td>"+sub_full_names[i]+"</td><td>"+sub_phone_numbers[i]+"</td></tr>";
+            }
+            i++;
+        }
+        //populates the sub_residents table with the looped information
+        document.getElementById("sub_residents").innerHTML = htmltext;
     }
 }
 //----------------------END OF INITIALIZE FUNCTION
@@ -224,7 +234,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <span class="col-sm-12" Style="text-align: center; font-size: 25px;" id="address_panel">Select a Residence</span>
         </br>
          </br>
-        <table class="table table-striped table-hover ">
+        <table class="table table-striped table-hover">
             <tr id='em_phone_panel'>
             </tr>
              <tr id='phone_panel'>
@@ -232,34 +242,33 @@ google.maps.event.addDomListener(window, 'load', initialize);
              <tr id='email_panel'>
             </tr>
             <tr>
-            <th id='residenttitle' style='font-size: 125%;'> </th>
+            <th id='head_resident_header' style='font-size: 125%;'> </th>
             </tr>
             <tr id='head_resident'>
             </tr>
-            <!-- <tr id='sub_residents'>-->
-            <script>
-            /*
-            var i = 1;
-            window.alert("cows");
-            for (max_residents[0]){
-              window.alert("cows");
-              document.write("<tr id='sub_residents_'"+i+"> cows</tr>");
-              i++;
-            }
-            */
-            </script>
-            <!--</tr>-->
+            <tr>
+            <th id='sub_resident_header' style='font-size: 125%;'> </th>
+            </tr>
+            <table id='sub_residents' class="table table-striped table-hover">
+            </table>
         </table> 
       </div>
     </div>
 
   <!--Google Map Div-->
-    <div class="col-sm-8" id="googleMap" style="position: relative; height:100%;" ></div>
+    <div class="col-sm-8 affix" id="googleMap" style="height:100%;" ></div>
   </div>
 
 </body>
 
 </html>
+
+<!--
+This puts a marker based on the string in submitG
+  document.getElementById('submitG').addEventListener('click', function() {
+    geocodeLatLng(geocoder, map, infowindow);
+  });
+-->
 
 <!--
 for(i in addresses) {
