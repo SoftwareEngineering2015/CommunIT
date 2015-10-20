@@ -17,15 +17,12 @@ if(isset($_SESSION['login_user'])){
 		exit();
 	}
 	else{
-		header("location: myhome.php");
+		header("location: communitymap.php");
 	}
 
 }
 
-
-  
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -63,9 +60,10 @@ background-size: cover;
 			<div class="panel panel-default" style="border: 3px solid black">
 
 				<div class="panel-heading">
-					<b class="" style="color: #000000">
+					<b class="" style="color: #000000" id="community_name">
 						<!--Inline PHP Variable of Community Name--> 
-						Oij's Neighborhood Login 
+						CommunIT Login
+							
 					</b>
 				</div>
 

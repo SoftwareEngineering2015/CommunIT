@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 06, 2015 at 01:08 AM
+-- Generation Time: Oct 20, 2015 at 10:17 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -79,15 +79,15 @@ CREATE TABLE IF NOT EXISTS `residences` (
   `longitude` varchar(255) DEFAULT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT 'password'
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `residences`
 --
 
 INSERT INTO `residences` (`residence_id`, `address`, `latitude`, `longitude`, `username`, `password`) VALUES
-(1, NULL, NULL, NULL, 'admin', 'password'),
-(2, NULL, NULL, NULL, 'guest', 'password'),
+(0, NULL, NULL, NULL, 'admin', 'password'),
+(1, NULL, NULL, NULL, 'guest', 'password'),
 (3, '501 S Calumet Ave Aurora, IL 60506', '41.751632', '-88.348559', 'house001', 'password'),
 (4, '502 S Calumet Ave Aurora, IL 60506', '41.751501', '-88.347945', 'house002', 'password'),
 (5, '503 S Calumet Ave Aurora, IL 60506', '41.751418', '-88.348554', 'house003', 'password'),
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `sub_residents` (
   `phone_number` varchar(255) DEFAULT NULL,
   `email_address` varchar(255) DEFAULT NULL,
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `sub_residents`
@@ -121,7 +121,10 @@ INSERT INTO `sub_residents` (`sub_residents_id`, `fk_head_id`, `first_name`, `la
 (4, 2, 'John', 'Tomson', '555-555-5555', NULL, '2015-10-04 19:23:01'),
 (5, 3, 'Mark', 'Walberg', '555-555-5555', NULL, '2015-10-04 19:23:01'),
 (7, 5, 'Howard', 'Johnson', '555-555-5555', NULL, '2015-10-05 23:01:45'),
-(8, 5, 'Charlie', 'Donut', '333-555-9999', NULL, '2015-10-05 23:03:01');
+(8, 5, 'Charlie', 'Donut', '333-555-9999', NULL, '2015-10-05 23:03:01'),
+(9, 5, 'Sean', 'Long', '555-555-5555', NULL, '2015-10-06 14:48:36'),
+(10, 3, 'Carol', 'Cannoli', '555-555-1111', NULL, '2015-10-16 17:41:32'),
+(11, 3, 'Miranda', 'Marinara', '111-333-3333', NULL, '2015-10-16 17:41:32');
 
 --
 -- Indexes for dumped tables
@@ -137,7 +140,7 @@ ALTER TABLE `head_residents`
 -- Indexes for table `residences`
 --
 ALTER TABLE `residences`
- ADD PRIMARY KEY (`residence_id`);
+ ADD PRIMARY KEY (`residence_id`), ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `sub_residents`
@@ -153,12 +156,12 @@ ALTER TABLE `sub_residents`
 -- AUTO_INCREMENT for table `residences`
 --
 ALTER TABLE `residences`
-MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `sub_residents`
 --
 ALTER TABLE `sub_residents`
-MODIFY `sub_residents_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+MODIFY `sub_residents_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
 --
 -- Constraints for dumped tables
 --

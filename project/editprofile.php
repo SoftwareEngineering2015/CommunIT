@@ -7,6 +7,16 @@
   $H = new template( "My Home" );
   $H->show_template( );
 
+  if($login_session == "admin"){
+  	header("location: admin.php");
+  	exit; //Exit so the rest of the code will not run
+  }
+  elseif($login_session == "guest"){
+  	header("location: communitymap.php");
+  	exit; //Exit so the rest of the code will not run
+  }
+
+
   // Create connection
   $P = new manage_db;
   $P->connect_db();
@@ -139,7 +149,7 @@
 					</table> 
 					<div class="form-group last">
 						<div class="col-sm-offset-3 col-sm-6"> <!-- Value for the button is needed to tell the update file what the id of the user is -->
-							<button name="submit_head_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-primary btn-lg" style="border: 2px solid black; width: 100%;"> Update Profile </button>
+							<button name="submit_head_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-primary btn-lg" style="width: 100%;"><b> Update Profile </b></button>
 						</div>
 					</div>
 				</div>
@@ -170,7 +180,7 @@
 							echo "<td> $last_name </td> ";
 							echo "<td> $phone_number </td>";
 							// Delete button for each sub resident row; Value for the button holds the id of the sub resident and the id of the head resident, separated by the colon ( neeeded for the delete query)
-							echo "<td><button name='delete_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-danger btn-sm' style='border: 2px solid black; width: 100%;'> X </button> </td></tr>";
+							echo "<td><button name='delete_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-danger btn-xs' style='width: 100%;'><b> X </b></button> </td></tr>";
 						}
 						?>
 						<tr>
@@ -182,7 +192,7 @@
 					</table> 
 					<div class="form-group last">
 						<div class="col-sm-offset-3 col-sm-6"> <!-- Value for the button is needed to tell the update file what the id of the user is -->
-							<button name="submit_sub_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-primary btn-lg" style="border: 2px solid black; width: 100%;"> Add Resident </button>
+							<button name="submit_sub_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-primary btn-lg" style="width: 100%;"><b> Add Resident </b></button>
 						</div>
 					</div>
 				</div>

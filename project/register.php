@@ -11,7 +11,7 @@
     color: #000000;
   }
   .input {
-    border: 2px solid black;
+     
   }
 
 </style>
@@ -106,7 +106,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="submit"></label>
   <div class="col-md-4">
-    <button id="submit" name="submit" class="btn btn-primary btn-lg" style="border: 2px solid black; width: 100%"> Register </button>
+    <button id="submit" name="submit" class="btn btn-primary btn-lg" style="  width: 100%"> Register </button>
   </div>
 </div>
 
@@ -115,6 +115,6 @@
 <div class="form-group form-horizontal">
   <label class="col-md-4 control-label" for="submit"></label>
   <div class="col-md-4">
-    <button id="submit" name="submit" class="btn btn-danger btn-lg" style="border: 2px solid black; width: 100%" onclick="window.location='login.php';"> Back </button>
+    <button id="submit" name="submit" class="btn btn-danger btn-lg" style="  width: 100%" onclick="window.location='login.php';"> Back </button>
   </div>
 </div>
