@@ -55,16 +55,6 @@ CREATE TABLE IF NOT EXISTS `head_residents` (
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `head_residents`
---
-
-INSERT INTO `head_residents` (`head_resident_id`, `fk_residence_id`, `first_name`, `last_name`, `emergency_contact`, `phone_one`, `email_address`, `date_added`) VALUES
-(1, 3, 'Joey', 'Calzone', '444-555-8888', '432-555-3356', 'Email001@aol.com', '2015-09-17 11:40:39'),
-(2, 4, 'Penny', 'Pasta', '345-555-6785', '444-555-6789', 'Email002@aol.com', '2015-09-17 11:40:39'),
-(3, 5, 'Mikey', 'Meatball', '222-555-3334', '876-555-9999', 'Email003@aol.com', '2015-09-17 11:40:39'),
-(4, 6, 'Samantha', 'Spaghetti', '323-555-6565', '565-555-8865', 'Email004@aol.com', '2015-09-17 11:40:39'),
-(5, 7, 'Richard', 'Rigatoni', '432-555-9876', '124-555-3732', 'Email005@aol.com', '2015-09-17 11:40:39');
 
 -- --------------------------------------------------------
 
@@ -87,12 +77,7 @@ CREATE TABLE IF NOT EXISTS `residences` (
 
 INSERT INTO `residences` (`residence_id`, `address`, `latitude`, `longitude`, `username`, `password`) VALUES
 (0, NULL, NULL, NULL, 'admin', 'password'),
-(1, NULL, NULL, NULL, 'guest', 'password'),
-(3, '501 S Calumet Ave Aurora, IL 60506', '41.751632', '-88.348559', 'house001', 'password'),
-(4, '502 S Calumet Ave Aurora, IL 60506', '41.751501', '-88.347945', 'house002', 'password'),
-(5, '503 S Calumet Ave Aurora, IL 60506', '41.751418', '-88.348554', 'house003', 'password'),
-(6, '504 S Calumet Ave Aurora, IL 60506', '41.751331', '-88.347952', 'house005', 'password'),
-(7, '508 S Calumet Ave Aurora, IL 60506', '41.751184', '-88.347958', 'house004', 'password');
+(1, NULL, NULL, NULL, 'guest', 'password');
 
 -- --------------------------------------------------------
 
@@ -109,22 +94,6 @@ CREATE TABLE IF NOT EXISTS `sub_residents` (
   `email_address` varchar(255) DEFAULT NULL,
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `sub_residents`
---
-
-INSERT INTO `sub_residents` (`sub_residents_id`, `fk_head_id`, `first_name`, `last_name`, `phone_number`, `email_address`, `date_added`) VALUES
-(1, 1, 'Boris', 'Lakowsky', '555-555-5555', NULL, '2015-10-04 19:23:01'),
-(2, 1, 'Peter', 'Peterson', '555-555-5555', NULL, '2015-10-04 19:23:01'),
-(3, 2, 'Tom', 'Johnson', '555-555-5555', NULL, '2015-10-04 19:23:01'),
-(4, 2, 'John', 'Tomson', '555-555-5555', NULL, '2015-10-04 19:23:01'),
-(5, 3, 'Mark', 'Walberg', '555-555-5555', NULL, '2015-10-04 19:23:01'),
-(7, 5, 'Howard', 'Johnson', '555-555-5555', NULL, '2015-10-05 23:01:45'),
-(8, 5, 'Charlie', 'Donut', '333-555-9999', NULL, '2015-10-05 23:03:01'),
-(9, 5, 'Sean', 'Long', '555-555-5555', NULL, '2015-10-06 14:48:36'),
-(10, 3, 'Carol', 'Cannoli', '555-555-1111', NULL, '2015-10-16 17:41:32'),
-(11, 3, 'Miranda', 'Marinara', '111-333-3333', NULL, '2015-10-16 17:41:32');
 
 --
 -- Indexes for dumped tables
