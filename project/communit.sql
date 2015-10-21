@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 20, 2015 at 10:17 PM
+-- Generation Time: Oct 21, 2015 at 09:42 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -45,7 +45,7 @@ INSERT INTO `configuration` (`community_name`, `max_per_residence`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `head_residents` (
-  `head_resident_id` int(255) NOT NULL,
+`head_resident_id` int(255) NOT NULL,
   `fk_residence_id` int(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `head_residents` (
   `phone_one` varchar(255) DEFAULT NULL,
   `email_address` varchar(255) DEFAULT NULL,
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 
 -- --------------------------------------------------------
@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `sub_residents` (
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
+
 --
 -- Indexes for dumped tables
 --
@@ -103,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `sub_residents` (
 -- Indexes for table `head_residents`
 --
 ALTER TABLE `head_residents`
- ADD PRIMARY KEY (`head_resident_id`), ADD KEY `fk_residence_id` (`fk_residence_id`);
+ ADD PRIMARY KEY (`head_resident_id`), ADD KEY `head_residents_ibfk_1` (`fk_residence_id`);
 
 --
 -- Indexes for table `residences`
@@ -122,6 +123,11 @@ ALTER TABLE `sub_residents`
 --
 
 --
+-- AUTO_INCREMENT for table `head_residents`
+--
+ALTER TABLE `head_residents`
+MODIFY `head_resident_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+--
 -- AUTO_INCREMENT for table `residences`
 --
 ALTER TABLE `residences`
@@ -139,13 +145,13 @@ MODIFY `sub_residents_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
 -- Constraints for table `head_residents`
 --
 ALTER TABLE `head_residents`
-ADD CONSTRAINT `head_residents_ibfk_1` FOREIGN KEY (`fk_residence_id`) REFERENCES `residences` (`residence_id`);
+ADD CONSTRAINT `head_residents_ibfk_1` FOREIGN KEY (`fk_residence_id`) REFERENCES `residences` (`residence_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `sub_residents`
 --
 ALTER TABLE `sub_residents`
-ADD CONSTRAINT `sub_resident_id` FOREIGN KEY (`fk_head_id`) REFERENCES `head_residents` (`head_resident_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `sub_residents_ibfk_1` FOREIGN KEY (`fk_head_id`) REFERENCES `head_residents` (`head_resident_id`) ON DELETE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
