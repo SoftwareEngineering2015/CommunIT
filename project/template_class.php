@@ -52,7 +52,7 @@ include('db_class.php');
             <!--Go to the Admin Page -->
             <li><a href="admin.php">Admin</a></li>
             <li><a href="addresidence.php">Add Residence</a></li>
-            
+            <li><a href="configuration.php">Configuration</a></li>
             ';
           }
         }

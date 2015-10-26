@@ -199,6 +199,7 @@ function initialize(){
         // document.getElementById("sub_resident_header").innerHTML =  "Sub-Residents:";
         //variable setup for the loop
         var i = 0, residentsSidePanelText = "";
+        var counter = 0;
         //Adding Head Resident to residents table
         residentsSidePanelText = "<td>" + head_full_names[x] + "</td> <td>" + phone_one[x] + "</td>";
         //this loop iterates through all sub-residents and puts the correct sub-residents in a table with the id of sub_residents
@@ -206,9 +207,10 @@ function initialize(){
         while(i<=(sub_head_tie.length)){
             //window.alert("i is : "+i+" sub_head_tie length is: "+(sub_head_tie.length)+ "max_residents is :  "+max_residents);
 
-            if(sub_head_tie[i] == head_resident_ids[x]){
+            if(sub_head_tie[i] == head_resident_ids[x] && counter < max_residents[0]){
 
               residentsSidePanelText+= "<tr><td>"+sub_full_names[i]+"</td><td>"+sub_phone_numbers[i]+"</td></tr>";
+              counter++;
             }
             i++;
           }

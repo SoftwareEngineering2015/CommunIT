@@ -102,6 +102,14 @@ if (isset($_GET['resident'])){
   		array_push($head_residents, $row['email_address']); // Current head resident email address
   	}
 
+  	$sql_max_per_residence = "SELECT max_per_residence FROM configuration";
+  	$P->do_query($sql_max_per_residence);
+  	$max_per_residence_result = mysql_query($sql_max_per_residence);
+  	while ($row = mysql_fetch_assoc($max_per_residence_result))
+  	{
+  		$max_per_residence = $row['max_per_residence'];
+  	}
+
   	// Query that gets the data for the sub resident table
   	$sql_sub_residents = "SELECT sub_residents.sub_residents_id AS sub_residents_id, sub_residents.first_name AS first_name, sub_residents.last_name AS last_name, sub_residents.phone_number AS phone_number FROM sub_residents INNER JOIN head_residents ON sub_residents.fk_head_id = head_residents.head_resident_id WHERE fk_head_id='$head_residents[0]'";
   	$P->do_query($sql_sub_residents);
@@ -179,6 +187,8 @@ if (isset($_GET['resident'])){
 					<form action="updateprofile.php" method="POST">
 						<?php
 
+						$hide_add_new_sub_resident = "";
+						$counter = 0;
 						// Displays the sub resident information
 						while ($row = mysql_fetch_assoc($sub_residents_result))
 						{
@@ -194,12 +204,17 @@ if (isset($_GET['resident'])){
 							echo "'class='form-control input-md' > </td>";
 							echo "<td><button name='admin_update_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-primary btn-sm glyphicon glyphicon-pencil' style='  width: 100%;'></button>";
 							echo "<button name='admin_delete_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-danger btn-sm glyphicon glyphicon-remove' style='  width: 100%;'> </button> </td></tr>";
+							
+							$counter = $counter + 1;
 						}
+							if ($max_per_residence <= $counter) {
+									$hide_add_new_sub_resident = "style = 'display:none;'";
+							}
 						?>
 					</form>
 					<!-- Form for the sub resident information -->
 					<form action="updateprofile.php" method="POST">
-						<tr>
+						<tr <?php echo $hide_add_new_sub_resident; ?>>
 							<td> <input id="sub_resident_first_name" name="sub_resident_first_name" type="text" class="form-control input-md" required> </td>
 							<td> <input id="sub_resident_last_name" name="sub_resident_last_name" type="text"  class="form-control input-md" required> </td>
 							<td> <input id="sub_resident_phone_number" name="sub_resident_phone_number" type="text" class="form-control input-md" > </td>

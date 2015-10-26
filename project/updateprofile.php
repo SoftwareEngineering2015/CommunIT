@@ -13,6 +13,7 @@ if(isset($_POST['submit_head_resident'])) {
 		$emergency=$_POST['head_resident_emergency'];
 		$phone_one=$_POST['head_resident_phone_one'];
 		$email_address=$_POST['head_resident_email_address'];
+		$password =$_POST['residence_password'];
 
 		// To protect MySQL injection for Security purpose
 		$first_name = stripslashes($first_name);
@@ -20,12 +21,14 @@ if(isset($_POST['submit_head_resident'])) {
 		$emergency = stripslashes($emergency);
 		$phone_one = stripslashes($phone_one);
 		$email_address = stripslashes($email_address);
+		$password = stripslashes($password);
 
 		$first_name = mysql_real_escape_string($first_name);
 		$last_name = mysql_real_escape_string($last_name);
 		$emergency = mysql_real_escape_string($emergency);
 		$phone_one = mysql_real_escape_string($phone_one);
 		$email_address = mysql_real_escape_string($email_address);
+		$password = mysql_real_escape_string($password);
 
 		// Create connection
 		$P = new manage_db;
@@ -34,6 +37,9 @@ if(isset($_POST['submit_head_resident'])) {
 		// Check connection
 		$sql_head_residents_insert = "INSERT INTO head_residents (fk_residence_id, first_name, last_name, emergency_contact, phone_one, email_address) VALUES ('$fk_residence_id','$first_name','$last_name', '$emergency','$phone_one','$email_address')";
 		$P->do_query($sql_head_residents_insert);
+
+		$sql_update_residence_password = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET password='$password' WHERE fk_residence_id='$fk_residence_id'";
+		$P->do_query($sql_update_residence_password);
 
 		header("location: myhome.php");
 		exit; // Just in case, exit the file so the rest of the code will never run
@@ -92,7 +98,15 @@ if(isset($_POST['submit_head_resident'])) {
 			$P->do_query($sql_head_residents_insert);
 		}
 
-		header("location: myhome.php");
+		if (trim($_POST['residence_password']) != "") {
+			$password=$_POST['residence_password'];
+			$password = stripslashes($password);
+			$password = mysql_real_escape_string($password);
+			$sql_update_residence_password = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET password='$password' WHERE head_resident_id = '$head_resident_id'";
+			$P->do_query($sql_update_residence_password);
+		}
+
+		header("location: editprofile.php");
 		exit; // Just in case, exit the file so the rest of the code will never run
 
 	}
