@@ -17,7 +17,7 @@ class template {
 ?>
 <?php
 include('session.php');
-include('db_class.php')
+include('db_class.php');
 ?>
 <!--Conatins the Site's Header Nav Bar-->
 

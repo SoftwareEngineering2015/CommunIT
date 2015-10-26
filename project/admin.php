@@ -9,7 +9,7 @@
 
 
   if(($_SESSION['login_user']) != "admin"){
-  	header("location: home.php");
+  	header("location: index.php");
   	exit();
   }
 
@@ -41,10 +41,9 @@
 				$P = new manage_db;
 				$P->connect_db();
 
-				$sql_head_residents = "SELECT * FROM residences LEFT JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id ORDER BY head_resident_id, address, username='admin'  DESC";
-				$P->do_query($sql_head_residents);
+				$sql_head_residents = "SELECT * FROM residences LEFT JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id ORDER BY head_resident_id, address, username='admin' DESC";
+				//$P->do_query($sql_head_residents);
 				$head_residents_result = mysql_query($sql_head_residents); 
-
 				// Displays the head resident information
 				while ($row = mysql_fetch_assoc($head_residents_result))
 				{

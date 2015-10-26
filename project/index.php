@@ -2,8 +2,8 @@
 <?php
 include('login.php'); // Includes Login Script
 
-  require_once( "home_template_class.php");       // css and headers
-  $H = new template( "Homepage" );
+  require_once( "index_template_class.php");       // css and headers
+  $H = new template( "CommunIT" );
   $H->show_template( );
 
 if(isset($_SESSION['login_user'])){
@@ -15,7 +15,7 @@ if(isset($_SESSION['login_user'])){
 	elseif(($_SESSION['login_user']) == "guest"){
 		header("location: communitymap.php");
 		exit();
-	}
+		}
 	else{
 		header("location: communitymap.php");
 	}
@@ -57,7 +57,7 @@ background-size: cover;
 
 	<div class="container">
 		<div class="col-xs-6 col-xs-offset-3"><br/><br/><br/>
-			<div class="panel panel-default" style="border: 3px solid black">
+			<div class="panel panel-default" style="border: 1px solid black">
 
 				<div class="panel-heading">
 					<b class="" style="color: #000000" id="community_name">
@@ -72,20 +72,20 @@ background-size: cover;
 					<div class="form-group">
 						<b for="loginID" class="col-sm-3 control-label" style="color: #000000">Login ID</b>
 						<div class="col-sm-9">
-							<input id="loginID" name="username" type="text" class="form-control" placeholder="Login ID" required="" style="border: 2px solid black"> <br/>
+							<input id="loginID" name="username" type="text" class="form-control" placeholder="Login ID" required="" style=""> <br/>
 						</div>
 					</div>
 
 				<div class="form-group">
 					<b for="password" class="col-sm-3 control-label" style="color: #000000">Password</b>
 					<div class="col-sm-9">
-						<input  id="password" name="password" type="password" class="form-control" placeholder="Password" required="" style="border: 2px solid black"> <br/>
+						<input  id="password" name="password" type="password" class="form-control" placeholder="Password" required="" style=""> <br/>
 					</div>
 				</div>
 
 				<div class="form-group last">
 					<div class="col-sm-offset-3 col-sm-9">
-						<button name="submit" type="submit" value=" Login " class="btn btn-primary btn-lg" style="border: 2px solid black; width: 100%;">Sign In</button>
+						<button name="submit" type="submit" value=" Login " class="btn btn-primary btn-lg" style=" width: 100%;">Sign In</button>
 					</div>
 				</div>
 

@@ -147,7 +147,7 @@ function show_confirm(){
          <tr>
           <th> </th> 
           <td>
-            <button type="button"  name="submitAddress" id="submitAddress"  value="Reverse Geocode" class="btn btn-info btn-lg" style="border: 2px solid black; width: 100%;"> Drop Pin </button>
+            <button type="button"  name="submitAddress" id="submitAddress"  value="Reverse Geocode" class="btn btn-info btn-lg" style=" width: 100%;"> Drop Pin </button>
           </td>
         </tr>
       </table> <br/>
@@ -166,7 +166,7 @@ function show_confirm(){
         <tr>
           <th> </th> 
           <td>
-            <button type="button" onclick="show_confirm()" class="btn btn-primary btn-lg" style="border: 2px solid black; width: 100%;"> Add Residence </button>
+            <button type="button" onclick="show_confirm()" class="btn btn-primary btn-lg" style=" width: 100%;"> Add Residence </button>
           </td>
         </tr>
       </table>
