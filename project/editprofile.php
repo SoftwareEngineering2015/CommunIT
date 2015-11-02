@@ -5,7 +5,7 @@
 	<?php
 
   require_once( "template_class.php");       // css and headers
-  $H = new template( "My Home" );
+  $H = new template( "Edit Profile" );
   $H->show_template( );
 
   	if(($_SESSION['login_user']) == "admin"){

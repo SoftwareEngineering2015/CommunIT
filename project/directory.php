@@ -3,7 +3,7 @@
  <head>
  	<?php
   require_once( "template_class.php");       // css and headers
-  $H = new template( "CommunIT Map" );
+  $H = new template( "Directory" );
   $H->show_template( );
   ?>
 

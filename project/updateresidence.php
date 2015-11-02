@@ -11,6 +11,7 @@ if(isset($_POST['add_new_residence'])) {
 	$address = $_POST['address'];
 	$latitude = $_POST['latitude'];
 	$longitude = $_POST['longitude'];
+    $password = $_POST['password'];
 
 	// To protect MySQL injection for Security purpose
 	$residence_name = stripslashes($residence_name);
@@ -20,7 +21,7 @@ if(isset($_POST['add_new_residence'])) {
 	$address = mysql_real_escape_string($address);
 
 	// Check connection
-	$sql_add_new_residence = "INSERT INTO residences (address, latitude, longitude, username, password) VALUES ('$address','$latitude','$longitude', '$residence_name','password')";
+	$sql_add_new_residence = "INSERT INTO residences (address, latitude, longitude, username, password) VALUES ('$address','$latitude','$longitude', '$residence_name','$password')";
 	$P->do_query($sql_add_new_residence);
 
 	header("location: admin.php");
