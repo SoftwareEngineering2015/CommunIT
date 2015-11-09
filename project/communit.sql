@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 21, 2015 at 09:42 PM
+-- Generation Time: Nov 09, 2015 at 05:50 AM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -52,9 +52,14 @@ CREATE TABLE IF NOT EXISTS `head_residents` (
   `emergency_contact` varchar(255) NOT NULL,
   `phone_one` varchar(255) DEFAULT NULL,
   `email_address` varchar(255) DEFAULT NULL,
+  `miscinfo` text,
+  `pin_color` varchar(7) DEFAULT '#19A3FF',
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `head_residents`
+--
 
 -- --------------------------------------------------------
 
@@ -69,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `residences` (
   `longitude` varchar(255) DEFAULT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT 'password'
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `residences`
@@ -95,6 +100,9 @@ CREATE TABLE IF NOT EXISTS `sub_residents` (
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `sub_residents`
+--
 
 --
 -- Indexes for dumped tables
@@ -131,7 +139,7 @@ MODIFY `head_resident_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 -- AUTO_INCREMENT for table `residences`
 --
 ALTER TABLE `residences`
-MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
+MODIFY `residence_id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `sub_residents`
 --
