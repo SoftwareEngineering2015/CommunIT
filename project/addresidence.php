@@ -19,33 +19,7 @@ var myCenter=new google.maps.LatLng(41.7605556, -88.3200);
 
 function initialize(){
 
-  <?php
-// Create connection
-    $P = new manage_db;
-    $P->connect_db();
-//Gets the information of a residence and it's head resident 
-    $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences LEFT JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY username='$login_session' DESC";
-    $P->do_query($sqlResidences);
-    $resultResidences = mysql_query($sqlResidences);    
-    ?>
-
-        //this will be populated with the total lat and longitude for the average to be computed
-    center_lat = 0;
-    center_lon = 0;
-
-    addresses = [];
-    head_full_names = [];
-
-  //holds parsed latlng location data
-    latlng = [];
-    //holds latitude and longitude location from database
-    latitudes = [];
-    longitudes = [];
-
-    //holds created markers
-    markers = [];
-
-      var mapProp = {
+  var mapProp = {
     center:myCenter,
     zoom:10,
     mapTypeId:google.maps.MapTypeId.ROADMAP
@@ -54,53 +28,11 @@ function initialize(){
     map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
     var geocoder = new google.maps.Geocoder();
 
-    //populates residence data from database
-    <?php while ($row = mysql_fetch_assoc($resultResidences)) { ?>
-      addresses.push(<?php echo '"'. $row['address'] .'"'?>);
-      head_full_names.push(<?php echo '"'. $row['head_full_name'] .'"'?>);
-    //populates the latlng array by creating an object based on the queryd data
-    latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
-    longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
-    latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
-
-    <?php } ?>
-    //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
-    for(i in addresses) {
-        center_lat += parseFloat(latitudes[i]);
-        center_lon += parseFloat(longitudes[i]);
-        //creates a marker in the markers array
-        markers.push(new google.maps.Marker({
-          map: map, 
-          position: latlng[i],
-          title: addresses[i],
-          title: (head_full_names[i] + "\n" + addresses[i]),
-          icon: iconbase + 'house_pin.png',
-          animation: google.maps.Animation.DROP
-        }));
-
-    }
-
 //This puts a marker based on the string in submitG
 document.getElementById('submitAddress').addEventListener('click', function() {
   geocodeAddress(geocoder, map);
 });
 
-    if (addresses.length != 0) {
-      //calling the centermap function to initially center the map on the community
-      centermap();
-      //these next four lines are for the centering button
-      var centerControlDiv = document.createElement('div');
-      var centerControl = new centerbutton(centerControlDiv, map);
-      centerControlDiv.index = 1;
-      //puts the centering button on the map
-      map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
-
-      var FindMyHouseControlDiv = document.createElement('div');
-      var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);
-      FindMyHouseControlDiv.index = 1;
-        //puts the centering button on the map
-      map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
-  }
 
 }
 //----------------------END OF INITIALIZE FUNCTION
@@ -108,89 +40,7 @@ document.getElementById('submitAddress').addEventListener('click', function() {
 //Turns the map on.
 google.maps.event.addDomListener(window, 'load', initialize);
 
-//this function centers the map on the community based on average latitude and longitude
-function centermap(){
-    var final_lat_center = (center_lat/latitudes.length);
-    var final_lon_center = (center_lon/longitudes.length);
-    //sets center position
-    map.setCenter(new google.maps.LatLng(final_lat_center, final_lon_center));
-    //sets map zoom (zoom amount is up for debate)
-    map.setZoom(17);
-}
-
-//this function styles and sets up the button
-function centerbutton(controlDiv, map) {
-    // Set CSS for the control border.
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#3399FF';
-    controlUI.style.border = '2px solid #00000';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
-    controlUI.title = 'Click to recenter the map on your community';
-    controlDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior.
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(250,250,250)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Center On Your Community';
-    controlUI.appendChild(controlText);
-
-    // Setup the click event listeners: calls the centermap function
-    controlUI.addEventListener('click', function() {
-        centermap();
-    });
-}
-
-//this function styles and sets up the button
-function findmyhouse(controlDiv, map) {
-    // Set CSS for the control border.
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#3399FF';
-    controlUI.style.border = '2px solid #00000';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
-    controlUI.title = 'Click to find the house you are editing.';
-    controlDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior.
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(250,250,250)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Find Editing House';
-    controlUI.appendChild(controlText);
-
-    // Setup the click event listeners: calls the centermap function
-    controlUI.addEventListener('click', function() {
-      var houseLatitude = document.getElementById('latitude').value;
-      var houseLongitude = document.getElementById('longitude').value;
-      
-        if (houseLatitude != "" && houseLongitude != "") {
-          //sets center position
-          map.setCenter(new google.maps.LatLng(houseLatitude, houseLongitude));
-          //sets map zoom (zoom amount is up for debate)
-          map.setZoom(18);
-        }
-    });
-}
-
-
-
-var marker_new = [];
+var markers = [];
 
 function geocodeAddress(geocoder, resultsMap) {
 
@@ -204,10 +54,10 @@ function geocodeAddress(geocoder, resultsMap) {
 var marker = new google.maps.Marker({
   map: resultsMap,
   draggable: true,
-  icon: iconbase + 'house_pin02.png',
+  icon: iconbase + 'house_pin.png',
   position: results[0].geometry.location
 });
-marker_new.push(marker);
+markers.push(marker);
 
   document.getElementById("latitude").value = marker.getPosition().lat();
   document.getElementById("longitude").value = marker.getPosition().lng();
@@ -232,8 +82,8 @@ google.maps.event.addListener(marker, 'dragend', function (event) {
 
 // Sets the map on all markers in the array.
 function setMapOnAll(map) {
-  for (var i = 0; i < marker_new.length; i++) {
-    marker_new[i].setMap(map);
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
   }
 }
 
@@ -361,7 +211,7 @@ function show_confirm(){
          <tr>
           <th> </th> 
           <td>
-            <button type="button"  name="submitAddress" id="submitAddress"  value="Reverse Geocode" class="btn btn-info btn-lg" style="width: 100%;"> Drop Pin </button>
+            <button type="button"  name="submitAddress" id="submitAddress"  value="Reverse Geocode" class="btn btn-info btn-lg" style="border: 2px solid black; width: 100%;"> Drop Pin </button>
           </td>
         </tr>
         <tr>
@@ -385,7 +235,7 @@ function show_confirm(){
         <tr>
           <th> </th> 
           <td>
-            <button type="button" onclick="show_confirm()" class="btn btn-primary btn-lg" style="width: 100%;"> Add Residence </button>
+            <button type="button" onclick="show_confirm()" class="btn btn-primary btn-lg" style="border: 2px solid black; width: 100%;"> Add Residence </button>
           </td>
         </tr>
       </table>

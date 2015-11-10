@@ -5,7 +5,7 @@
 	<?php
 
   require_once( "template_class.php");       // css and headers
-  $H = new template( "My Home" );
+  $H = new template( "Edit Profile" );
   $H->show_template( );
 
   	if(($_SESSION['login_user']) == "admin"){
@@ -17,7 +17,7 @@
   $P = new manage_db;
   $P->connect_db();
 
-  $sql_head_residents = "SELECT * FROM head_residents INNER JOIN residences ON head_residents.fk_residence_id = residences.residence_id WHERE username='$login_session'";
+  $sql_head_residents = "SELECT head_resident_id, first_name, last_name, emergency_contact, phone_one, email_address FROM head_residents INNER JOIN residences ON head_residents.fk_residence_id = residences.residence_id WHERE username='$login_session'";
   $P->do_query($sql_head_residents);
   $head_residents_result = mysql_query($sql_head_residents); 
 
@@ -47,14 +47,8 @@
 	$require_password = true; // Variable that will be used later to require emergency contact for head resident
 
   	// Puts empty space in the array because this array is used to display the current information of the head resident
-	array_push($head_residents, "");
-	array_push($head_residents, "");
-	array_push($head_residents, "");
-	array_push($head_residents, "");
-	array_push($head_residents, "");
-	array_push($head_residents, "");
-	array_push($head_residents, "#19A3FF");
-	
+
+
   } else { // This section is for if there is a head resident registered to the residence
 
   	$hide_elements = "";
@@ -74,8 +68,6 @@
   		array_push($head_residents, $row['emergency_contact']); // Current head resident emergency contact
   		array_push($head_residents, $row['phone_one']); // Current head resident phone number
   		array_push($head_residents, $row['email_address']); // Current head resident email address
-  		array_push($head_residents, $row['miscinfo']); // Current misc information
-  		array_push($head_residents, $row['pin_color']); // Current pin color
   	}
 
   	$sql_residence_password = "SELECT password FROM residences WHERE username='$login_session'";
@@ -104,7 +96,6 @@
 
   ?>
 </head>
-
 <body>
 
 	<!-- Modal -->
@@ -138,47 +129,51 @@
 						<h3> Head Resident Information </h3>
 						<table class="table table-striped table-hover ">
 							<tr>
+								<th> </th>
+								<th <?php echo $hide_elements; ?>> Current Information </th>
+								<th> New Information </th>
+							</tr>
+							<tr>
 								<th> First Name </th>
-								<td> <input id="head_resident_first_name" name="head_resident_first_name" value=<?php echo "'$head_residents[1]'";?> placeholder=<?php echo "'$head_residents[1]'";?> type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
+								<td <?php echo $hide_elements; ?>> <?php echo "$head_residents[1]";?> </td> <!-- Head resident first name -->
+								<td> <input id="head_resident_first_name" name="head_resident_first_name" type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
 							</tr>
 							<tr>
 								<th> Last Name </th>
-								<td> <input id="head_resident_last_name" name="head_resident_last_name" value=<?php echo "'$head_residents[2]'";?> placeholder=<?php echo "'$head_residents[2]'";?> type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
+								<td <?php echo $hide_elements; ?>> <?php echo "$head_residents[2]";?> </td> <!-- Head resident last name -->
+								<td> <input id="head_resident_last_name" name="head_resident_last_name" type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
-								<th> Emergency Contact Number </th>
-								<td> <input pattern='\d{3}[\-]\d{3}[\-]\d{4}' title='xxx-xxx-xxxx' id="head_resident_emergency" name="head_resident_emergency" value=<?php echo "'$head_residents[3]'";?> placeholder=<?php echo "'$head_residents[3]'";?> type="tel" class="form-control input-md" <?php if ($require_emergency) echo 'required'; ?>> </td>
+								<th> Emergency Contact </th>
+								<td <?php echo $hide_elements; ?>> <?php echo "$head_residents[3]";?> </td> <!-- Head resident Emergency Contact -->
+								<td> <input id="head_resident_emergency" name="head_resident_emergency" type="text" class="form-control input-md" <?php if ($require_emergency) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
-								<th> Additional Phone Number </th>
-								<td> <input id="head_resident_phone_one" name="head_resident_phone_one" value=<?php echo "'$head_residents[4]'";?> placeholder=<?php echo "'$head_residents[4]'";?> type="tel" class="form-control input-md"> </td>
+								<th> Phone Number </th>
+								<td <?php echo $hide_elements; ?>> <?php echo "$head_residents[4]";?> </td>  <!-- Head resident phone number -->
+								<td> <input id="head_resident_phone_one" name="head_resident_phone_one" type="text" class="form-control input-md"> </td>
 							</tr>
 							<tr>
 								<th> E-mail Address </th>
-								<td> <input id="head_resident_email_address" name="head_resident_email_address" value=<?php echo "'$head_residents[5]'";?> placeholder=<?php echo "'$head_residents[5]'";?> type="email" class="form-control input-md"> </td>
+								<td <?php echo $hide_elements; ?>> <?php echo "$head_residents[5]";?> </td>  <!-- Head resident Email Address -->
+								<td> <input id="head_resident_email_address" name="head_resident_email_address" type="text" class="form-control input-md"> </td>
 							</tr>
 							<tr>
 								<th> Password </th>
+								<td <?php echo $hide_elements; ?> > <?php echo "$head_residents[6]";?> </td>  <!-- Head resident Email Address -->
 								<td> <input id="residence_password" name="residence_password" type="password" class="form-control input-md" <?php if ($require_password) echo 'required'; ?>> </td>
 							</tr>
-							<tr>
-								<th> Misc Information</th>
-								<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo "'$head_residents[6]'";?> wrap="hard" rows="5" maxlength="255"><?php echo "$head_residents[6]";?></textarea>
-							</tr>
-							<tr>
-								<th> Pin Color </th>
-								<td> <input type="color" name="pincolor" id="pincolor" value=<?php echo "'$head_residents[7]'";?> style="width:50%;">
-							</tr>
-							<tr>
-								<td></td>
-								<td> <button name="submit_head_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-primary btn-lg" style=" width: 100%;"> Update Profile </button> </td>
-							</tr>
 						</table> 
+						<div class="form-group last">
+							<div class="col-sm-offset-3 col-sm-6"> <!-- Value for the button is needed to tell the update file what the id of the user is -->
+								<button name="submit_head_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-primary btn-lg" style=" width: 100%;"> Update Profile </button>
+							</div>
+						</div>
 					</div>
 
 				</form> 
 
-				<div class="col-sm-6" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
+				<div class="col-md-6" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
 					<h3> Resident Information </h3>
 					<table class="table table-striped table-hover ">
 						<tr>
@@ -200,12 +195,12 @@
 								$first_name =  $row ['first_name'];
 								$last_name =  $row ['last_name'];
 								$phone_number =  $row ['phone_number'];
-								echo "<tr> <td> <input name='update_sub_resident_first_name:".$sub_residents_id."' type='text' value=" . $first_name . " placeholder=" . $first_name . " class='form-control input-md' > </td>";
-								echo "<td> <input name='update_sub_resident_last_name:".$sub_residents_id."' type='text' value=" . $last_name . " placeholder=" . $last_name . " class='form-control input-md' > </td> ";
-								echo "<td> <input name='update_sub_resident_phone_number:".$sub_residents_id."' type='tel'";
+								echo "<tr> <td> <input name='update_sub_resident_first_name:".$sub_residents_id."' type='text' placeholder=" . $first_name . " class='form-control input-md' > </td>";
+								echo "<td> <input name='update_sub_resident_last_name:".$sub_residents_id."' type='text' placeholder=" . $last_name . " class='form-control input-md' > </td> ";
+								echo "<td> <input name='update_sub_resident_phone_number:".$sub_residents_id."' type='text' placeholder='";
 								if (isset($phone_number))
-									echo "value='$phone_number' placeholder='$phone_number'";
-								echo "class='form-control input-md' > </td>";
+									echo $phone_number;
+								echo "'class='form-control input-md' > </td>";
 								echo "<td><button name='update_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-primary btn-sm glyphicon glyphicon-pencil' style='   width: 100%;'></button>";
 								echo "<button name='delete_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-danger btn-sm glyphicon glyphicon-remove' style='   width: 100%;'> </button> </td></tr>";
 								$counter = $counter + 1;
@@ -231,4 +226,3 @@
 
 	</body>
 	</html>
-

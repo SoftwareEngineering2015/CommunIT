@@ -7,13 +7,10 @@ class template {
 
   function show_template( ) {
     print "<html>\n<head> <title> $this->TITLE </title>
-      <link rel='icon' type='image/icon' href='images/favicon.ico'></head>";
+      <link rel='icon' type='image/x-icon' href='images/favicon.ico'></head>";
     print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
     print "<script src='js/jquery-1.11.3.js'></script>";
     print "<script src='js/bootstrap.min.js'></script>";
-    print "<script src='js/placeholders.js'></script>";
-
-
   }
 }
 
@@ -35,7 +32,7 @@ include('db_class.php');
         <span class="icon-bar"></span>
       </button>
 
-      <a class="navbar-brand" href="communitymap.php">CommunIT Map</a></img>
+      <a class="navbar-brand" href="communitymap.php">CommunIT</a></img>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >

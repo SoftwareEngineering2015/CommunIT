@@ -1,5 +1,4 @@
 <?php
-
 // Run this code if a delete sub resident button was hit
 if(isset($_POST['add_new_residence'])) {
 
@@ -17,15 +16,9 @@ if(isset($_POST['add_new_residence'])) {
 	// To protect MySQL injection for Security purpose
 	$residence_name = stripslashes($residence_name);
 	$address = stripslashes($address);
-	$latitude = stripslashes($latitude);
-	$longitude = stripslashes($longitude);
-	$password = stripslashes($password);
 
 	$residence_name = mysql_real_escape_string($residence_name);
 	$address = mysql_real_escape_string($address);
-	$latitude = mysql_real_escape_string($latitude);
-	$longitude = mysql_real_escape_string($longitude);
-	$password = mysql_real_escape_string($password);
 
 	// Check connection
 	$sql_add_new_residence = "INSERT INTO residences (address, latitude, longitude, username, password) VALUES ('$address','$latitude','$longitude', '$residence_name','$password')";

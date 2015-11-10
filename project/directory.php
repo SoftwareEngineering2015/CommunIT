@@ -28,14 +28,21 @@
 			<fieldset>
 				<div class="radio">
 					<table class='table'>
+						<tbody>
 							<tr>
 								<th><b>Choose Directory Type:</b></th>
-								<td>
-									<button type="submit" class="btn btn-primary btn-xs" name="directoryType" id="directoryTypeSimple" value="simple"><b> Simple </b></button>
-								</td>
-								<td>
-									<button type="submit" class="btn btn-primary btn-xs" name="directoryType" id="directoryTypeDetailed" value="detailed"><b> Detailed </b></button>
-								</td>
+								<td>          <label>
+									<input type="radio" name="directoryType" id="directoryTypeSimple" value="simple">
+									Simple
+								</label></td>
+								<td>          <label>
+									<input type="radio" name="directoryType" id="directoryTypeDetailed" value="detailed">
+									Detailed
+								</label></td>
+								<td> <button type="submit" class="btn btn-primary btn-xs">Submit</button></td>
+
+
+							</tbody>
 						</table>
 						<hr>
 

@@ -20,7 +20,7 @@
   $P = new manage_db;
   $P->connect_db();
 	// Check connection
-  $sql_head_residents = "SELECT head_resident_id, first_name, last_name, emergency_contact, phone_one, email_address, miscinfo FROM head_residents INNER JOIN residences ON head_residents.fk_residence_id = residences.residence_id WHERE username='$login_session'";
+  $sql_head_residents = "SELECT head_resident_id, first_name, last_name, emergency_contact, phone_one, email_address FROM head_residents INNER JOIN residences ON head_residents.fk_residence_id = residences.residence_id WHERE username='$login_session'";
   $P->do_query($sql_head_residents);
   $head_residents_result = mysql_query($sql_head_residents); 
 
@@ -38,7 +38,6 @@
   		array_push($head_residents, $row['emergency_contact']);
   		array_push($head_residents, $row['phone_one']);
   		array_push($head_residents, $row['email_address']);
-  		array_push($head_residents, $row['miscinfo']);
   	}
   }
 
@@ -77,10 +76,6 @@
 					<tr>
 						<th> Email Address </th>
 						<td> <?php echo "$head_residents[5]";?> </td>
-					</tr>
-					<tr>
-						<th> Misc Information </th>
-						<td> <?php echo "$head_residents[6]";?> </td>
 					</tr>
 				</table> 
 			</div>
