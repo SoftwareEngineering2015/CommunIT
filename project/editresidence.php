@@ -37,6 +37,10 @@ if (!isset($_GET['residence'])){
     exit();
   }
 
+  $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences LEFT JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL AND residence_id !='$residence' ORDER BY username='$login_session' DESC";
+    $P->do_query($sqlResidences);
+    $resultResidences = mysql_query($sqlResidences);
+
   ?>
 
 
@@ -59,6 +63,20 @@ var longitude = <?php if (isset($longitude)){echo $longitude ;}?>;
 
 var myCenter=new google.maps.LatLng(latitude, longitude);
 var markers = [];
+var additional_markers = [];
+
+    addresses = [];
+    head_full_names = [];
+
+    //this will be populated with the total lat and longitude for the average to be computed
+    center_lat = 0;
+    center_lon = 0;
+
+  //holds parsed latlng location data
+    latlng = [];
+    //holds latitude and longitude location from database
+    latitudes = [];
+    longitudes = [];
 
 function initialize(){
 
@@ -76,10 +94,38 @@ function initialize(){
   var marker = new google.maps.Marker({
     map: map,
     draggable: true,
-    icon: iconbase + 'house_pin.png',
+    title: (<?php echo "'$username'" ?>),
+    icon: iconbase + 'house_pin02.png',
     position: myCenter
   }); 
   markers.push(marker);
+
+
+    //populates residence data from database
+    <?php while ($row = mysql_fetch_assoc($resultResidences)) { ?>
+      addresses.push(<?php echo '"'. $row['address'] .'"'?>);
+      head_full_names.push(<?php echo '"'. $row['head_full_name'] .'"'?>);
+    //populates the latlng array by creating an object based on the queryd data
+    latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
+    longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
+    latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
+
+    <?php } ?>
+    //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
+    for(i in addresses) {
+        center_lat += parseFloat(latitudes[i]);
+        center_lon += parseFloat(longitudes[i]);
+        //creates a marker in the markers array
+        additional_markers.push(new google.maps.Marker({
+          map: map, 
+          position: latlng[i],
+          title: addresses[i],
+          title: (head_full_names[i] + "\n" + addresses[i]),
+          icon: iconbase + 'house_pin.png',
+          animation: google.maps.Animation.DROP
+        }));
+
+    }
     
     var geocoder = new google.maps.Geocoder();
 
@@ -92,11 +138,101 @@ google.maps.event.addListener(marker, 'dragend', function (event) {
   document.getElementById("longitude").value = this.getPosition().lng();
 });
 
+      //these next four lines are for the centering button
+      var centerControlDiv = document.createElement('div');
+      var centerControl = new centerbutton(centerControlDiv, map);
+      centerControlDiv.index = 1;
+      //puts the centering button on the map
+      map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+    var FindMyHouseControlDiv = document.createElement('div');
+    var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);
+    FindMyHouseControlDiv.index = 1;
+        //puts the centering button on the map
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
+
 }
 //----------------------END OF INITIALIZE FUNCTION
 
 //Turns the map on.
 google.maps.event.addDomListener(window, 'load', initialize);
+
+//this function centers the map on the community based on average latitude and longitude
+function centermap(){
+    var final_lat_center = (center_lat/latitudes.length);
+    var final_lon_center = (center_lon/longitudes.length);
+    //sets center position
+    map.setCenter(new google.maps.LatLng(final_lat_center, final_lon_center));
+    //sets map zoom (zoom amount is up for debate)
+    map.setZoom(17);
+}
+
+//this function styles and sets up the button
+function centerbutton(controlDiv, map) {
+    // Set CSS for the control border.
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#3399FF';
+    controlUI.style.border = '2px solid #00000';
+    controlUI.style.borderRadius = '3px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginBottom = '22px';
+    controlUI.style.textAlign = 'right';
+    controlUI.title = 'Click to recenter the map on your community';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    var controlText = document.createElement('div');
+    controlText.style.color = 'rgb(250,250,250)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '16px';
+    controlText.style.lineHeight = '38px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = 'Center on Your Community';
+    controlUI.appendChild(controlText);
+
+    // Setup the click event listeners: calls the centermap function
+    controlUI.addEventListener('click', function() {
+        centermap();
+    });
+}
+//this function styles and sets up the button
+function findmyhouse(controlDiv, map) {
+    // Set CSS for the control border.
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#3399FF';
+    controlUI.style.border = '2px solid #00000';
+    controlUI.style.borderRadius = '3px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginBottom = '22px';
+    controlUI.style.textAlign = 'right';
+    controlUI.title = 'Click to find the house you are editing.';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    var controlText = document.createElement('div');
+    controlText.style.color = 'rgb(250,250,250)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '16px';
+    controlText.style.lineHeight = '38px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = 'Find Editing House';
+    controlUI.appendChild(controlText);
+
+    // Setup the click event listeners: calls the centermap function
+    controlUI.addEventListener('click', function() {
+      var houseLatitude = document.getElementById('latitude').value;
+      var houseLongitude = document.getElementById('longitude').value;
+      
+        //sets center position
+        map.setCenter(new google.maps.LatLng(houseLatitude, houseLongitude));
+        //sets map zoom (zoom amount is up for debate)
+        map.setZoom(18);
+    });
+}
 
 function geocodeAddress(geocoder, resultsMap) {
 
@@ -200,12 +336,12 @@ function show_confirm(residence_id){
       <tr>
         <th> Latitude &nbsp &nbsp  &nbsp  &nbsp  &nbsp  &nbsp</th>
         <!-- Head resident first name -->
-        <td> <input id="latitude" name="latitude" type="text" placeholder=<?php echo "'". $latitude . "'"?> class="form-control input-md" readonly> </td>
+        <td> <input id="latitude" name="latitude" type="text" value=<?php echo "'". $latitude . "'"?> class="form-control input-md" readonly> </td>
       </tr>
       <tr>
         <th> Longitude </th>
         <!-- Head resident Emergency Contact -->
-        <td> <input id="longitude" name="longitude" type="text" placeholder=<?php echo "'". $longitude . "'"?> class="form-control input-md" readonly> </td>
+        <td> <input id="longitude" name="longitude" type="text" value=<?php echo "'". $longitude . "'"?> class="form-control input-md" readonly> </td>
       </tr>
       <tr>
         <th> </th> 
