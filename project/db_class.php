@@ -12,9 +12,6 @@ class manage_db {
          or die ("Cannot connect to $server using $user Errst=" .  mysql_error());
 
   }
-  function connection_db(){
-    $connection = $this->DBH;
-  }
 
   function do_query( $input ) {
        $query = $input;

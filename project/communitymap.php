@@ -41,17 +41,29 @@
     var map;
     var panorama;
     var iconbase = 'images/';
+    var myCenter = new google.maps.LatLng(41.7605556, -88.3200);
 
 function initialize(){
 
   var mapProp = {
     zoom:10,
+    center: myCenter,
     mapTypeId:google.maps.MapTypeId.ROADMAP
   };
     //this creates our map
     map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
     var geocoder = new google.maps.Geocoder();
-
+/*
+map.set('styles', [
+  {
+    featureType: 'markers',
+    elementType: 'geometry',
+    stylers: [
+      { color: '#000000' },
+      { weight: 1.6 }
+    ]
+  ]);
+*/
     <?php
 // Create connection
     $P = new manage_db;
@@ -148,7 +160,10 @@ function initialize(){
     latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
     phone_one.push(<?php echo '"'. $row['phone_one'] .'"'?>);
     email_address.push(<?php echo '"'. $row['email_address'] .'"'?>);
-    miscinfo.push(<?php echo '"'. $row['miscinfo'] .'"'?>);
+
+    <?php $miscString = "<div>" . preg_replace( "/\r|\n/", "</div><div>", $row['miscinfo'] ) . "</div>"; ?>
+    miscinfo.push(<?php echo '"'. $miscString .'"'?>);
+
     pincolor.push(<?php echo '"'. $row['pin_color'] .'"'?>);
 
     <?php } ?>
@@ -162,7 +177,7 @@ function initialize(){
           position: latlng[i],
           title: (head_full_names[i] + "\n" + addresses[i]),
          // hue: '#19A3FF',
-          icon: iconbase + 'house_pin.png',
+          icon: iconbase + 'house_pin02.png',
           animation: google.maps.Animation.DROP
 
         }));
@@ -175,6 +190,8 @@ function initialize(){
     infowindow = new google.maps.InfoWindow({
         content: '<div style="font-size: 120%"> DEFAULT... JS ERROR</div>'
         });
+
+    if(addresses.length != 0){
     //calling the centermap function to initially center the map on the community
     centermap();
     //these next four lines are for the centering button
@@ -192,12 +209,12 @@ function initialize(){
       echo "var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);";
       echo "FindMyHouseControlDiv.index = 1;";
       //puts the centering button on the map
-      echo "map.controls[google.maps.ControlPosition.TOP_RIGHT].push(FindMyHouseControlDiv);";
+      echo "map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);";
     }
 
   ?>
     
-
+  }
 }
 //----------------------END OF INITIALIZE FUNCTION
       
@@ -234,7 +251,7 @@ function populatetable(x){
 //these call various ids in the information pane and add html to them
 
     document.getElementById("head_resident_panel").innerHTML = "<b>"+head_full_names[x]+"</b>";
-  document.getElementById("address_panel").innerHTML = addresses[x];
+    document.getElementById("address_panel").innerHTML = addresses[x];
     document.getElementById("em_phone_panel").innerHTML = "<td>Emergency Contact:</td><td style='text-align:center;'>" + emergencies[x] + "</td>";
     if(phone_one[x]==""){
         document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Phone Number:</td><td style='text-align: center; color:#B8B8B8;'>Unavailable</td>";
@@ -249,7 +266,7 @@ function populatetable(x){
         if(miscinfo[x]==""){
         document.getElementById("misc_panel").innerHTML = "";
     }else{
-        document.getElementById("misc_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='text-align: center;'>" +miscinfo[x]+  "</td>";
+        document.getElementById("misc_panel").innerHTML = "<tr><th style='font-weight: bold; text-align:center; font-size: 125%;'>Misc</th></tr><tr><td'>" +miscinfo[x]+  "</td></tr>";
     }
 
     //---------------------THIS SECOND HALF OF THE FUNCTION ADDS THE BOTTOM HALF OF THE SIDE PANEL-------------------------
@@ -272,7 +289,7 @@ function populatetable(x){
           subphone = sub_phone_numbers[i];
           subemail = sub_emails[i];
           if(sub_phone_numbers[i]==""){
-            subphone = "Unavailable"
+            subphone = "UnavailableB8B8B8"
           }
           if(sub_emails[i]==""){
             subemail = "Unavailable"
@@ -371,8 +388,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
    <div> &nbsp </div>
 
    <div class="col-sm-12" style="background-color: #EEEEEE; font-size: 100%;">
-    <b><span class="col-sm-12" Style="text-align: center; font-size: 20px;" id="head_resident_panel"></span></b>
-  <span class="col-sm-12" Style="text-align: center; font-size: 15px; font-weight: bold;" id="address_panel"></span>
+    <b><div class="col-sm-12" Style="text-align: center; font-size: 20px;" id="head_resident_panel"></div></b>
+  <div class="col-sm-12" Style="text-align: center; font-size: 15px; font-weight: bold;" id="address_panel"></div>
   </br>
 </br>
 <table class="table table-striped table-hover">
@@ -382,8 +399,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </tr>
   <tr id='email_panel'>
   </tr>
-  <tr id='misc_panel'>
-  </tr>
+
+  <table id='misc_panel'class="table table-striped table-hover" style="text-align: center;">
+  
+  </table>
+  
   <table id='sub_residents' class="table table-striped table-hover" style="text-align: center;">
   </table>
 </table> 
