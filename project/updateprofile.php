@@ -21,7 +21,7 @@ if(isset($_POST['submit_head_resident'])) {
 		}
 
 		// Check if the additional phone number is set
-		if(isset($_POST['head_resident_phone_one'])) {
+		if(trim($_POST['head_resident_phone_one']) != "") {
 			// Check if the emergency phone number is in the correct format
 			if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
   				$phone_one=$_POST['head_resident_phone_one'];
@@ -32,16 +32,21 @@ if(isset($_POST['submit_head_resident'])) {
 			}
 		} 
 		else {
-			$phone_number = ""; // Set the variable to nothing to make sure the MySQL statement runs
+			$phone_one = ""; // Set the variable to nothing to make sure the MySQL statement runs
 		}
 
 		// Filter the email address to be in the correct format
-		if (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    		$email_address=$_POST['head_resident_email_address'];
+		if (trim($_POST['head_resident_email_address']) != "") {
+			if (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
+    			$email_address=$_POST['head_resident_email_address'];
+			}
+			else { // Return the user to edit profile if the email address is not correct
+				header("location: editprofile.php");
+				exit; // Just in case, exit the file so the rest of the code will never run
+			}
 		}
-		else { // Return the user to edit profile if the email address is not correct
-			header("location: editprofile.php");
-			exit; // Just in case, exit the file so the rest of the code will never run
+		else {
+			$email_address = ""; // Set the variable to nothing to make sure the MySQL statement runs
 		}
 
 		$password =$_POST['residence_password'];
@@ -225,7 +230,7 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 		}
 
 		// Check if the additional phone number is set
-		if(isset($_POST['head_resident_phone_one'])) {
+		if(trim($_POST['head_resident_phone_one']) != "") {
 			// Check if the emergency phone number is in the correct format
 			if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
   				$phone_one=$_POST['head_resident_phone_one'];
@@ -236,16 +241,21 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 			}
 		} 
 		else {
-			$phone_number = ""; // Set the variable to nothing to make sure the MySQL statement runs
+			$phone_one = ""; // Set the variable to nothing to make sure the MySQL statement runs
 		}
 
 		// Filter the email address to be in the correct format
-		if (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    		$email_address=$_POST['head_resident_email_address'];
+		if (trim($_POST['head_resident_email_address']) != "") {
+			if (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
+    			$email_address=$_POST['head_resident_email_address'];
+			}
+			else { // Return the user to edit profile if the email address is not correct
+				header("location: editresident.php?residence=$fk_residence_id");
+				exit; // Just in case, exit the file so the rest of the code will never run
+			}
 		}
-		else { // Return the user to edit profile if the email address is not correct
-			header("location: editresident.php?residence=$fk_residence_id");
-			exit; // Just in case, exit the file so the rest of the code will never run
+		else {
+			$email_address = ""; // Set the variable to nothing to make sure the MySQL statement runs
 		}
 
 		$password =$_POST['residence_password'];

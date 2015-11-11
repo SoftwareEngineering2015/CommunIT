@@ -63,15 +63,15 @@
 
 					// Delete button for each head resident row; Value for the button holds the id of the sub resident and the id of the head resident, separated by the colon ( neeeded for the delete query)
 					if(isset($row['head_resident_id'])) {
-						echo "<td><a href='editresidence.php?residence=". $row["residence_id"] ."'><button type='button' class='btn btn-info btn-sm' style='  width: 100%;'> <b> Edit Residence </b> </button></a> </td>";
+						echo "<td><a href='editresidence.php?residence=". $row["residence_id"] ."' class='btn btn-info btn-sm' style='  width: 100%;'><b> Edit Residence </b></a> </td>";
 						echo "<td><button onclick='show_delete(". $row['residence_id'] .")' type='button' class='btn btn-danger btn-sm' style='  width: 100%;'> <b> Delete Residence </b> </button> </td>";
-						echo "<td><a href='editresident.php?resident=". $row["head_resident_id"] ."'><button type='button' class='btn btn-warning btn-sm' style='  width: 100%;'> <b> Edit Residents </b> </button></a> </td>";
+						echo "<td><a href='editresident.php?resident=". $row["head_resident_id"] ."' class='btn btn-warning btn-sm' style='  width: 100%;'><b> Edit Residents </b></a> </td>";
 						echo "<td><button onclick='show_clear(". $row['head_resident_id'] .")' type='button' class='btn btn-success btn-sm' style='  width: 100%;'> <b> Clear Head Resident</b> </button> </td></tr>";
 
 					} else {
-						echo "<td><a href='editresidence.php?residence=". $row["residence_id"] ."'><button type='button' class='btn btn-info btn-sm' style='  width: 100%;'> <b> Edit Residence </b> </button></a> </td>";
+						echo "<td><a href='editresidence.php?residence=". $row["residence_id"] ."'  class='btn btn-info btn-sm' style='  width: 100%;'><b> Edit Residence </b></a> </td>";
 						echo "<td><button onclick='show_delete(". $row['residence_id'] .")' type='button' class='btn btn-danger btn-sm' style='  width: 100%;'> <b> Delete Residence </b> </button> </td>";
-						echo "<td><a href='editresident.php?residence=". $row["residence_id"] ."'><button type='button' class='btn btn-warning btn-sm' style='  width: 100%;'> <b> Add Head Resident </b> </button></a> </td><td></td></tr>";
+						echo "<td><a href='editresident.php?residence=". $row["residence_id"] ."'  class='btn btn-warning btn-sm' style='  width: 100%;'><b> Add Head Resident </b> </button></a> </td><td></td></tr>";
 						
 					}
 				}
