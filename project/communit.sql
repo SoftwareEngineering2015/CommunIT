@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `head_residents` (
   `phone_one` varchar(255) DEFAULT NULL,
   `email_address` varchar(255) DEFAULT NULL,
   `miscinfo` text,
-  `pin_color` varchar(7) DEFAULT '#19A3FF',
+  `pin_color` varchar(7) DEFAULT '#96F0F0',
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
