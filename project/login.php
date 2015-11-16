@@ -26,7 +26,7 @@ if (isset($_POST['submit'])) {
 	else
 	{
 // Define $username and $password
-		$username=$_POST['username'];
+		$username=strtolower($_POST['username']);
 		$password=$_POST['password'];
 // Establishing Connection with Server by passing server_name, user_id and password as a parameter
 //$connection = mysql_connect("localhost", "root", "");

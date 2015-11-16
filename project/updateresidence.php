@@ -29,7 +29,32 @@ if(isset($_POST['add_new_residence'])) {
 
 	// Check connection
 	$sql_add_new_residence = "INSERT INTO residences (address, latitude, longitude, username, password) VALUES ('$address','$latitude','$longitude', '$residence_name','$password')";
-	$P->do_query($sql_add_new_residence);
+	//$result = mysql_query($sql_add_new_residence);
+	$result = $P->do_query($sql_add_new_residence);
+	
+	if($result){
+		
+		//header('addresidence.php?error="cows"');
+	}else{
+		//header('location: addresidence.php?errormessage='.$residence_name.' Already Exists');
+		echo
+		'<body onload="document.errormessage.submit()">
+		<form action="addresidence.php" method="POST" name="errormessage">
+		<input name="errormessage" type="hidden" value=""></input>
+		</form></body>';
+		exit();
+		exit();
+	}
+
+/*
+echo
+		'<body onload="document.errormessage.submit()">
+		<form action="addresidence.php" method="POST" name="errormessage">
+		<input name="errormessage" type="hidden" value=""></input>
+		</form></body>';
+		exit();
+*/
+	
 
 	header("location: admin.php");
 		exit; // Just in case, exit the file so the rest of the code will never run

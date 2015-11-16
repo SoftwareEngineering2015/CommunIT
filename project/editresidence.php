@@ -8,6 +8,8 @@ if (!isset($_GET['residence'])){
   $residence = $_GET['residence'];
 
   require_once( "template_class.php");       // css and headers
+  $H = new template( "Administration" );
+  $H->show_template( );
 
   if(($_SESSION['login_user']) != "admin"){
     header("location: home.php");
@@ -37,7 +39,7 @@ if (!isset($_GET['residence'])){
     exit();
   }
 
-  $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences LEFT JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL AND residence_id !='$residence' ORDER BY username='$login_session' DESC";
+  $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, username, address, latitude, longitude, emergency_contact, phone_one, email_address, pin_color FROM residences LEFT JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL AND residence_id !='$residence' ORDER BY username DESC";
     $P->do_query($sqlResidences);
     $resultResidences = mysql_query($sqlResidences);
 
@@ -51,8 +53,16 @@ if (!isset($_GET['residence'])){
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCTUwndh9ZED3trNlGZqcCEjkAb5-bpoUw"></script>
     <!-- Load in classes and Libraries -->
 
+  <!-- Add the dropdown files and color pins file-->
+  <link rel="stylesheet" type="text/css" href="css/dropdown.css" />
+  <script type="text/javascript" src="js/dropdown.js"></script>
+  <script type="text/javascript" src="js/colorpins.js"></script>
+
   <!-- Load In Google Maps -->
   <script>
+  //Begin the process of changing the image color
+  pincolor = []; //Make pin colors global
+
   var map;
   var panorama;
   var iconbase = 'images/';
@@ -67,6 +77,8 @@ var additional_markers = [];
 
     addresses = [];
     head_full_names = [];
+    residence_name = [];
+    head_resident_ids = [];
 
     //this will be populated with the total lat and longitude for the average to be computed
     center_lat = 0;
@@ -77,6 +89,11 @@ var additional_markers = [];
     //holds latitude and longitude location from database
     latitudes = [];
     longitudes = [];
+
+    //Holds values for the dropdown menu
+    divOptions = [];
+    optionsDiv = [];
+    options = [];
 
 function initialize(){
 
@@ -96,7 +113,8 @@ function initialize(){
     draggable: true,
     title: (<?php echo "'$username'" ?>),
     icon: iconbase + 'house_pin02.png',
-    position: myCenter
+    position: myCenter,
+    animation: google.maps.Animation.DROP
   }); 
   markers.push(marker);
 
@@ -105,28 +123,85 @@ function initialize(){
     <?php while ($row = mysql_fetch_assoc($resultResidences)) { ?>
       addresses.push(<?php echo '"'. $row['address'] .'"'?>);
       head_full_names.push(<?php echo '"'. $row['head_full_name'] .'"'?>);
+      head_resident_ids.push(<?php echo '"'. $row['head_resident_id'] .'"'?>);
+      residence_name.push(<?php echo '"'. $row['username'] .'"'?>);
     //populates the latlng array by creating an object based on the queryd data
     latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
     longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
     latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
+    pincolor.push(<?php echo '"'. $row['pin_color'] .'"'?>);
 
     <?php } ?>
     //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
     for(i in addresses) {
         center_lat += parseFloat(latitudes[i]);
         center_lon += parseFloat(longitudes[i]);
+
+        //Change the color of each image through this function
+        if (pincolor[i] == "") {
+          pincolor[i] = '#19ACFF';
+        }
+        overalayColor(pincolor[i]);
+
         //creates a marker in the markers array
         additional_markers.push(new google.maps.Marker({
           map: map, 
           position: latlng[i],
           title: addresses[i],
           title: (head_full_names[i] + "\n" + addresses[i]),
-          icon: iconbase + 'house_pin.png',
+          icon: fullimg,
           animation: google.maps.Animation.DROP
         }));
 
+        //start process to set up custom drop down
+        //create the options that respond to click
+        if (head_resident_ids[i] == "") {
+          divOptions.push({
+              gmap: map,
+              name: residence_name[i],
+              title: residence_name[i],
+              id: head_resident_ids[i],
+              latlng: latlng[i],
+              identifier: i
+          });
+        } else {
+          divOptions.push({
+              gmap: map,
+              name: head_full_names[i],
+              title: "Residence of " + head_full_names[i],
+              id: head_resident_ids[i],
+              latlng: latlng[i],
+              identifier: i
+          });
+        }
+        optionsDiv.push(new optionDiv(divOptions[i]));
+
+        options.push(optionsDiv[i]);
+
     }
     
+    options = options.reverse(); //Sort the array
+
+    //put them all together to create the drop down       
+        var ddDivOptions = {
+          items: options,
+          id: "myddOptsDiv"          
+        }
+
+        //alert(ddDivOptions.items[1]);
+        var dropDownDiv = new dropDownOptionsDiv(ddDivOptions);               
+                
+        var dropDownOptions = {
+            gmap: map,
+            name: 'Find A Residence',
+            id: 'ddControl',
+            title: 'Find A Residence',
+            position: google.maps.ControlPosition.TOP_CENTER,
+            dropDown: dropDownDiv 
+        }
+        
+        var dropDown1 = new dropDownControl(dropDownOptions);
+
     var geocoder = new google.maps.Geocoder();
 
 //This puts a marker based on the string in submitG
@@ -162,7 +237,7 @@ function centermap(){
     var final_lat_center = (center_lat/latitudes.length);
     var final_lon_center = (center_lon/longitudes.length);
     //sets center position
-    map.setCenter(new google.maps.LatLng(final_lat_center, final_lon_center));
+    map.panTo(new google.maps.LatLng(final_lat_center, final_lon_center));
     //sets map zoom (zoom amount is up for debate)
     map.setZoom(17);
 }
@@ -228,7 +303,7 @@ function findmyhouse(controlDiv, map) {
       var houseLongitude = document.getElementById('longitude').value;
       
         //sets center position
-        map.setCenter(new google.maps.LatLng(houseLatitude, houseLongitude));
+        map.panTo(new google.maps.LatLng(houseLatitude, houseLongitude));
         //sets map zoom (zoom amount is up for debate)
         map.setZoom(18);
     });
@@ -240,7 +315,7 @@ function geocodeAddress(geocoder, resultsMap) {
   var address = document.getElementById('address').value;
   geocoder.geocode({'address': address}, function(results, status) {
     if (status === google.maps.GeocoderStatus.OK) {
-      resultsMap.setCenter(results[0].geometry.location);
+      resultsMap.panTo(results[0].geometry.location);
       resultsMap.setZoom(18);
 //Sets a Marker at the locations in the Geocoder search
 var marker = new google.maps.Marker({
@@ -257,7 +332,7 @@ markers.push(marker);
 // Zoom to 15 when clicking on marker and opens the infow window if its closed
 google.maps.event.addListener(marker,'click',function() {
   map.setZoom(18);
-  map.setCenter(marker.getPosition());
+  map.panTo(marker.getPosition());
 });
 
 } else {
@@ -298,20 +373,13 @@ function show_confirm(residence_id){
 
     </head>
 
-    <?php
-
-    $H = new template( "Administration" );
-    $H->show_template( );
-
-  ?>
-
   <body>
 
    <!-- Form for the update of head resident -->
    <form action="updateresidence.php" method="POST">
     <div class="container-fluid">
      <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-5">
        <h3> Residence Information </h3>
        <table class="table table-striped table-hover ">
         <tr>
@@ -352,7 +420,7 @@ function show_confirm(residence_id){
     </table>
   </div>
   <!--Google Map Div-->
-  <div class="col-xs-12 col-sm-12 col-md-6  col-md-offset-6" id="googleMap" style="position: absolute; height:100%;" ></div>
+  <div class="col-xs-12 col-sm-12 col-md-7  col-md-offset-5" id="googleMap" style="position: absolute; height:100%;" ></div>
   <!-- Modal -->
   <div class="modal fade" id="confirm_modal" role="dialog">
     <div class="modal-dialog">

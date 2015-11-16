@@ -136,17 +136,18 @@
 				<div class="row">
 					<div class="col-md-6">
 						<h3> Head Resident Information </h3>
+                        <?php if ($require_emergency) echo '<span style="color:red;">*</span><span style="font-size:90%;color:#B8B8B8"> REQUIRED</span>'; ?>
 						<table class="table table-striped table-hover ">
 							<tr>
-								<th> First Name </th>
+                                <th> First Name <?php if ($require_first_name) echo '<span style="color:red">*</span>'; ?></th>
 								<td> <input id="head_resident_first_name" name="head_resident_first_name" value=<?php echo "'$head_residents[1]'";?> placeholder=<?php echo "'$head_residents[1]'";?> type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
 							</tr>
 							<tr>
-								<th> Last Name </th>
+								<th> Last Name <?php if ($require_last_name) echo '<span style="color:red">*</span>'; ?></th>
 								<td> <input id="head_resident_last_name" name="head_resident_last_name" value=<?php echo "'$head_residents[2]'";?> placeholder=<?php echo "'$head_residents[2]'";?> type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
-								<th> Emergency Contact Number </th>
+								<th> Emergency Contact Number <?php if ($require_emergency) echo '<span style="color:red">*</span>'; ?></th>
 								<td> <input pattern='\d{3}[\-]\d{3}[\-]\d{4}' title='xxx-xxx-xxxx' id="head_resident_emergency" name="head_resident_emergency" value=<?php echo "'$head_residents[3]'";?> placeholder=<?php echo "'$head_residents[3]'";?> type="tel" class="form-control input-md" <?php if ($require_emergency) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
@@ -158,8 +159,8 @@
 								<td> <input id="head_resident_email_address" name="head_resident_email_address" value=<?php echo "'$head_residents[5]'";?> placeholder=<?php echo "'$head_residents[5]'";?> type="email" class="form-control input-md"> </td>
 							</tr>
 							<tr>
-								<th> Password </th>
-								<td> <input id="residence_password" name="residence_password" type="password" class="form-control input-md" <?php if ($require_password) echo 'required'; ?>> </td>
+								<th> Password <?php if ($require_password) echo '<span style="color:red">*</span>'; ?></th>
+								<td> <input id="residence_password" name="residence_password" type="password" class="form-control input-md" minlength="8" maxlength="25" <?php if ($require_password) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
 								<th> Misc Information</th>
@@ -178,7 +179,7 @@
 
 				</form> 
 
-				<div class="col-sm-6" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
+				<div class="col-md-6" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
 					<h3> Resident Information </h3>
 					<table class="table table-striped table-hover ">
 						<tr>

@@ -28,20 +28,26 @@
   ?>
 
   <style>
-
-    body, html {
+  body, html {
       height: 100%;
       width: 100%;
     }
-
   </style>
+  <!-- Add the dropdown files -->
+  <link rel="stylesheet" type="text/css" href="css/dropdown.css" />
+  <script type="text/javascript" src="js/dropdown.js"></script>
+  <script type="text/javascript" src="js/colorpins.js"></script>
+  
 
   <!-- Load In Google Maps -->
   <script>
-    var map;
-    var panorama;
-    var iconbase = 'images/';
-    var myCenter = new google.maps.LatLng(41.7605556, -88.3200);
+//Begin the process of changing the image color
+pincolor = []; //Make pin colors global
+
+var map;
+var panorama;
+var iconbase = 'images/';
+var myCenter = new google.maps.LatLng(41.7605556, -88.3200);
 
 function initialize(){
 
@@ -49,31 +55,23 @@ function initialize(){
     zoom:10,
     center: myCenter,
     mapTypeId:google.maps.MapTypeId.ROADMAP
+    
+
   };
     //this creates our map
     map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
     var geocoder = new google.maps.Geocoder();
-/*
-map.set('styles', [
-  {
-    featureType: 'markers',
-    elementType: 'geometry',
-    stylers: [
-      { color: '#000000' },
-      { weight: 1.6 }
-    ]
-  ]);
-*/
-    <?php
+
+ <?php
 // Create connection
-    $P = new manage_db;
-    $P->connect_db();
+ $P = new manage_db;
+ $P->connect_db();
 //Gets the information of a residence and it's head resident 
-    $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address, miscinfo, pin_color FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY username='$login_session' DESC";
-    $P->do_query($sqlResidences);
-    $resultResidences = mysql_query($sqlResidences);    
-    ?>
-    
+ $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address, miscinfo, pin_color FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY username='$login_session' DESC";
+ $P->do_query($sqlResidences);
+ $resultResidences = mysql_query($sqlResidences);    
+ ?>
+
     //Gets the information of the sub residents
     <?php
     $sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number, email_address, fk_head_id FROM sub_residents";
@@ -111,6 +109,8 @@ map.set('styles', [
     
     //holds infowindow information
     infowindows = [];
+    //used in the infowindow status logic
+    infowindow_status = [];
     
     
     //holds parsed latlng location data
@@ -118,7 +118,7 @@ map.set('styles', [
     //holds latitude and longitude location from database
     latitudes = [];
     longitudes = []; 
-    pincolor = []; 
+
     head_resident_ids = [];
     head_full_names = [];
     miscinfo = [];
@@ -130,6 +130,11 @@ map.set('styles', [
     sub_emails = [];
     //this array holds the key of the head resident at the same index as sub-residents 
     sub_head_tie = [];
+
+    //Holds values for the dropdown menu
+    divOptions = [];
+    optionsDiv = [];
+    options = [];
     
     //populates configuration data from database
     <?php while ($row3 = mysql_fetch_assoc($resultConfig)) { ?>
@@ -167,66 +172,135 @@ map.set('styles', [
     pincolor.push(<?php echo '"'. $row['pin_color'] .'"'?>);
 
     <?php } ?>
+
     //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
     for(i in addresses) {
-        center_lat += parseFloat(latitudes[i]);
-        center_lon += parseFloat(longitudes[i]);
+      infowindow_status[i] = 0;
+      center_lat += parseFloat(latitudes[i]);
+      center_lon += parseFloat(longitudes[i]);
+
+        //Change the color of each image through this function
+        overalayColor(pincolor[i]);
         //creates a marker in the markers array
         markers.push(new google.maps.Marker({
           map: map, 
           position: latlng[i],
           title: (head_full_names[i] + "\n" + addresses[i]),
          // hue: '#19A3FF',
-          icon: iconbase + 'house_pin02.png',
-          animation: google.maps.Animation.DROP
+         //Place changed image as the icon
+         icon: fullimg,
+         animation: google.maps.Animation.DROP
 
-        }));
+       }));
         infowindows.push('<div style="font-size: 120%"><span style="font-size: 100%; font-weight: bold;">' + head_full_names[i] +  '<br/></span><span style="font-size: 100%; font-weight: bold;">' + addresses[i] + '</span><br/><span style="font-size: 100%; font-weight: bold; color:  #FF6666;">' +emergencies[i]+'</span></div>');
 
         //invoke the addlistener function
         addlistener(i);
-    }
-    //Creates the ONLY infowindow with the default information
-    infowindow = new google.maps.InfoWindow({
-        content: '<div style="font-size: 120%"> DEFAULT... JS ERROR</div>'
+
+        //start process to set up custom drop down
+        //create the options that respond to click
+        divOptions.push({
+          gmap: map,
+          name: head_full_names[i],
+          title: "Residence of " + head_full_names[i],
+          id: head_resident_ids[i],
+          latlng: latlng[i],
+          identifier: i
         });
 
-    if(addresses.length != 0){
-    //calling the centermap function to initially center the map on the community
-    centermap();
-    //these next four lines are for the centering button
-    var centerControlDiv = document.createElement('div');
-    var centerControl = new centerbutton(centerControlDiv, map);
-    centerControlDiv.index = 1;
-    //puts the centering button on the map
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+        optionsDiv.push(new optionDiv(divOptions[i]));
+
+        options.push(optionsDiv[i]);
+        
+      }
+
+    options = options.reverse(); //Sort the array
 
     <?php 
+    if($login_session != 'admin' && $login_session != 'guest') {
+      echo "options.pop()"; // Remove the user from the list
+    }
+    ?>
 
-    if ($login_session != 'admin' && $login_session != 'guest') {
-      //these next four lines are for the find my house button
-      echo "var FindMyHouseControlDiv = document.createElement('div');";
-      echo "var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);";
-      echo "FindMyHouseControlDiv.index = 1;";
-      //puts the centering button on the map
-      echo "map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);";
+    //put them all together to create the drop down       
+    var ddDivOptions = {
+      items: options,
+      id: "myddOptsDiv"          
     }
 
-  ?>
-    
+        //alert(ddDivOptions.items[1]);
+        var dropDownDiv = new dropDownOptionsDiv(ddDivOptions);               
+
+        var dropDownOptions = {
+          gmap: map,
+          name: 'Find A Residence',
+          id: 'ddControl',
+          title: 'Find A Residence',
+          position: google.maps.ControlPosition.TOP_CENTER,
+          dropDown: dropDownDiv 
+        }
+        
+        var dropDown1 = new dropDownControl(dropDownOptions);
+    //End the process for the dropdown menu
+
+    //Creates the ONLY infowindow with the default information
+    infowindow = new google.maps.InfoWindow({
+      content: '<div style="font-size: 120%"> DEFAULT... JS ERROR</div>'
+    });
+
+    if(addresses.length != 0){
+      //calling the centermap function to initially center the map on the community
+      centermap();
+      //these next four lines are for the centering button
+      var centerControlDiv = document.createElement('div');
+      var centerControl = new centerbutton(centerControlDiv, map);
+      centerControlDiv.index = 1;
+      //puts the centering button on the map
+      map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+
+      <?php 
+
+      if ($login_session != 'admin' && $login_session != 'guest') {
+        //these next four lines are for the find my house button
+        echo "var FindMyHouseControlDiv = document.createElement('div');";
+        echo "var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);";
+        echo "FindMyHouseControlDiv.index = 1;";
+        //puts the centering button on the map
+        echo "map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);";
+      }
+
+      ?>
+
+    }
+    //this is a click listener that closes the infowindow when the map is clicked. Dragging the map does NOT close the infowindow. 
+    google.maps.event.addListener(map, 'click',function(){
+        //this loop resets all infowindow counters to zero
+        for(i in addresses)
+            infowindow_status[i] = 0;
+        //closes the infowindow, if open
+        infowindow.close();
+    });
+
   }
-}
 //----------------------END OF INITIALIZE FUNCTION
-      
+
 //---------------------------------------------JS FUNCTIONS BELOW THIS LINE-----------------------------------------------
-    
+
 //This function accepts an index from the iterated for loop. This function then creates a click listener based on the objects in the arrays at the passed index
 function addlistener(x){ google.maps.event.addListener(markers[x], 'click',function(){
-    infowindow.setContent(infowindows[x]);
-    infowindow.open(map,markers[x]); 
-    populatetable(x);
-    map.setCenter(latlng[x]);
-    panorama = new google.maps.StreetViewPanorama(
+    //this loop sets all markers that are not markers[x] to 0 (not clicked)
+    for(i in addresses){
+        if(i!=x)
+            infowindow_status[i] = 0;
+    }
+    //invoked if the infowindow is currently NOT open on markers[x]
+    if(infowindow_status[x]==0){
+        //populate the side panel with information
+        populatetable(x);
+        //pan the map to the lat/lng of markers[x]
+        map.panTo(latlng[x]);
+        //configure panorama
+        panorama = new google.maps.StreetViewPanorama(
         document.getElementById('street-view'),
         {
           position: latlng[x],
@@ -235,72 +309,103 @@ function addlistener(x){ google.maps.event.addListener(markers[x], 'click',funct
           linksControl: false,
           addressControl: false
         });
+        //sets the content of the infowindow
+        infowindow.setContent(infowindows[x]);
+        //opens the infowindow on markers[x]
+        infowindow.open(map,markers[x]);
+        //sets the infowindow status to open on markers[x]
+        infowindow_status[x] = 1;
+    }
+    //invoked if the infowindow IS currently open on markers[x]
+    else if(infowindow_status[x]==1){
+        //closes the marker
+        infowindow.close();
+        //sets the status to closed
+        infowindow_status[x] = 0;
+    }
+    
 });}
+
 //this function centers the map on the community based on average latitude and longitude
 function centermap(){
-    var final_lat_center = (center_lat/latitudes.length);
-    var final_lon_center = (center_lon/longitudes.length);
+  var final_lat_center = (center_lat/latitudes.length);
+  var final_lon_center = (center_lon/longitudes.length);
     //sets center position
     map.setCenter(new google.maps.LatLng(final_lat_center, final_lon_center));
     //sets map zoom (zoom amount is up for debate)
     map.setZoom(17);
-}
+  }
     //this function is called in the marker event listener, and it populates the information pane table with the correct information
-function populatetable(x){
+    function populatetable(x){
 //----------------------------FIRST HALF OF FUNCTION ADDS TOP HALF OF THE SIDE PANEL-----------------------------------
 //these call various ids in the information pane and add html to them
 
-    document.getElementById("head_resident_panel").innerHTML = "<b>"+head_full_names[x]+"</b>";
-    document.getElementById("address_panel").innerHTML = addresses[x];
-    document.getElementById("em_phone_panel").innerHTML = "<td>Emergency Contact:</td><td style='text-align:center;'>" + emergencies[x] + "</td>";
-    if(phone_one[x]==""){
-        document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Phone Number:</td><td style='text-align: center; color:#B8B8B8;'>Unavailable</td>";
-    }else{
-        document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Phone Number:</td><td style='text-align: center;'>" + phone_one[x] + "</td>";
-    }
-    if(email_address[x]==""){
-        document.getElementById("email_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='color:#B8B8B8;text-align: center;'>Unavailable</td>";
-    }else{
-        document.getElementById("email_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='text-align: center;'>" + "<a href='mailto:" + email_address[x] + "'>" + email_address[x] + "</a></td>";
-    }
-        if(miscinfo[x]==""){
-        document.getElementById("misc_panel").innerHTML = "";
-    }else{
-        document.getElementById("misc_panel").innerHTML = "<tr><th style='font-weight: bold; text-align:center; font-size: 125%;'>Misc</th></tr><tr><td'>" +miscinfo[x]+  "</td></tr>";
-    }
+document.getElementById("head_resident_panel").innerHTML = "<b>"+head_full_names[x]+"</b>";
+document.getElementById("address_panel").innerHTML = addresses[x];
+document.getElementById("em_phone_panel").innerHTML = "<td>Emergency Contact:</td><td style='text-align:center;'>" + emergencies[x] + "</td>";
+
+if(phone_one[x]==""){
+  document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Phone Number:</td><td style='text-align: center; color:#B8B8B8;'>Unavailable</td>";
+}else{
+  document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Phone Number:</td><td style='text-align: center;'>" + phone_one[x] + "</td>";
+}
+if(email_address[x]==""){
+  document.getElementById("email_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='color:#B8B8B8;text-align: center;'>Unavailable</td>";
+}else{
+  document.getElementById("email_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='text-align: center;'>" + "<a href='mailto:" + email_address[x] + "'>" + email_address[x] + "</a></td>";
+}
+if(miscinfo[x]=="<div></div>"){
+  document.getElementById("misc_panel").innerHTML = "";
+}else{
+  document.getElementById("misc_panel").innerHTML = "<tr><th style='font-weight: bold;  text-align: center; text-align:Center; font-size: 110%;'>Misc</th></tr> <tr><td style='text-indent: 25%;'>" +miscinfo[x]+  "</td></tr>";
+}
 
     //---------------------THIS SECOND HALF OF THE FUNCTION ADDS THE BOTTOM HALF OF THE SIDE PANEL-------------------------
     //variable setup for the loop
     var i = 0; var residentsSidePanelText = "";
     //This IF block adds the Head Resident to the residents table
-    if(phone_one[x]==""){
-        residentsSidePanelText = "<td>" + head_full_names[x] + "</td><td style='color:#B8B8B8;'>Unavailable</td>";
-    }else{
-        residentsSidePanelText = "<td>" + head_full_names[x] + "</td><td>" + phone_one[x] + "</td><td>" + email_address[x] + "</td>";
+    var headname;
+    var headphone;
+    var heademail;
+    headname = "<td>" + head_full_names[x] + "</td>";
+    headphone = "<td>" + phone_one[x] + "</td>";
+    heademail = "<td>" + email_address[x] + "</td>";
+
+    if(head_full_names[x]==""){
+      headname = "<td style='color:#B8B8B8;'>Unavailable</td>";
     }
+    if(phone_one[x]==""){
+      headphone = "<td style='color:#B8B8B8;'>Unavailable</td>";
+    }
+    if(email_address[x]==""){
+      heademail = "<td style='color:#B8B8B8;'>Unavailable</td>";
+    }
+
+      residentsSidePanelText = "<tr>" + headname + headphone + heademail + "</tr>";
+    
     //this loop iterates through all sub-residents and puts the correct sub-residents in a table with the id of sub_residents
     //this loop is dependent on the fact that we will not allow any head residents to ever have more than the max sub residents, otherwise this loop will potentially not function properly
-          var subname;
-          var subphone;
-          var subemail;
+    var subname;
+    var subphone;
+    var subemail;
     while(i<=(sub_head_tie.length)){
-        if(sub_head_tie[i] == head_resident_ids[x]){
-          subname = sub_full_names[i];
-          subphone = sub_phone_numbers[i];
-          subemail = sub_emails[i];
-          if(sub_phone_numbers[i]==""){
-            subphone = "UnavailableB8B8B8"
-          }
-          if(sub_emails[i]==""){
-            subemail = "Unavailable"
-          }
-                residentsSidePanelText+= "<tr><td>"+subname+"</td><td>"+subphone+"</td><td>"+subemail+"</td></tr>";
+      if(sub_head_tie[i] == head_resident_ids[x]){
+        subname = "<td>" + sub_full_names[i] + "</td>";
+        subphone = "<td>" + sub_phone_numbers[i] + "</td>";
+        subemail = "<td>" + sub_emails[i] + "</td>";
+        if(sub_phone_numbers[i]==""){
+          subphone = "<td style='color:#B8B8B8;'>Unavailable</td>"
         }
-        i++;
+        if(sub_emails[i]==""){
+          subemail = "<td style='color:#B8B8B8;'>Unavailable</td>"
+        }
+        residentsSidePanelText+= "<tr>"+subname+subphone+subemail+"</tr>";
+      }
+      i++;
     }
     //populates the sub_residents table with the looped information
     document.getElementById("sub_residents").innerHTML = "<tr><th style='font-size: 125%;text-align: center;'>Residents </th><th style='font-size: 125%;text-align: center;'>Phone</th><th style='font-size: 125%;text-align: center;'>E-mail</th></tr>"+residentsSidePanelText;
-}
+  }
 //-----------------------------------------END OF POPULATETABLE FUNCTION------------------------------------------
 //this function styles and sets up the button
 function centerbutton(controlDiv, map) {
@@ -329,9 +434,9 @@ function centerbutton(controlDiv, map) {
 
     // Setup the click event listeners: calls the centermap function
     controlUI.addEventListener('click', function() {
-        centermap();
+      centermap();
     });
-}
+  }
 //this function styles and sets up the button
 function findmyhouse(controlDiv, map) {
     // Set CSS for the control border.
@@ -364,8 +469,8 @@ function findmyhouse(controlDiv, map) {
         map.setCenter(latlng[0]);
         //sets map zoom (zoom amount is up for debate)
         map.setZoom(17);
-    });
-}
+      });
+  }
 //Turns the map on.
 google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -389,7 +494,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
    <div class="col-sm-12" style="background-color: #EEEEEE; font-size: 100%;">
     <b><div class="col-sm-12" Style="text-align: center; font-size: 20px;" id="head_resident_panel"></div></b>
-  <div class="col-sm-12" Style="text-align: center; font-size: 15px; font-weight: bold;" id="address_panel"></div>
+    <div class="col-sm-12" Style="text-align: center; font-size: 15px; font-weight: bold;" id="address_panel"></div>
   </br>
 </br>
 <table class="table table-striped table-hover">
@@ -400,7 +505,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
   <tr id='email_panel'>
   </tr>
 
-  <table id='misc_panel'class="table table-striped table-hover" style="text-align: center;">
+  <table id='misc_panel'class="table table-striped table-hover">
   
   </table>
   

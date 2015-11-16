@@ -107,7 +107,7 @@
 	// function : generate_password()
 	function generate_password(password_field){
     	// generate a password and fill the field with the value
-    	var rndm_password = makepassword(6,[]);
+    	var rndm_password = makepassword(8,[]);
     	document.getElementById(password_field).value = rndm_password;
 	}
 	// function : generate_password()
@@ -137,9 +137,9 @@
 							<td> <input id="community_name" name="community_name" type="text" class="form-control input-md"></td>
 						</tr>
 						<tr>
-							<th> Max Residents Per Residence </th>
+							<th> Max Sub Residents Per Residence </th>
 							<td> <?php echo "$configuration[1]";?> </td> <!-- Head resident last name -->
-							<td> <input id="max_per_residence" name="max_per_residence" type="text" class="form-control input-md">  </td>
+							<td> <input id="max_per_residence" name="max_per_residence" type="number" min="0" class="form-control input-md">  </td>
 						</tr>
 					</table> 
 					<div class="form-group last">
@@ -205,7 +205,7 @@
 							</tr>
 							<tr>
 								<td id ="old_admin_password"></td>
-								<td> <input id="new_admin_password" name="new_admin_password" type="text" class="form-control input-md" required> </td>
+								<td> <input id="new_admin_password" name="new_admin_password" type="text" class="form-control input-md" minlength='8' maxlength='25' required> </td>
 							</tr>
 						</table></div>
 						<div class="modal-footer">
@@ -240,7 +240,7 @@
 									</tr>
 									<tr>
 										<td id="old_guest_password"></td>
-										<td> <input id="new_guest_password" name="new_guest_password" type="text" class="form-control input-md" required> </td>
+										<td> <input id="new_guest_password" name="new_guest_password" type="text" class="form-control input-md" minlength='8' maxlength='25' required> </td>
 									</tr>
 								</table></div>
 								<div class="modal-footer">

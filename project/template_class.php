@@ -7,7 +7,7 @@ class template {
 
   function show_template( ) {
     print "<html>\n<head> <title> $this->TITLE </title>
-      <link rel='icon' type='image/icon' href='images/favicon.ico'></head>";
+    <link rel='icon' type='image/icon' href='images/favicon.ico'></head>";
     print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
     print "<script src='js/jquery-1.11.3.js'></script>";
     print "<script src='js/bootstrap.min.js'></script>";
@@ -21,12 +21,24 @@ class template {
 <?php
 include('session.php');
 include('db_class.php');
+$error = '';
 ?>
-<!--Conatins the Site's Header Nav Bar-->
 
+<!-- Style the house icon to the left -->
+<style type="text/css">
+.navbar-brand
+{
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+
+<!--Conatins the Site's Header Nav Bar-->
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
+      <!-- image is needed so the community map icons change colors -->
+      <!--<img src="images/house_pin.png" alt="" class="navbar-brand" data="images/house_pin.png"></img>-->
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
@@ -77,7 +89,7 @@ include('db_class.php');
       </div>
     </div>
   </nav>
-   <div id="nav-bar-spacing" style="height: 75px">&nbsp</div>
+   <div id="nav-bar-spacing" style="height: 55px">&nbsp</div>
   <!--
   <div>
   &nbsp

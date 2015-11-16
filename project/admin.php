@@ -183,7 +183,7 @@ function makepassword(total, chars){
 // function : generate_password()
 function generate_password(password_field){
     // generate a password and fill the field with the value
-    var rndm_password = makepassword(6,[]);
+    var rndm_password = makepassword(8,[]);
     document.getElementById(password_field).value = rndm_password;
 }
 // function : generate_password()
@@ -244,76 +244,6 @@ function clear_password_field(password_field){
 		</div>
 	</form>
 
-	<form action="updateprofile.php" method="POST">
-	<!-- Modal -->
-	<div class="modal fade" id="edit_admin_password" role="dialog">
-		<div class="modal-dialog">
-
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"></button>
-					<h4 class="modal-title" style="text-align: center; font-size: 200%;"><b>Change Admin Password</b></h4>
-				</div>
-				<div class="modal-body">
-					<b><p  style="font-size: 120%;">
-						<span style="color: red"> Generate a new password or add your own. </span>
-						<table class="table table-striped table-nonfluid">
-							<tr>
-								<th> Old Password </th>
-								<th> New Password </th>
-							</tr>
-							<tr>
-								<td id ="old_admin_password"></td>
-								<td> <input id="new_admin_password" name="new_admin_password" type="text" class="form-control input-md" required> </td>
-							</tr>
-						</table></div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-info btn-md" onclick="generate_password('new_admin_password')">Generate Password</button>	
-							<button type="submit" class="btn btn-success btn-md" name="change_admin_password" id="change_admin_password" value="">Change Password</button>
-							<button type="button" class="btn btn-danger btn-md" onclick="clear_password_field('new_admin_password')" data-dismiss="modal">Close</button>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</form>
-
-		<form action="updateprofile.php" method="POST">
-			<!-- Modal -->
-			<div class="modal fade" id="edit_guest_password" role="dialog">
-				<div class="modal-dialog">
-
-					<!-- Modal content-->
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal"></button>
-							<h4 class="modal-title" style="text-align: center; font-size: 200%;"><b>Change Guest Password</b></h4>
-						</div>
-						<div class="modal-body">
-							<b><p  style="font-size: 120%;">
-								<span style="color: red"> Generate a new password or add your own. </span>
-								<table class="table table-striped table-nonfluid">
-									<tr>
-										<th> Old Password </th>
-										<th> New Password </th>
-									</tr>
-									<tr>
-										<td id="old_guest_password"></td>
-										<td> <input id="new_guest_password" name="new_guest_password" type="text" class="form-control input-md" required> </td>
-									</tr>
-								</table></div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-info btn-md" onclick="generate_password('new_guest_password')">Generate Password</button>
-									<button type="submit" class="btn btn-success btn-md" name="change_guest_password" id="change_guest_password" value="">Change Password</button>
-									<button type="button" class="btn btn-danger btn-md" onclick="clear_password_field('new_guest_password')" data-dismiss="modal">Close</button>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</form>
-
 			<form action="updateprofile.php" method="POST">
 			<!-- Modal -->
 			<div class="modal fade" id="edit_residence_password" role="dialog">
@@ -335,7 +265,7 @@ function clear_password_field(password_field){
 									</tr>
 									<tr>
 										<td id="old_residence_password"></td>
-										<td> <input id='new_residence_password' name="new_residence_password" type="text" class="form-control input-md" required> </td>
+										<td> <input id='new_residence_password' name="new_residence_password" type="text" class="form-control input-md" minlength='8' maxlength='25' required> </td>
 									</tr>
 								</table></div>
 								<div class="modal-footer">

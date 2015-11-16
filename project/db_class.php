@@ -15,8 +15,8 @@ class manage_db {
 
   function do_query( $input ) {
        $query = $input;
-       $this->results = mysqli_query( $this->DBH, $query ) 
-          or die ("Database query failed SQLcmd=$query Error_str=" .  mysqli_error());
+         $this->results = mysqli_query( $this->DBH, $query );
+          //or die ("Database query failed SQLcmd=$query Error_str=" .  mysqli_error() );
   } 
 
   function check_rows( $input ) {
@@ -24,6 +24,12 @@ class manage_db {
        $rows = mysqli_query( $this->DBH, $query ) 
           or die ("Database query failed SQLcmd=$query Error_str=" .  mysqli_error());
         $this->results = mysql_num_rows($rows)
+        or die ("Database query failed SQLcmd=$query Error_str=" .  mysqli_error());
+  } 
+
+  function affected_rows() {
+      // $query = $input;
+        $this->results = mysqli_affected_rows($this->DBH)
         or die ("Database query failed SQLcmd=$query Error_str=" .  mysqli_error());
   } 
 

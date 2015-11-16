@@ -1,15 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <?php
+  require_once( "template_class.php");       // css and headers
+  $H = new template( "Administration" );
+  $H->show_template( );
+  
+    if(isset($_POST['errormessage'])){
+    $error = $_POST['errormessage']; 
+  }else{
+    $error='';
+  }
+
+    if(($_SESSION['login_user']) != "admin"){
+     header("location: index.php");
+     exit();
+   }
+
+// Create connection
+    $P = new manage_db;
+    $P->connect_db();
+//Gets the information of a residence and it's head resident 
+    $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, username, address, latitude, longitude, emergency_contact, phone_one, email_address, pin_color FROM residences LEFT JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY username DESC";
+    $P->do_query($sqlResidences);
+    $resultResidences = mysql_query($sqlResidences);    
+
+  ?>
   <!-- Google API KEY for accessing a broader spectrum of Google APIs-->
   <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCTUwndh9ZED3trNlGZqcCEjkAb5-bpoUw"></script>
   <!-- Load in classes and Libraries -->
-  <?php
-  require_once( "template_class.php");       // css and headers
-  ?>
+
+  <!-- Add the dropdown files and color pins file-->
+  <link rel="stylesheet" type="text/css" href="css/dropdown.css" />
+    <style>
+
+    body, html {
+      height: 100%;
+      width: 100%;
+    }
+
+  </style>
+  <script type="text/javascript" src="js/dropdown.js"></script>
+  <script type="text/javascript" src="js/colorpins.js"></script>
 
   <!-- Load In Google Maps -->
   <script>
+//Hold the pin color of each marker
+pincolor = []; //Make pin colors global
+
   var map;
   var panorama;
   var iconbase = 'images/';
@@ -17,24 +55,14 @@
 //Should change to Community Location (if set)
 var myCenter=new google.maps.LatLng(41.7605556, -88.3200);
 
-function initialize(){
-
-  <?php
-// Create connection
-    $P = new manage_db;
-    $P->connect_db();
-//Gets the information of a residence and it's head resident 
-    $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences LEFT JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY username='$login_session' DESC";
-    $P->do_query($sqlResidences);
-    $resultResidences = mysql_query($sqlResidences);    
-    ?>
-
         //this will be populated with the total lat and longitude for the average to be computed
     center_lat = 0;
     center_lon = 0;
 
     addresses = [];
+    residence_name = [];
     head_full_names = [];
+    head_resident_ids = [];
 
   //holds parsed latlng location data
     latlng = [];
@@ -45,47 +73,115 @@ function initialize(){
     //holds created markers
     markers = [];
 
-      var mapProp = {
+     //Holds values for the dropdown menu
+    divOptions = [];
+    optionsDiv = [];
+    options = [];
+
+function initialize(){
+
+  var mapProp = {
     center:myCenter,
     zoom:10,
     mapTypeId:google.maps.MapTypeId.ROADMAP
   };
     //this creates our map
     map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-    var geocoder = new google.maps.Geocoder();
+
+    geocoder = new google.maps.Geocoder();
+
+    //This puts a marker based on the string in submitG
+    document.getElementById('submitAddress').addEventListener('click', function() {
+      geocodeAddress(geocoder, map);
+    });
 
     //populates residence data from database
     <?php while ($row = mysql_fetch_assoc($resultResidences)) { ?>
       addresses.push(<?php echo '"'. $row['address'] .'"'?>);
+      residence_name.push(<?php echo '"'. $row['username'] .'"'?>);
       head_full_names.push(<?php echo '"'. $row['head_full_name'] .'"'?>);
+      head_resident_ids.push(<?php echo '"'. $row['head_resident_id'] .'"'?>);
+
     //populates the latlng array by creating an object based on the queryd data
     latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
     longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
     latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
+    pincolor.push(<?php echo '"'. $row['pin_color'] .'"'?>);
 
     <?php } ?>
     //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
     for(i in addresses) {
         center_lat += parseFloat(latitudes[i]);
         center_lon += parseFloat(longitudes[i]);
+
+        //Change the color of each image through this function
+        if (pincolor[i] == "") {
+          pincolor[i] = '#19ACFF';
+        }
+        overalayColor(pincolor[i]);
+
         //creates a marker in the markers array
         markers.push(new google.maps.Marker({
           map: map, 
           position: latlng[i],
           title: addresses[i],
           title: (head_full_names[i] + "\n" + addresses[i]),
-          icon: iconbase + 'house_pin.png',
+          icon: fullimg,
           animation: google.maps.Animation.DROP
         }));
 
+        //start process to set up custom drop down
+        //create the options that respond to click
+        if (head_resident_ids[i] == "") {
+          divOptions.push({
+              gmap: map,
+              name: residence_name[i],
+              title: residence_name[i],
+              id: head_resident_ids[i],
+              latlng: latlng[i],
+              identifier: i
+          });
+        } else {
+          divOptions.push({
+              gmap: map,
+              name: head_full_names[i],
+              title: "Residence of " + head_full_names[i],
+              id: head_resident_ids[i],
+              latlng: latlng[i],
+              identifier: i
+          });
+        }
+
+        optionsDiv.push(new optionDiv(divOptions[i]));
+
+        options.push(optionsDiv[i]);
+
     }
 
-//This puts a marker based on the string in submitG
-document.getElementById('submitAddress').addEventListener('click', function() {
-  geocodeAddress(geocoder, map);
-});
-
     if (addresses.length != 0) {
+
+          options = options.reverse(); //Sort the array
+
+      //put them all together to create the drop down       
+      var ddDivOptions = {
+        items: options,
+        id: "myddOptsDiv"          
+      }
+
+        //alert(ddDivOptions.items[1]);
+        var dropDownDiv = new dropDownOptionsDiv(ddDivOptions);               
+
+        var dropDownOptions = {
+          gmap: map,
+          name: 'Find A Residence',
+          id: 'ddControl',
+          title: 'Find A Residence',
+          position: google.maps.ControlPosition.TOP_CENTER,
+          dropDown: dropDownDiv 
+        }
+        
+      var dropDown1 = new dropDownControl(dropDownOptions);
+
       //calling the centermap function to initially center the map on the community
       centermap();
       //these next four lines are for the centering button
@@ -99,8 +195,8 @@ document.getElementById('submitAddress').addEventListener('click', function() {
       var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);
       FindMyHouseControlDiv.index = 1;
         //puts the centering button on the map
-      map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
-  }
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
+    }
 
 }
 //----------------------END OF INITIALIZE FUNCTION
@@ -113,7 +209,7 @@ function centermap(){
     var final_lat_center = (center_lat/latitudes.length);
     var final_lon_center = (center_lon/longitudes.length);
     //sets center position
-    map.setCenter(new google.maps.LatLng(final_lat_center, final_lon_center));
+    map.panTo(new google.maps.LatLng(final_lat_center, final_lon_center));
     //sets map zoom (zoom amount is up for debate)
     map.setZoom(17);
 }
@@ -181,7 +277,7 @@ function findmyhouse(controlDiv, map) {
       
         if (houseLatitude != "" && houseLongitude != "") {
           //sets center position
-          map.setCenter(new google.maps.LatLng(houseLatitude, houseLongitude));
+          map.panTo(new google.maps.LatLng(houseLatitude, houseLongitude));
           //sets map zoom (zoom amount is up for debate)
           map.setZoom(18);
         }
@@ -198,7 +294,7 @@ function geocodeAddress(geocoder, resultsMap) {
   var address = document.getElementById('address').value;
   geocoder.geocode({'address': address}, function(results, status) {
     if (status === google.maps.GeocoderStatus.OK) {
-      resultsMap.setCenter(results[0].geometry.location);
+      resultsMap.panTo(results[0].geometry.location);
       resultsMap.setZoom(18);
 //Sets a Marker at the locations in the Geocoder search
 var marker = new google.maps.Marker({
@@ -216,7 +312,7 @@ marker_new.push(marker);
 // Zoom to 15 when clicking on marker and opens the infow window if its closed
 google.maps.event.addListener(marker,'click',function() {
   map.setZoom(18);
-  map.setCenter(marker.getPosition());
+  map.panTo(marker.getPosition());
 });
 
 } else {
@@ -241,70 +337,8 @@ function setMapOnAll(map) {
 function clearMarkers() {
   setMapOnAll(null);
 }
-//pass total # of characters, and []
-function makepassword(total, chars){
-    if(total!=0){
-        //this switch statement selects a random character to be insteted into the character array
-        var added = 'A';
-        switch(1 + parseInt((Math.random() * ((46 - 1) + 1)))){
-        case 1: added = 'a';break;
-        case 2: added = 'b';break;
-        case 3: added = 'c';break;
-        case 4: added = 'd';break;
-        case 5: added = 'e';break;
-        case 6: added = 'f';break;
-        case 7: added = 'g';break;
-        case 8: added = 'h';break;
-        case 9: added = 'i';break;
-        case 10: added = 'j';break;
-        case 11: added = 'k';break;
-        case 12: added = 'l';break;
-        case 13: added = 'm';break;
-        case 14: added = 'n';break;
-        case 15: added = 'o';break;
-        case 16: added = 'p';break;
-        case 17: added = 'q';break;
-        case 18: added = 'r';break;
-        case 19: added = 's';break;
-        case 20: added = 't';break;
-        case 21: added = 'u';break;
-        case 22: added = 'v';break;
-        case 23: added = 'w';break;
-        case 24: added = 'x';break;
-        case 25: added = 'y';break;
-        case 26: added = 'z';break;
-        case 27: added = '1';break;
-        case 28: added = '2';break;
-        case 29: added = '3';break;
-        case 30: added = '4';break;
-        case 31: added = '5';break;
-        case 32: added = '6';break;
-        case 33: added = '7';break;
-        case 34: added = '8';break;
-        case 35: added = '9';break;
-        case 36: added = '0';break;
-        case 37: added = '1';break;
-        case 38: added = '2';break;
-        case 39: added = '3';break;
-        case 40: added = '4';break;
-        case 41: added = '5';break;
-        case 42: added = '6';break;
-        case 43: added = '7';break;
-        case 44: added = '8';break;
-        case 45: added = '9';break;
-        case 46: added = '0';break;
-        }
-        chars.push(added);
-        makepassword((total-1), chars);
-    }
-    //the function escapes to here once total equals 0
-	//.replace(literal comma, global replacement, empty space)
-    return chars.toString().replace(/,/g,'');
-}
+
 function show_confirm(){
-  //var rndm_password = makepassword(6,[]);
-    var rndm_password = "password";
-  document.getElementById("password").value = rndm_password;
   var latitude = document.getElementById("latitude").value;
   var longitude = document.getElementById("longitude").value;
   if( latitude == "" || longitude =="" ){
@@ -317,7 +351,6 @@ function show_confirm(){
           document.getElementById("submit_address").innerHTML = document.getElementById("address").value;
           document.getElementById("submit_latitude").innerHTML = document.getElementById("latitude").value;
           document.getElementById("submit_longitude").innerHTML = document.getElementById("longitude").value;
-          document.getElementById("submit_password").innerHTML = rndm_password;
         }
       }
 
@@ -326,26 +359,14 @@ function show_confirm(){
 
     </head>
 
-    <?php
-
-    $H = new template( "Administration" );
-    $H->show_template( );
-
-
-    if(($_SESSION['login_user']) != "admin"){
-     header("location: home.php");
-     exit();
-   }
-
-   ?>
-
    <body>
 
      <!-- Form for the update of head resident -->
      <form action="updateresidence.php" method="POST">
       <div class="container-fluid">
        <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
+
          <h3> Residence Information </h3>
          <table class="table table-striped table-hover ">
           <tr>
@@ -363,11 +384,6 @@ function show_confirm(){
           <td>
             <button type="button"  name="submitAddress" id="submitAddress"  value="Reverse Geocode" class="btn btn-info btn-lg" style="width: 100%;"> Drop Pin </button>
           </td>
-        </tr>
-        <tr>
-            <td></td>
-           <!--Password -->
-           <td> <input id= "password" name="password" type="text" class="form-control input-md" style="visibility: hidden;"></td>
         </tr>
       </table> <br/>
       <h3> Location </h3>
@@ -391,7 +407,7 @@ function show_confirm(){
       </table>
     </div>
     <!--Google Map Div-->
-    <div class="col-xs-12 col-sm-12 col-md-6  col-md-offset-6" id="googleMap" style="position: absolute; height:100%;" ></div>
+    <div class="col-xs-12 col-sm-12 col-md-7  col-md-offset-5" id="googleMap" style="position: absolute; height:100%;" ></div>
     <!-- Modal -->
     <div class="modal fade" id="confirm_modal" role="dialog">
       <div class="modal-dialog">
@@ -411,14 +427,12 @@ function show_confirm(){
                   <th> Address </th>
                   <th> Latitude </th>
                   <th> Longitude </th>
-                  <th> Temporary Password </th>
                 </tr>
                 <tr>
                   <td id="submit_residence_name"> </td>
                   <td id="submit_address"> </td>
                   <td id="submit_latitude"> </td>
                   <td id="submit_longitude"> </td>
-                  <td id="submit_password"></td>
                 </tr>
               </table>
               <div class="modal-footer">
