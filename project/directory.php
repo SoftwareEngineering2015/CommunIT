@@ -21,9 +21,20 @@
   ?>
 
 </head>
+<style>
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
+
+</style>
+
 <body>
 
-<div class="container-fluid-right " style="width:100%; height:95%; ">
+<div class="container-fluid-right no-print " style="width:100%; height:95%; ">
 		<form class="form-horizontal col-xs-6 col-xs-offset-3">
 			<fieldset>
 				<div class="radio">
@@ -61,6 +72,13 @@
 
 			if($directoryType == 'detailed'){
 				while ($row = mysql_fetch_assoc($resultResidences)) { 
+					if($row['phone_one'] == ''){
+						$row['phone_one'] = 'unavailable';
+					}
+					if($row['email_address'] == ''){
+						$row['email_address'] = 'unavailable';
+					}
+
 					print("
 						<div class='col-xs-8'>
 							<table class='table table-hover'>
@@ -91,22 +109,31 @@
 									<tr>
 										<th>Resident</th>
 										<th>Phone</th>
+										<th>E-Mail</th>
 									</tr>
 									<tr>
 										<td>".$row['head_full_name']."</td>
 										<td>".$row['phone_one']."</td>
+										<td>".$row['email_address']."</td>
 									</tr>
 									");
 
-					$sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number FROM sub_residents WHERE fk_head_id = ".$row['head_resident_id']."";
+					$sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number, email_address FROM sub_residents WHERE fk_head_id = ".$row['head_resident_id']."";
 					$P->do_query($sqlResidents);
 					$resultResidents = mysql_query($sqlResidents);  
    // $row2 = mysql_fetch_assoc($resultResidents);
 					while ($row2 = mysql_fetch_assoc($resultResidents)) {
+						if($row2['phone_number'] == ''){
+							$row2['phone_number'] = 'unavailable';
+						}
+						if($row2['email_address'] == ''){
+							$row2['email_address'] = 'unavailable';
+						}
 						print("
 							<tr>
 								<td>".$row2['sub_full_name']."</td>
 								<td>".$row2['phone_number']."</td>
+								<td>".$row2['email_address']."</td>
 							</tr>
 							");
 
@@ -120,6 +147,7 @@
 
 				}
 			}elseif($directoryType == 'simple'){
+
 
 				print("
 					<div class='col-xs-12'>
@@ -136,6 +164,14 @@
 									");
 
 				while ($row = mysql_fetch_assoc($resultResidences)) { 
+					
+				if($row['phone_one'] == ''){
+						$row['phone_one'] = 'unavailable';
+					}
+					if($row['email_address'] == ''){
+						$row['email_address'] = 'unavailable';
+					}
+
 					print("
 
 						<tr>

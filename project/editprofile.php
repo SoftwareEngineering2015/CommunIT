@@ -97,7 +97,7 @@
   	}
 
   	// Query that gets the data for the sub resident table
-  	$sql_sub_residents = "SELECT sub_residents.sub_residents_id AS sub_residents_id, sub_residents.first_name AS first_name, sub_residents.last_name AS last_name, sub_residents.phone_number AS phone_number FROM sub_residents INNER JOIN head_residents ON sub_residents.fk_head_id = head_residents.head_resident_id WHERE fk_head_id='$head_residents[0]'";
+  	$sql_sub_residents = "SELECT sub_residents.sub_residents_id AS sub_residents_id, sub_residents.first_name AS first_name, sub_residents.last_name AS last_name, sub_residents.phone_number AS phone_number, sub_residents.email_address AS email_address FROM sub_residents INNER JOIN head_residents ON sub_residents.fk_head_id = head_residents.head_resident_id WHERE fk_head_id='$head_residents[0]'";
   	$P->do_query($sql_sub_residents);
   	$sub_residents_result = mysql_query($sql_sub_residents);
   }
@@ -134,7 +134,7 @@
 		<form action="updateprofile.php" method="POST">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-5">
 						<h3> Head Resident Information </h3>
                         <?php if ($require_emergency) echo '<span style="color:red;">*</span><span style="font-size:90%;color:#B8B8B8"> REQUIRED</span>'; ?>
 						<table class="table table-striped table-hover ">
@@ -179,13 +179,14 @@
 
 				</form> 
 
-				<div class="col-md-6" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
+				<div class="col-md-7" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
 					<h3> Resident Information </h3>
 					<table class="table table-striped table-hover ">
 						<tr>
 							<th> First Name </th>
 							<th> Last Name </th>
 							<th> Phone Number </th>
+							<th> E-mail Address </th>
 							<th> Update / Delete </th>
 						</tr>
 						<!-- Form for the sub resident information -->
@@ -201,11 +202,16 @@
 								$first_name =  $row ['first_name'];
 								$last_name =  $row ['last_name'];
 								$phone_number =  $row ['phone_number'];
+								$email_address =  $row ['email_address'];
 								echo "<tr> <td> <input name='update_sub_resident_first_name:".$sub_residents_id."' type='text' value=" . $first_name . " placeholder=" . $first_name . " class='form-control input-md' > </td>";
 								echo "<td> <input name='update_sub_resident_last_name:".$sub_residents_id."' type='text' value=" . $last_name . " placeholder=" . $last_name . " class='form-control input-md' > </td> ";
 								echo "<td> <input name='update_sub_resident_phone_number:".$sub_residents_id."' type='tel'";
 								if (isset($phone_number))
 									echo "value='$phone_number' placeholder='$phone_number'";
+								echo "class='form-control input-md' > </td>";
+								echo "<td> <input name='update_sub_resident_email_address:".$sub_residents_id."' type='email'";
+								if (isset($email_address))
+									echo "value='$email_address' placeholder='$email_address'";
 								echo "class='form-control input-md' > </td>";
 								echo "<td><button name='update_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-primary btn-sm glyphicon glyphicon-pencil' style='   width: 100%;'></button>";
 								echo "<button name='delete_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-danger btn-sm glyphicon glyphicon-remove' style='   width: 100%;'> </button> </td></tr>";
@@ -221,7 +227,8 @@
 							<tr id='add_new_sub_resident' <?php echo $hide_add_new_sub_resident; ?>>
 								<td> <input id="sub_resident_first_name" name="sub_resident_first_name" type="text" class="form-control input-md" required> </td>
 								<td> <input id="sub_resident_last_name" name="sub_resident_last_name" type="text" class="form-control input-md" required> </td>
-								<td> <input id="sub_resident_phone_number" name="sub_resident_phone_number" type="text" class="form-control input-md" > </td>
+								<td> <input id="sub_resident_phone_number" name="sub_resident_phone_number" type="tel" class="form-control input-md" > </td>
+								<td> <input id="sub_resident_email_address" name="sub_resident_email_address" type="email" class="form-control input-md" > </td>
 								<td> <button name="submit_sub_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-success btn-lg" style="   width: 100%;"> Add Resident </button> </td>
 							</tr>
 						</table> 

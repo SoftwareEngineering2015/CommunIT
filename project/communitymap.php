@@ -46,6 +46,7 @@ pincolor = []; //Make pin colors global
 
 var map;
 var panorama;
+var streetview = new google.maps.StreetViewService();
 var iconbase = 'images/';
 var myCenter = new google.maps.LatLng(41.7605556, -88.3200);
 
@@ -299,16 +300,25 @@ function addlistener(x){ google.maps.event.addListener(markers[x], 'click',funct
         populatetable(x);
         //pan the map to the lat/lng of markers[x]
         map.panTo(latlng[x]);
-        //configure panorama
-        panorama = new google.maps.StreetViewPanorama(
-        document.getElementById('street-view'),
-        {
-          position: latlng[x],
-          pov: {heading: 0, pitch: 0},
-          zoom: 1,
-          linksControl: false,
-          addressControl: false
+
+        streetview.getPanoramaByLocation(latlng[x], 50, function(data, status) {
+            if (status == 'OK') {
+              document.getElementById('street-view').style.display = 'block';
+           //configure panorama
+           panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('street-view'),
+            {
+              position: latlng[x],
+              pov: {heading: 0, pitch: 0},
+              zoom: 1,
+              linksControl: false,
+              addressControl: false
+            });
+         } else {
+            document.getElementById('street-view').style.display = 'none';
+          }
         });
+        
         //sets the content of the infowindow
         infowindow.setContent(infowindows[x]);
         //opens the infowindow on markers[x]
@@ -331,9 +341,9 @@ function centermap(){
   var final_lat_center = (center_lat/latitudes.length);
   var final_lon_center = (center_lon/longitudes.length);
     //sets center position
-    map.setCenter(new google.maps.LatLng(final_lat_center, final_lon_center));
+    map.panTo(new google.maps.LatLng(final_lat_center, final_lon_center));
     //sets map zoom (zoom amount is up for debate)
-    map.setZoom(17);
+    map.setZoom(18);
   }
     //this function is called in the marker event listener, and it populates the information pane table with the correct information
     function populatetable(x){
@@ -466,10 +476,43 @@ function findmyhouse(controlDiv, map) {
     controlUI.addEventListener('click', function() {
 
         //sets center position
-        map.setCenter(latlng[0]);
+        map.panTo(latlng[0]);
         //sets map zoom (zoom amount is up for debate)
         map.setZoom(17);
       });
+  }
+
+  function optionDiv(options){
+    var control = document.createElement('DIV');
+    control.className = "dropDownItemDiv";
+    control.title = options.title;
+    control.id = options.id;
+    control.innerHTML = options.name;
+    control.action = function() { 
+      map.panTo(options.latlng);
+      infowindow.setContent(infowindows[options.identifier]);
+      infowindow.open(map,markers[options.identifier]); 
+      populatetable(options.identifier);
+      streetview.getPanoramaByLocation(options.latlng, 50, function(data, status) {
+        if (status == 'OK') {
+          document.getElementById('street-view').style.display = 'block';
+           //configure panorama
+           panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('street-view'),
+            {
+              position: options.latlng,
+              pov: {heading: 0, pitch: 0},
+              zoom: 1,
+              linksControl: false,
+              addressControl: false
+            });
+         } else {
+          document.getElementById('street-view').style.display = 'none';
+        }
+      });
+    };
+    google.maps.event.addDomListener(control,'click', control.action);
+    return control;
   }
 //Turns the map on.
 google.maps.event.addDomListener(window, 'load', initialize);

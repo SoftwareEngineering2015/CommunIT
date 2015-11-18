@@ -14,9 +14,11 @@ class manage_db {
   }
 
   function do_query( $input ) {
+      $error = ' ';
        $query = $input;
-         $this->results = mysqli_query( $this->DBH, $query );
+         $this->results = mysqli_query( $this->DBH, $query )
           //or die ("Database query failed SQLcmd=$query Error_str=" .  mysqli_error() );
+         or ($this->results = 'false');
   } 
 
   function check_rows( $input ) {

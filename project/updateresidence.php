@@ -8,7 +8,12 @@ if(isset($_POST['add_new_residence'])) {
 	$P->connect_db();
 
 	// Define variables
-	$residence_name = $_POST['residence_name'];
+	if(preg_match('/\s/', $_POST['residence_name'])) {
+		header("location: addresidence.php");
+		exit; // Just in case, exit the file so the rest of the code will never run
+	} else {
+		$residence_name = $_POST['residence_name'];
+	}
 	$address = $_POST['address'];
 	$latitude = $_POST['latitude'];
 	$longitude = $_POST['longitude'];
@@ -29,7 +34,8 @@ if(isset($_POST['add_new_residence'])) {
 
 	// Check connection
 	$sql_add_new_residence = "INSERT INTO residences (address, latitude, longitude, username, password) VALUES ('$address','$latitude','$longitude', '$residence_name','$password')";
-	//$result = mysql_query($sql_add_new_residence);
+	 $P->do_query($sql_add_new_residence);
+	/*
 	$result = $P->do_query($sql_add_new_residence);
 	
 	if($result){
@@ -40,20 +46,12 @@ if(isset($_POST['add_new_residence'])) {
 		echo
 		'<body onload="document.errormessage.submit()">
 		<form action="addresidence.php" method="POST" name="errormessage">
-		<input name="errormessage" type="hidden" value=""></input>
+		<input name="errormessage" type="hidden" value="Error goes here"></input>
 		</form></body>';
-		exit();
 		exit();
 	}
+	*/
 
-/*
-echo
-		'<body onload="document.errormessage.submit()">
-		<form action="addresidence.php" method="POST" name="errormessage">
-		<input name="errormessage" type="hidden" value=""></input>
-		</form></body>';
-		exit();
-*/
 	
 
 	header("location: admin.php");

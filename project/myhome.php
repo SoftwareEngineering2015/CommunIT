@@ -42,7 +42,7 @@
   	}
   }
 
-  $sql_sub_residents = "SELECT sub_residents.first_name AS first_name, sub_residents.last_name AS last_name, sub_residents.phone_number AS phone_number FROM sub_residents INNER JOIN head_residents ON sub_residents.fk_head_id = head_residents.head_resident_id WHERE fk_head_id='$head_residents[0]'";
+  $sql_sub_residents = "SELECT sub_residents.first_name AS first_name, sub_residents.last_name AS last_name, sub_residents.phone_number AS phone_number, sub_residents.email_address AS email_address FROM sub_residents INNER JOIN head_residents ON sub_residents.fk_head_id = head_residents.head_resident_id WHERE fk_head_id='$head_residents[0]'";
   $P->do_query($sql_sub_residents);
   $sub_residents_result = mysql_query($sql_sub_residents)
   ?>
@@ -91,6 +91,7 @@
 						<th> First Name </th>
 						<th> Last Name </th>
 						<th> Phone Number </th>
+						<th> E-mail	Address </th>
 					</tr>
 					<tr>
 						<?php
@@ -99,9 +100,11 @@
 							$first_name =  $row ['first_name'];
 							$last_name =  $row ['last_name'];
 							$phone_number =  $row ['phone_number'];
+							$email_address =  $row ['email_address'];
 							echo "<td> $first_name </td> ";
 							echo "<td> $last_name </td> ";
-							echo "<td> $phone_number </td> </tr>";
+							echo "<td> $phone_number </td>";
+							echo "<td> $email_address </td> </tr>";
 						}
 						?>
 				</table> 

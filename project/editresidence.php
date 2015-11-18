@@ -309,6 +309,31 @@ function findmyhouse(controlDiv, map) {
     });
 }
 
+    function optionDiv(options){
+      var control = document.createElement('DIV');
+      control.className = "dropDownItemDiv";
+      control.title = options.title;
+      control.id = options.id;
+      control.innerHTML = options.name;
+      control.action = function() { 
+          map.panTo(options.latlng);
+          /*infowindow.setContent(infowindows[options.identifier]);
+          infowindow.open(map,markers[options.identifier]); 
+          populatetable(options.identifier);
+          panorama = new google.maps.StreetViewPanorama(
+          document.getElementById('street-view'),
+          {
+            position: options.latlng,
+            pov: {heading: 0, pitch: 0},
+            zoom: 1,
+            linksControl: false,
+            addressControl: false
+          });*/
+        };
+      google.maps.event.addDomListener(control,'click', control.action);
+      return control;
+     }
+
 function geocodeAddress(geocoder, resultsMap) {
 
   clearMarkers();
