@@ -21,6 +21,14 @@ class manage_db {
          or ($this->results = 'false');
   } 
 
+  function do_residence_query( $input, $redirect ) {
+      $error = ' ';
+       $query = $input;
+         $this->results = mysqli_query( $this->DBH, $query )
+          //or die ("Database query failed SQLcmd=$query Error_str=" .  mysqli_error() );
+        or die ("<META HTTP-EQUIV='Refresh' CONTENT='0;URL=$redirect'>");
+  } 
+
   function check_rows( $input ) {
        $query = $input;
        $rows = mysqli_query( $this->DBH, $query ) 

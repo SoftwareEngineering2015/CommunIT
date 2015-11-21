@@ -14,9 +14,9 @@ if(isset($_POST['submit_head_resident'])) {
 		// Check if the emergency phone number is in the correct format
 		if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_emergency'])) {
   			$emergency=$_POST['head_resident_emergency']; // Store variable if correct
-		} 
+  		} 
 		else { // Return the user to edit profile if the emergency contact number is not correct
-			header("location: editprofile.php");
+			header("location: editprofile.php?error=emergency");
 			exit; // Just in case, exit the file so the rest of the code will never run
 		}
 
@@ -24,10 +24,10 @@ if(isset($_POST['submit_head_resident'])) {
 		if(trim($_POST['head_resident_phone_one']) != "") {
 			// Check if the emergency phone number is in the correct format
 			if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
-  				$phone_one=$_POST['head_resident_phone_one'];
+				$phone_one=$_POST['head_resident_phone_one'];
 			} 
 			else { // Return the user to edit profile if the phone number is not correct
-				header("location: editprofile.php");
+				header("location: editprofile.php?error=phone");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		} 
@@ -38,10 +38,10 @@ if(isset($_POST['submit_head_resident'])) {
 		// Filter the email address to be in the correct format
 		if (trim($_POST['head_resident_email_address']) != "") {
 			if (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST['head_resident_email_address'];
+				$email_address=$_POST['head_resident_email_address'];
 			}
 			else { // Return the user to edit profile if the email address is not correct
-				header("location: editprofile.php");
+				header("location: editprofile.php?error=email");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		}
@@ -119,14 +119,14 @@ if(isset($_POST['submit_head_resident'])) {
 		// Check if emergency phone number is not blank
 		if (trim($_POST['head_resident_emergency']) != "") {
 			if (preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_emergency'])) {
-  				$emergency=$_POST['head_resident_emergency'];
+				$emergency=$_POST['head_resident_emergency'];
 				$emergency = stripslashes($emergency);
 				$emergency = mysql_real_escape_string($emergency);
 				$sql_head_residents_insert = "UPDATE head_residents SET emergency_contact = '$emergency' WHERE head_resident_id = '$head_resident_id'";
 				$P->do_query($sql_head_residents_insert);
 			} 
 			else { // Return the user to edit profile if the emergency contact number is not correct
-				header("location: editprofile.php");
+				header("location: editprofile.php?error=emergency");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 			
@@ -141,69 +141,69 @@ if(isset($_POST['submit_head_resident'])) {
 			$P->do_query($sql_head_residents_insert);
 		}
 			// Check if the emergency phone number is in the correct format
-			elseif(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
-  				$phone_one=$_POST['head_resident_phone_one'];
-				$phone_one = stripslashes($phone_one);
-				$phone_one = mysql_real_escape_string($phone_one);
-				$sql_head_residents_insert = "UPDATE head_residents SET phone_one = '$phone_one' WHERE head_resident_id = '$head_resident_id'";
-				$P->do_query($sql_head_residents_insert);
-			} 
+		elseif(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
+			$phone_one=$_POST['head_resident_phone_one'];
+			$phone_one = stripslashes($phone_one);
+			$phone_one = mysql_real_escape_string($phone_one);
+			$sql_head_residents_insert = "UPDATE head_residents SET phone_one = '$phone_one' WHERE head_resident_id = '$head_resident_id'";
+			$P->do_query($sql_head_residents_insert);
+		} 
 				else { // Return the user to edit profile if the emergency contact number is not correct
-					header("location: editprofile.php");
+					header("location: editprofile.php?error=phone");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
 		// If email address is blank enter into the database
-		if (trim($_POST['head_resident_email_address']) == "") {
-			$email_address=$_POST['head_resident_email_address'];
-			$email_address = stripslashes($email_address);
-			$email_address = mysql_real_escape_string($email_address);
-			$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
-			$P->do_query($sql_head_residents_insert);
+				if (trim($_POST['head_resident_email_address']) == "") {
+					$email_address=$_POST['head_resident_email_address'];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_head_residents_insert);
 
-		}
+				}
 			// Validate email address
-			elseif (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST['head_resident_email_address'];
-				$email_address = stripslashes($email_address);
-				$email_address = mysql_real_escape_string($email_address);
-				$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
-				$P->do_query($sql_head_residents_insert);
-			}
+				elseif (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
+					$email_address=$_POST['head_resident_email_address'];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_head_residents_insert);
+				}
 				else { // Return the user to edit profile if the email address is not correct
-					header("location: editprofile.php");
+					header("location: editprofile.php?error=email");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
-		if (trim($_POST['residence_password']) != "") {
-			$password=$_POST['residence_password'];
-			$password = stripslashes($password);
-			$password = mysql_real_escape_string($password);
-			$sql_update_residence_password = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET password='$password' WHERE head_resident_id = '$head_resident_id'";
-			$P->do_query($sql_update_residence_password);
-		}
+				if (trim($_POST['residence_password']) != "") {
+					$password=$_POST['residence_password'];
+					$password = stripslashes($password);
+					$password = mysql_real_escape_string($password);
+					$sql_update_residence_password = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET password='$password' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_update_residence_password);
+				}
 
-		if (trim($_POST['miscinfo']) == "") {
-			$miscinfo=$_POST['miscinfo'];
-			$miscinfo = stripslashes($miscinfo);
-			$miscinfo = mysql_real_escape_string($miscinfo);
-			$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
-			$P->do_query($sql_update_miscinfo);
-		}
-			else {
-				$miscinfo=$_POST['miscinfo'];
-				$miscinfo = stripslashes($miscinfo);
-				$miscinfo = mysql_real_escape_string($miscinfo);
-				$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
-				$P->do_query($sql_update_miscinfo);
-			}
+				if (trim($_POST['miscinfo']) == "") {
+					$miscinfo=$_POST['miscinfo'];
+					$miscinfo = stripslashes($miscinfo);
+					$miscinfo = mysql_real_escape_string($miscinfo);
+					$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_update_miscinfo);
+				}
+				else {
+					$miscinfo=$_POST['miscinfo'];
+					$miscinfo = stripslashes($miscinfo);
+					$miscinfo = mysql_real_escape_string($miscinfo);
+					$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_update_miscinfo);
+				}
 
-		$pincolor=$_POST['pincolor'];
-		$pincolor = stripslashes($pincolor);
-		$pincolor = mysql_real_escape_string($pincolor);
-		$sql_update_pincolor= "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET pin_color='$pincolor' WHERE head_resident_id = '$head_resident_id'";			$P->do_query($sql_update_pincolor);
+				$pincolor=$_POST['pincolor'];
+				$pincolor = stripslashes($pincolor);
+				$pincolor = mysql_real_escape_string($pincolor);
+				$sql_update_pincolor= "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET pin_color='$pincolor' WHERE head_resident_id = '$head_resident_id'";			$P->do_query($sql_update_pincolor);
 
-		header("location: editprofile.php");
+				header("location: editprofile.php");
 		exit; // Just in case, exit the file so the rest of the code will never run
 
 	}
@@ -223,9 +223,9 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 		// Check if the emergency phone number is in the correct format
 		if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_emergency'])) {
   			$emergency=$_POST['head_resident_emergency']; // Store variable if correct
-		} 
+  		} 
 		else { // Return the user to edit profile if the emergency contact number is not correct
-			header("location: editresident.php?residence=$fk_residence_id");
+			header("location: editresident.php?residence=$fk_residence_id&error=emergency");
 			exit; // Just in case, exit the file so the rest of the code will never run
 		}
 
@@ -233,10 +233,10 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 		if(trim($_POST['head_resident_phone_one']) != "") {
 			// Check if the emergency phone number is in the correct format
 			if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
-  				$phone_one=$_POST['head_resident_phone_one'];
+				$phone_one=$_POST['head_resident_phone_one'];
 			} 
 			else { // Return the user to edit profile if the phone number is not correct
-				header("location: editresident.php?residence=$fk_residence_id");
+				header("location: editresident.php?residence=$fk_residence_id&error=phone");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		} 
@@ -247,10 +247,10 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 		// Filter the email address to be in the correct format
 		if (trim($_POST['head_resident_email_address']) != "") {
 			if (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST['head_resident_email_address'];
+				$email_address=$_POST['head_resident_email_address'];
 			}
 			else { // Return the user to edit profile if the email address is not correct
-				header("location: editresident.php?residence=$fk_residence_id");
+				header("location: editresident.php?residence=$fk_residence_id&error=email");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		}
@@ -293,14 +293,14 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 		header("location: admin.php");
 		exit; // Just in case, exit the file so the rest of the code will never run
 	} 
-		else {
-			include('db_class.php');
+	else {
+		include('db_class.php');
 
 		// Get the head resident id
-			$head_resident_id = $_POST['admin_update_head_resident'];
+		$head_resident_id = $_POST['admin_update_head_resident'];
 
-			$P = new manage_db;
-			$P->connect_db();
+		$P = new manage_db;
+		$P->connect_db();
 
 		// Do individual queries for each input since each input is not required 
 		// Trim the input of the form so that blank data will not be inputed into the database
@@ -323,14 +323,14 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 		// Check if emergency phone number is not blank
 		if (trim($_POST['head_resident_emergency']) != "") {
 			if (preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_emergency'])) {
-  				$emergency=$_POST['head_resident_emergency'];
+				$emergency=$_POST['head_resident_emergency'];
 				$emergency = stripslashes($emergency);
 				$emergency = mysql_real_escape_string($emergency);
 				$sql_head_residents_insert = "UPDATE head_residents SET emergency_contact = '$emergency' WHERE head_resident_id = '$head_resident_id'";
 				$P->do_query($sql_head_residents_insert);
 			} 
 			else { // Return the user to edit profile if the emergency contact number is not correct
-				header("location: editresident.php?resident=$head_resident_id");
+				header("location: editresident.php?resident=$head_resident_id&error=emergency");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 			
@@ -345,70 +345,70 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 			$P->do_query($sql_head_residents_insert);
 		}
 			// Check if the emergency phone number is in the correct format
-			elseif(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
-  				$phone_one=$_POST['head_resident_phone_one'];
-				$phone_one = stripslashes($phone_one);
-				$phone_one = mysql_real_escape_string($phone_one);
-				$sql_head_residents_insert = "UPDATE head_residents SET phone_one = '$phone_one' WHERE head_resident_id = '$head_resident_id'";
-				$P->do_query($sql_head_residents_insert);
-			} 
+		elseif(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['head_resident_phone_one'])) {
+			$phone_one=$_POST['head_resident_phone_one'];
+			$phone_one = stripslashes($phone_one);
+			$phone_one = mysql_real_escape_string($phone_one);
+			$sql_head_residents_insert = "UPDATE head_residents SET phone_one = '$phone_one' WHERE head_resident_id = '$head_resident_id'";
+			$P->do_query($sql_head_residents_insert);
+		} 
 				else { // Return the user to edit profile if the emergency contact number is not correct
-					header("location: editresident.php?resident=$head_resident_id");
+					header("location: editresident.php?resident=$head_resident_id&error=phone");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
 		// If email address is blank enter into the database
-		if (trim($_POST['head_resident_email_address']) == "") {
-			$email_address=$_POST['head_resident_email_address'];
-			$email_address = stripslashes($email_address);
-			$email_address = mysql_real_escape_string($email_address);
-			$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
-			$P->do_query($sql_head_residents_insert);
+				if (trim($_POST['head_resident_email_address']) == "") {
+					$email_address=$_POST['head_resident_email_address'];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_head_residents_insert);
 
-		}
+				}
 			// Validate email address
-			elseif (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST['head_resident_email_address'];
-				$email_address = stripslashes($email_address);
-				$email_address = mysql_real_escape_string($email_address);
-				$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
-				$P->do_query($sql_head_residents_insert);
-			}
+				elseif (filter_var($_POST['head_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
+					$email_address=$_POST['head_resident_email_address'];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_head_residents_insert = "UPDATE head_residents SET email_address = '$email_address' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_head_residents_insert);
+				}
 				else { // Return the user to edit profile if the email address is not correct
-					header("location: editresident.php?resident=$head_resident_id");
+					header("location: editresident.php?resident=$head_resident_id&error=email");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
-		if (trim($_POST['residence_password']) != "") {
-			$password=$_POST['residence_password'];
-			$password = stripslashes($password);
-			$password = mysql_real_escape_string($password);
-			$sql_update_residence_password = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET password='$password' WHERE head_resident_id = '$head_resident_id'";
-			$P->do_query($sql_update_residence_password);
-		}
+				if (trim($_POST['residence_password']) != "") {
+					$password=$_POST['residence_password'];
+					$password = stripslashes($password);
+					$password = mysql_real_escape_string($password);
+					$sql_update_residence_password = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET password='$password' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_update_residence_password);
+				}
 
-		if (trim($_POST['miscinfo']) == "") {
-			$miscinfo=$_POST['miscinfo'];
-			$miscinfo = stripslashes($miscinfo);
-			$miscinfo = mysql_real_escape_string($miscinfo);
-			$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
-			$P->do_query($sql_update_miscinfo);
-		}
-			else {
-				$miscinfo=$_POST['miscinfo'];
-				$miscinfo = stripslashes($miscinfo);
-				$miscinfo = mysql_real_escape_string($miscinfo);
-				$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
-				$P->do_query($sql_update_miscinfo);
-			}
+				if (trim($_POST['miscinfo']) == "") {
+					$miscinfo=$_POST['miscinfo'];
+					$miscinfo = stripslashes($miscinfo);
+					$miscinfo = mysql_real_escape_string($miscinfo);
+					$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_update_miscinfo);
+				}
+				else {
+					$miscinfo=$_POST['miscinfo'];
+					$miscinfo = stripslashes($miscinfo);
+					$miscinfo = mysql_real_escape_string($miscinfo);
+					$sql_update_miscinfo = "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET miscinfo='$miscinfo' WHERE head_resident_id = '$head_resident_id'";
+					$P->do_query($sql_update_miscinfo);
+				}
 
-		$pincolor=$_POST['pincolor'];
-		$pincolor = stripslashes($pincolor);
-		$pincolor = mysql_real_escape_string($pincolor);
-		$sql_update_pincolor= "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET pin_color='$pincolor' WHERE head_resident_id = '$head_resident_id'";			$P->do_query($sql_update_pincolor);
+				$pincolor=$_POST['pincolor'];
+				$pincolor = stripslashes($pincolor);
+				$pincolor = mysql_real_escape_string($pincolor);
+				$sql_update_pincolor= "UPDATE residences INNER JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id SET pin_color='$pincolor' WHERE head_resident_id = '$head_resident_id'";			$P->do_query($sql_update_pincolor);
 
 
-		header("location: editresident.php?resident=$head_resident_id");
+				header("location: editresident.php?resident=$head_resident_id");
 		exit; // Just in case, exit the file so the rest of the code will never run
 	}
 
@@ -423,13 +423,13 @@ elseif (isset($_POST['submit_sub_resident'])) {
 	$last_name=$_POST['sub_resident_last_name'];
 
 	// Check if the additional phone number is set
-		if(trim($_POST['sub_resident_phone_number']) != "") {
+	if(trim($_POST['sub_resident_phone_number']) != "") {
 			// Check if the emergency phone number is in the correct format
-			if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['sub_resident_phone_number'])) {
-  				$phone_number=$_POST['sub_resident_phone_number'];
-			} 
+		if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['sub_resident_phone_number'])) {
+			$phone_number=$_POST['sub_resident_phone_number'];
+		} 
 			else { // Return the user to edit profile if the phone number is not correct
-				header("location: editprofile.php");
+				header("location: editprofile.php?sub_error=phone");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		} 
@@ -440,10 +440,10 @@ elseif (isset($_POST['submit_sub_resident'])) {
 		// Filter the email address to be in the correct format
 		if (trim($_POST['sub_resident_email_address']) != "") {
 			if (filter_var($_POST['sub_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST['sub_resident_email_address'];
+				$email_address=$_POST['sub_resident_email_address'];
 			}
 			else { // Return the user to edit profile if the email address is not correct
-				header("location: editprofile.php");
+				header("location: editprofile.php?sub_error=email");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		}
@@ -452,24 +452,24 @@ elseif (isset($_POST['submit_sub_resident'])) {
 		}
 
 	// To protect MySQL injection for Security purpose
-	$first_name = stripslashes($first_name);
-	$last_name = stripslashes($last_name);
-	$phone_number = stripslashes($phone_number);
-	$email_address = stripslashes($email_address);
+		$first_name = stripslashes($first_name);
+		$last_name = stripslashes($last_name);
+		$phone_number = stripslashes($phone_number);
+		$email_address = stripslashes($email_address);
 
-	$first_name = mysql_real_escape_string($first_name);
-	$last_name = mysql_real_escape_string($last_name);
-	$phone_number = mysql_real_escape_string($phone_number);
-	$email_address = mysql_real_escape_string($email_address);
+		$first_name = mysql_real_escape_string($first_name);
+		$last_name = mysql_real_escape_string($last_name);
+		$phone_number = mysql_real_escape_string($phone_number);
+		$email_address = mysql_real_escape_string($email_address);
 
 	// Create connection
-	$P = new manage_db;
-	$P->connect_db();
+		$P = new manage_db;
+		$P->connect_db();
 	// Check connection
-	$sql_sub_residents_insert = "INSERT INTO sub_residents (fk_head_id, first_name, last_name, phone_number, email_address) VALUES ('$fk_head_id','$first_name','$last_name','$phone_number', '$email_address')";
-	$P->do_query($sql_sub_residents_insert);
+		$sql_sub_residents_insert = "INSERT INTO sub_residents (fk_head_id, first_name, last_name, phone_number, email_address) VALUES ('$fk_head_id','$first_name','$last_name','$phone_number', '$email_address')";
+		$P->do_query($sql_sub_residents_insert);
 
-	header("location: editprofile.php");
+		header("location: editprofile.php");
 	exit; // Just in case, exit the file so the rest of the code will never run
 
 }
@@ -501,51 +501,51 @@ elseif(isset($_POST['admin_update_sub_resident'])) {
 	}
 
 	// If phone number is blank enter into the database
-		if (trim($_POST["update_sub_resident_phone_number:$sub_residents_id"]) == "") {
-			$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
-			$phone_number = stripslashes($phone_number);
-			$phone_number = mysql_real_escape_string($phone_number);
-			$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-			$P->do_query($sql_sub_residents_update);
+	if (trim($_POST["update_sub_resident_phone_number:$sub_residents_id"]) == "") {
+		$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
+		$phone_number = stripslashes($phone_number);
+		$phone_number = mysql_real_escape_string($phone_number);
+		$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+		$P->do_query($sql_sub_residents_update);
 
-		}
+	}
 			// Validate email address
-			elseif (preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST["update_sub_resident_phone_number:$sub_residents_id"])) {
-    			$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
-				$phone_number = stripslashes($phone_number);
-				$phone_number = mysql_real_escape_string($phone_number);
-				$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-				$P->do_query($sql_sub_residents_update);
-			}
+	elseif (preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST["update_sub_resident_phone_number:$sub_residents_id"])) {
+		$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
+		$phone_number = stripslashes($phone_number);
+		$phone_number = mysql_real_escape_string($phone_number);
+		$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+		$P->do_query($sql_sub_residents_update);
+	}
 				else { // Return the user to edit profile if the email address is not correct
-					header("location: editresident.php?resident=$fk_head_id");
+					header("location: editresident.php?resident=$fk_head_id&sub_error=phone");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
 	// If email address is blank enter into the database
-		if (trim($_POST["update_sub_resident_email_address:$sub_residents_id"]) == "") {
-			$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
-			$email_address = stripslashes($email_address);
-			$email_address = mysql_real_escape_string($email_address);
-			$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-			$P->do_query($sql_sub_residents_update);
+				if (trim($_POST["update_sub_resident_email_address:$sub_residents_id"]) == "") {
+					$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+					$P->do_query($sql_sub_residents_update);
 
-		}
+				}
 			// Validate email address
-			elseif (filter_var($_POST["update_sub_resident_email_address:$sub_residents_id"], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
-				$email_address = stripslashes($email_address);
-				$email_address = mysql_real_escape_string($email_address);
-				$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-				$P->do_query($sql_sub_residents_update);
-			}
+				elseif (filter_var($_POST["update_sub_resident_email_address:$sub_residents_id"], FILTER_VALIDATE_EMAIL)) {
+					$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+					$P->do_query($sql_sub_residents_update);
+				}
 				else { // Return the user to edit profile if the email address is not correct
-					header("location: editresident.php?resident=$fk_head_id");
+					header("location: editresident.php?resident=$fk_head_id&sub_error=email");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
 
-	header("location: editresident.php?resident=$fk_head_id");
+				header("location: editresident.php?resident=$fk_head_id");
 	exit; // Just in case, exit the file so the rest of the code will never run
 
 } 
@@ -578,51 +578,51 @@ elseif(isset($_POST['update_sub_resident'])) {
 
 
 	// If phone number is blank enter into the database
-		if (trim($_POST["update_sub_resident_phone_number:$sub_residents_id"]) == "") {
-			$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
-			$phone_number = stripslashes($phone_number);
-			$phone_number = mysql_real_escape_string($phone_number);
-			$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-			$P->do_query($sql_sub_residents_update);
+	if (trim($_POST["update_sub_resident_phone_number:$sub_residents_id"]) == "") {
+		$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
+		$phone_number = stripslashes($phone_number);
+		$phone_number = mysql_real_escape_string($phone_number);
+		$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+		$P->do_query($sql_sub_residents_update);
 
-		}
+	}
 			// Validate email address
-			elseif (preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST["update_sub_resident_phone_number:$sub_residents_id"])) {
-    			$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
-				$phone_number = stripslashes($phone_number);
-				$phone_number = mysql_real_escape_string($phone_number);
-				$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-				$P->do_query($sql_sub_residents_update);
-			}
+	elseif (preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST["update_sub_resident_phone_number:$sub_residents_id"])) {
+		$phone_number=$_POST["update_sub_resident_phone_number:$sub_residents_id"];
+		$phone_number = stripslashes($phone_number);
+		$phone_number = mysql_real_escape_string($phone_number);
+		$sql_sub_residents_update = "UPDATE sub_residents SET phone_number = '$phone_number' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+		$P->do_query($sql_sub_residents_update);
+	}
 				else { // Return the user to edit profile if the email address is not correct
-					header("location: editprofile.php");
+					header("location: editprofile.php?sub_error=phone");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
 	// If email address is blank enter into the database
-		if (trim($_POST["update_sub_resident_email_address:$sub_residents_id"]) == "") {
-			$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
-			$email_address = stripslashes($email_address);
-			$email_address = mysql_real_escape_string($email_address);
-			$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-			$P->do_query($sql_sub_residents_update);
+				if (trim($_POST["update_sub_resident_email_address:$sub_residents_id"]) == "") {
+					$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+					$P->do_query($sql_sub_residents_update);
 
-		}
+				}
 			// Validate email address
-			elseif (filter_var($_POST["update_sub_resident_email_address:$sub_residents_id"], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
-				$email_address = stripslashes($email_address);
-				$email_address = mysql_real_escape_string($email_address);
-				$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
-				$P->do_query($sql_sub_residents_update);
-			}
+				elseif (filter_var($_POST["update_sub_resident_email_address:$sub_residents_id"], FILTER_VALIDATE_EMAIL)) {
+					$email_address=$_POST["update_sub_resident_email_address:$sub_residents_id"];
+					$email_address = stripslashes($email_address);
+					$email_address = mysql_real_escape_string($email_address);
+					$sql_sub_residents_update = "UPDATE sub_residents SET email_address = '$email_address' WHERE sub_residents_id = '$sub_residents_id' AND fk_head_id = '$fk_head_id'";
+					$P->do_query($sql_sub_residents_update);
+				}
 				else { // Return the user to edit profile if the email address is not correct
-					header("location: editprofile.php");
+					header("location: editprofile.php?sub_error=email");
 					exit; // Just in case, exit the file so the rest of the code will never run
 				}
 
 
-	header("location: editprofile.php");
+				header("location: editprofile.php");
 	exit; // Just in case, exit the file so the rest of the code will never run
 
 } 
@@ -637,13 +637,13 @@ elseif(isset($_POST['admin_add_sub_resident'])) {
 	$last_name=$_POST['sub_resident_last_name'];
 
 		// Check if the additional phone number is set
-		if(trim($_POST['sub_resident_phone_number']) != "") {
+	if(trim($_POST['sub_resident_phone_number']) != "") {
 			// Check if the emergency phone number is in the correct format
-			if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['sub_resident_phone_number'])) {
-  				$phone_number=$_POST['sub_resident_phone_number'];
-			} 
+		if(preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $_POST['sub_resident_phone_number'])) {
+			$phone_number=$_POST['sub_resident_phone_number'];
+		} 
 			else { // Return the user to edit profile if the phone number is not correct
-				header("location: editresident.php?resident=$fk_head_id");
+				header("location: editresident.php?resident=$fk_head_id&sub_error=phone");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		} 
@@ -654,10 +654,10 @@ elseif(isset($_POST['admin_add_sub_resident'])) {
 		// Filter the email address to be in the correct format
 		if (trim($_POST['sub_resident_email_address']) != "") {
 			if (filter_var($_POST['sub_resident_email_address'], FILTER_VALIDATE_EMAIL)) {
-    			$email_address=$_POST['sub_resident_email_address'];
+				$email_address=$_POST['sub_resident_email_address'];
 			}
 			else { // Return the user to edit profile if the email address is not correct
-				header("location: editresident.php?resident=$fk_head_id");
+				header("location: editresident.php?resident=$fk_head_id&sub_error=email");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			}
 		}
@@ -666,24 +666,24 @@ elseif(isset($_POST['admin_add_sub_resident'])) {
 		}
 
 	// To protect MySQL injection for Security purpose
-	$first_name = stripslashes($first_name);
-	$last_name = stripslashes($last_name);
-	$phone_number = stripslashes($phone_number);
-	$email_address = stripslashes($email_address);
+		$first_name = stripslashes($first_name);
+		$last_name = stripslashes($last_name);
+		$phone_number = stripslashes($phone_number);
+		$email_address = stripslashes($email_address);
 
-	$first_name = mysql_real_escape_string($first_name);
-	$last_name = mysql_real_escape_string($last_name);
-	$phone_number = mysql_real_escape_string($phone_number);
-	$email_address = mysql_real_escape_string($email_address);
+		$first_name = mysql_real_escape_string($first_name);
+		$last_name = mysql_real_escape_string($last_name);
+		$phone_number = mysql_real_escape_string($phone_number);
+		$email_address = mysql_real_escape_string($email_address);
 
 	// Create connection
-	$P = new manage_db;
-	$P->connect_db();
+		$P = new manage_db;
+		$P->connect_db();
 	// Check connection
-	$sql_sub_residents_insert = "INSERT INTO sub_residents (fk_head_id, first_name, last_name, phone_number, email_address) VALUES ('$fk_head_id','$first_name','$last_name','$phone_number', '$email_address')";
-	$P->do_query($sql_sub_residents_insert);
+		$sql_sub_residents_insert = "INSERT INTO sub_residents (fk_head_id, first_name, last_name, phone_number, email_address) VALUES ('$fk_head_id','$first_name','$last_name','$phone_number', '$email_address')";
+		$P->do_query($sql_sub_residents_insert);
 
-	header("location: editresident.php?resident=$fk_head_id");
+		header("location: editresident.php?resident=$fk_head_id");
 	exit; // Just in case, exit the file so the rest of the code will never run
 
 } 

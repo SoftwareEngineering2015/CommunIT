@@ -43,7 +43,7 @@ background-size: cover;
 </head>
 <body>
 
-	<div class="col-xs-8 col-xs-offset-2" style="text-align: center;  color: #FFFFFF; text-style: bold;
+	<div class="col-xs-12 " style="text-align: center; color: #FFFFFF; text-style: bold;
 	text-shadow:
     -2px -2px 0 #000000,
     2px -2px 0 #000000,
@@ -51,7 +51,7 @@ background-size: cover;
     2px 2px 0 #000000;  
 	 ">
 	 	
-		<div style="font-size: 1000%;">  <img src="images/logo_02.png" alt="CommunIT" style="width:150px; height:150px;"> CommunIT </img> </div>
+		<div style="font-size: 1000%;">  <img src="images/logo_02.png" alt="CommunIT" style="width:125px; height:125px;"> CommunIT </img> </div>
 		<div style="font-size: 350%;"> Community Manager </div>
 	</div>
 

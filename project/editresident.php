@@ -21,6 +21,20 @@ if (isset($_GET['residence'])){
 	  }
 
 	  $residence = $_GET['residence'];
+
+	  $error = "";
+
+  	if (isset($_GET['error']) && $_GET['error'] == 'emergency') {
+		$error = "<span style='color:red;'> Emergency contact number must be in xxx-xxx-xxxx format. </span><br />";
+  	}
+  	if (isset($_GET['error']) && $_GET['error'] == 'phone') {
+		$error = "<span style='color:red;'> Additional phone number must be in xxx-xxx-xxxx format. </span><br />";
+  	}
+  	if (isset($_GET['error']) && $_GET['error'] == 'email') {
+		$error = "<span style='color:red;'> E-mail address must be a valid e-mail. </span><br />";
+  	}
+
+
 	    // Create connection
 	  $P = new manage_db;
 	  $P->connect_db();
@@ -87,6 +101,27 @@ if (isset($_GET['resident'])){
 
   $head_residents = array(); //Holds head residents' information
 
+  $error = "";
+
+  	if (isset($_GET['error']) && $_GET['error'] == 'emergency') {
+		$error = "<span style='color:red;'> Emergency contact number must be in xxx-xxx-xxxx format. </span><br />";
+  	}
+  	if (isset($_GET['error']) && $_GET['error'] == 'phone') {
+		$error = "<span style='color:red;'> Additional phone number must be in xxx-xxx-xxxx format. </span><br />";
+  	}
+  	if (isset($_GET['error']) && $_GET['error'] == 'email') {
+		$error = "<span style='color:red;'> E-mail address must be a valid e-mail. </span><br />";
+  	}
+
+  $sub_error = "";
+
+  	if (isset($_GET['sub_error']) && $_GET['sub_error'] == 'phone') {
+		$sub_error = "<span style='color:red;'> Sub Resident phone number must be in xxx-xxx-xxxx format. </span><br />";
+  	}
+  	if (isset($_GET['sub_error']) && $_GET['sub_error'] == 'email') {
+		$sub_error = "<span style='color:red;'> Sub Resident e-mail address must be a valid e-mail. </span><br />";
+  	}
+
   // Checks to see if there is a head resident for the residence  
   if(mysql_num_rows($head_residents_result)==0) {
   	header("location: admin.php");
@@ -143,7 +178,9 @@ if (isset($_GET['resident'])){
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-5">
-					<h3> Head Resident Information </h3><?php if ($require_emergency) echo '<span style="color:red;">*</span><span style="font-size:90%;color:#B8B8B8"> REQUIRED</span>'; ?>
+					<h3> Head Resident Information </h3>
+					<?php echo $error; ?>
+					<?php if ($require_emergency) echo '<span style="color:red;">*</span><span style="font-size:90%;color:#B8B8B8"> REQUIRED</span>'; ?>
 					<table class="table table-striped table-hover ">
 						<tr>
                             <th> First Name <?php if ($require_first_name) echo '<span style="color:red">*</span>'; ?></th>
@@ -183,6 +220,7 @@ if (isset($_GET['resident'])){
 
 			<div class="col-md-7" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
 				<h3> Sub Resident Information </h3>
+				<?php echo $sub_error; ?>
 				<table class="table table-striped table-hover ">
 					<tr>
 						<th> First Name </th>

@@ -9,7 +9,7 @@ if(isset($_POST['add_new_residence'])) {
 
 	// Define variables
 	if(preg_match('/\s/', $_POST['residence_name'])) {
-		header("location: addresidence.php");
+		header("location: addresidence.php?error=space");
 		exit; // Just in case, exit the file so the rest of the code will never run
 	} else {
 		$residence_name = $_POST['residence_name'];
@@ -17,7 +17,64 @@ if(isset($_POST['add_new_residence'])) {
 	$address = $_POST['address'];
 	$latitude = $_POST['latitude'];
 	$longitude = $_POST['longitude'];
-    $password = $_POST['password'];
+
+
+    $password = "password";
+    /*$total = 8;
+	while ($total != 0) {
+        //this switch statement selects a random character to be insteted into the character array
+        $added = 'A';
+        switch(rand(1,46)){
+        case 1: $added = 'a';break;
+        case 2: $added = 'b';break;
+        case 3: $added = 'c';break;
+        case 4: $added = 'd';break;
+        case 5: $added = 'e';break;
+        case 6: $added = 'f';break;
+        case 7: $added = 'g';break;
+        case 8: $added = 'h';break;
+        case 9: $added = 'i';break;
+        case 10: $added = 'j';break;
+        case 11: $added = 'k';break;
+        case 12: $added = 'l';break;
+        case 13: $added = 'm';break;
+        case 14: $added = 'n';break;
+        case 15: $added = 'o';break;
+        case 16: $added = 'p';break;
+        case 17: $added = 'q';break;
+        case 18: $added = 'r';break;
+        case 19: $added = 's';break;
+        case 20: $added = 't';break;
+        case 21: $added = 'u';break;
+        case 22: $added = 'v';break;
+        case 23: $added = 'w';break;
+        case 24: $added = 'x';break;
+        case 25: $added = 'y';break;
+        case 26: $added = 'z';break;
+        case 27: $added = '1';break;
+        case 28: $added = '2';break;
+        case 29: $added = '3';break;
+        case 30: $added = '4';break;
+        case 31: $added = '5';break;
+        case 32: $added = '6';break;
+        case 33: $added = '7';break;
+        case 34: $added = '8';break;
+        case 35: $added = '9';break;
+        case 36: $added = '0';break;
+        case 37: $added = '1';break;
+        case 38: $added = '2';break;
+        case 39: $added = '3';break;
+        case 40: $added = '4';break;
+        case 41: $added = '5';break;
+        case 42: $added = '6';break;
+        case 43: $added = '7';break;
+        case 44: $added = '8';break;
+        case 45: $added = '9';break;
+        case 46: $added = '0';break;
+        }
+        $password = $password . $added;
+        $total = $total - 1;
+    }*/
 
 	// To protect MySQL injection for Security purpose
 	$residence_name = stripslashes($residence_name);
@@ -34,7 +91,7 @@ if(isset($_POST['add_new_residence'])) {
 
 	// Check connection
 	$sql_add_new_residence = "INSERT INTO residences (address, latitude, longitude, username, password) VALUES ('$address','$latitude','$longitude', '$residence_name','$password')";
-	 $P->do_query($sql_add_new_residence);
+	 $P->do_residence_query($sql_add_new_residence, 'addresidence.php?error=exists');
 	/*
 	$result = $P->do_query($sql_add_new_residence);
 	
@@ -75,11 +132,16 @@ if(isset($_POST['add_new_residence'])) {
 		// Do individual queries for each input since each input is not required 
 		// Trim the input of the form so that blank data will not be inputed into the database
 		if (trim($_POST['residence_name']) != "") {
-			$residence_name=$_POST['residence_name'];
-			$residence_name = stripslashes($residence_name);
-			$residence_name = mysql_real_escape_string($residence_name);
-			$sql_residence_update = "UPDATE residences SET username = '$residence_name' WHERE residence_id = '$residence_id'";
-			$P->do_query($sql_residence_update);
+			if(preg_match('/\s/', $_POST['residence_name'])) {
+				header("location: editresidence.php?residence=$residence_id&error=space");
+				exit; // Just in case, exit the file so the rest of the code will never run
+			} else {
+				$residence_name=$_POST['residence_name'];
+				$residence_name = stripslashes($residence_name);
+				$residence_name = mysql_real_escape_string($residence_name);
+				$sql_residence_update = "UPDATE residences SET username = '$residence_name' WHERE residence_id = '$residence_id'";
+				$P->do_residence_query($sql_residence_update, "editresidence.php?residence=$residence_id&error=exists");
+			}
 		}
 		if (trim($_POST['address']) != "") {
 			$address=$_POST['address'];

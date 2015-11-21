@@ -17,6 +17,15 @@
      exit();
    }
 
+   $error = "";
+
+    if (isset($_GET['error']) && $_GET['error'] == 'space') {
+      $error = "<span style='color:red;'> Residence name cannot have a space in it. </span><br />";
+    }
+    if (isset($_GET['error']) && $_GET['error'] == 'exists') {
+      $error = "<span style='color:red;'> Residence name already exists. </span><br />";
+    }
+
 // Create connection
     $P = new manage_db;
     $P->connect_db();
@@ -391,6 +400,7 @@ function show_confirm(){
         <div class="col-md-5">
 
          <h3> Residence Information </h3>
+         <?php echo $error; ?>
          <table class="table table-striped table-hover ">
           <tr>
            <th> Residence Name </th>
