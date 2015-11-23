@@ -19,6 +19,13 @@ include('db_class.php');
 			$sql_update_configuration = "UPDATE configuration SET max_per_residence = '$max_per_residence'";
 			$P->do_query($sql_update_configuration);
 		}
+
+	$default_pin_color=$_POST['default_pin_color'];
+	$default_pin_color = stripslashes($default_pin_color);
+	$default_pin_color = mysql_real_escape_string($default_pin_color);
+	$sql_update_default_pin_color = "ALTER TABLE head_residents ALTER pin_color SET DEFAULT '$default_pin_color'";
+	$P->do_query($sql_update_default_pin_color);
+
 	header("location: configuration.php");
 	exit; // Just in case, exit the file so the rest of the code will never run
 ?>

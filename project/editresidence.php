@@ -28,6 +28,17 @@ if (!isset($_GET['residence'])){
   $P = new manage_db;
   $P->connect_db();
 
+
+$sql_default_color = "DESCRIBE head_residents";
+      $P->do_query($sql_default_color);
+      $default_color_result = mysql_query($sql_default_color); 
+      while ($row = mysql_fetch_assoc($default_color_result))
+        {
+          if ($row['Field'] == 'pin_color') { 
+            $default_pin_color = $row['Default'];
+          }
+        }
+
     // Check connection
   $sql_get_residence_info = "SELECT * FROM residences WHERE residence_id='$residence'";
   $P->do_query($sql_get_residence_info);
@@ -147,7 +158,7 @@ function initialize(){
 
         //Change the color of each image through this function
         if (pincolor[i] == "") {
-          pincolor[i] = '#19ACFF';
+          pincolor[i] = <?php echo "'" . $default_pin_color . "'"?>;
         }
         overalayColor(pincolor[i]);
 

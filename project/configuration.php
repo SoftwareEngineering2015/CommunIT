@@ -24,12 +24,38 @@
 	  	array_push($configuration, $row['max_per_residence']);
 	  }
 
+	$sql_default_color = "DESCRIBE head_residents";
+	$P->do_query($sql_default_color);
+	$default_color_result = mysql_query($sql_default_color); 
+	while ($row = mysql_fetch_assoc($default_color_result))
+	  {
+	  	if ($row['Field'] == 'pin_color') { 
+	  		array_push($configuration, $row['Default']);
+	  	}
+	  }
+
 	  ?>
 	  <!DOCTYPE html>
 	  <html>
 	  <head>
-
+	  	<script type="text/javascript" src="js/colorpins.js"></script>
 	  	<script>
+		// Change the image to the default pin color on page load
+		$( window ).bind('load',function() {
+    		pin_color =  document.getElementById('default_pin_color').value;
+    		overalayColor(pin_color);
+    		document.getElementById('house_pin').src = fullimg;
+		});
+
+		$(document).ready(function() {
+			//Change pin color on change of color select
+			$( "#default_pin_color" ).change(function() {
+  				pin_color =  document.getElementById('default_pin_color').value;
+    			overalayColor(pin_color);
+    			document.getElementById('house_pin').src = fullimg;
+			});
+		});
+
 		// function : show_confirm()
 		function edit_admin_password(old_password){
     		// shows the modal on button press
@@ -141,12 +167,15 @@
 							<td> <?php echo "$configuration[1]";?> </td> <!-- Head resident last name -->
 							<td> <input id="max_per_residence" name="max_per_residence" type="number" min="0" class="form-control input-md">  </td>
 						</tr>
+						<tr>
+							<th> Default Residence Color </th>
+							<td> <img id="house_pin" alt="" style="width:auto; height;auto"> </td>
+							<td> <input id="default_pin_color" name="default_pin_color" type="color" value=<?php echo "'" . $configuration[2] . "'"; ?> style="width: 100%;">  </td>
+						</tr>
+						<tr><td></td><td></td>
+							<td> <button name="update_configuration" type="submit" class="btn btn-primary btn-lg" style="  width: 100%;"> Update Settings </button></td>
+						</tr>
 					</table> 
-					<div class="form-group last">
-						<div class="col-sm-offset-3 col-sm-6"> <!-- Value for the button is needed to tell the update file what the id of the user is -->
-							<button name="update_configuration" type="submit" class="btn btn-primary btn-lg" style="  width: 100%;"> Update Settings </button>
-						</div>
-					</div>
 				</div>
 			</form>
 			 

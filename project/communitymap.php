@@ -395,6 +395,7 @@ if(miscinfo[x]=="<div></div>"){
     
     //this loop iterates through all sub-residents and puts the correct sub-residents in a table with the id of sub_residents
     //this loop is dependent on the fact that we will not allow any head residents to ever have more than the max sub residents, otherwise this loop will potentially not function properly
+ // if(($_SESSION['login_user']) != "guest"){
     var subname;
     var subphone;
     var subemail;
@@ -413,8 +414,10 @@ if(miscinfo[x]=="<div></div>"){
       }
       i++;
     }
+  //}
     //populates the sub_residents table with the looped information
     document.getElementById("sub_residents").innerHTML = "<tr><th style='font-size: 125%;text-align: center;'>Residents </th><th style='font-size: 125%;text-align: center;'>Phone</th><th style='font-size: 125%;text-align: center;'>E-mail</th></tr>"+residentsSidePanelText;
+  
   }
 //-----------------------------------------END OF POPULATETABLE FUNCTION------------------------------------------
 //this function styles and sets up the button

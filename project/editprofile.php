@@ -75,7 +75,17 @@
 	array_push($head_residents, "");
 	array_push($head_residents, "");
 	array_push($head_residents, "");
-	array_push($head_residents, "#19A3FF");
+
+	$sql_default_color = "DESCRIBE head_residents";
+	$P->do_query($sql_default_color);
+	$default_color_result = mysql_query($sql_default_color); 
+	while ($row = mysql_fetch_assoc($default_color_result))
+	  {
+	  	if ($row['Field'] == 'pin_color') { 
+	  			array_push($head_residents, $row['Default']);
+	  	}
+	  }
+
 	
   } else { // This section is for if there is a head resident registered to the residence
 
@@ -126,7 +136,24 @@
 
   ?>
 </head>
+<script type="text/javascript" src="js/colorpins.js"></script>
+<script>
+// Change the image to the default pin color on page load
+		$( window ).bind('load',function() {
+    		pin_color =  document.getElementById('pincolor').value;
+    		overalayColor(pin_color);
+    		document.getElementById('house_pin').src = fullimg;
+		});
 
+		$(document).ready(function() {
+			//Change pin color on change of color select
+			$( "#pincolor" ).change(function() {
+  				pin_color =  document.getElementById('pincolor').value;
+    			overalayColor(pin_color);
+    			document.getElementById('house_pin').src = fullimg;
+			});
+		});
+</script>
 <body>
 
 	<!-- Modal -->
@@ -163,38 +190,47 @@
 						<table class="table table-striped table-hover ">
 							<tr>
                                 <th> First Name <?php if ($require_first_name) echo '<span style="color:red">*</span>'; ?></th>
+                                <td> </td>
 								<td> <input id="head_resident_first_name" name="head_resident_first_name" value=<?php echo "'$head_residents[1]'";?> placeholder=<?php echo "'$head_residents[1]'";?> type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
 							</tr>
 							<tr>
 								<th> Last Name <?php if ($require_last_name) echo '<span style="color:red">*</span>'; ?></th>
+								<td> </td>
 								<td> <input id="head_resident_last_name" name="head_resident_last_name" value=<?php echo "'$head_residents[2]'";?> placeholder=<?php echo "'$head_residents[2]'";?> type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
 								<th> Emergency Contact Number <?php if ($require_emergency) echo '<span style="color:red">*</span>'; ?></th>
+								<td> </td>
 								<td> <input pattern='\d{3}[\-]\d{3}[\-]\d{4}' title='xxx-xxx-xxxx' id="head_resident_emergency" name="head_resident_emergency" value=<?php echo "'$head_residents[3]'";?> placeholder=<?php echo "'$head_residents[3]'";?> type="tel" class="form-control input-md" <?php if ($require_emergency) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
 								<th> Additional Phone Number </th>
+								<td> </td>
 								<td> <input id="head_resident_phone_one" name="head_resident_phone_one" value=<?php echo "'$head_residents[4]'";?> placeholder=<?php echo "'$head_residents[4]'";?> type="tel" class="form-control input-md"> </td>
 							</tr>
 							<tr>
 								<th> E-mail Address </th>
+								<td> </td>
 								<td> <input id="head_resident_email_address" name="head_resident_email_address" value=<?php echo "'$head_residents[5]'";?> placeholder=<?php echo "'$head_residents[5]'";?> type="email" class="form-control input-md"> </td>
 							</tr>
 							<tr>
 								<th> Password <?php if ($require_password) echo '<span style="color:red">*</span>'; ?></th>
+								<td> </td>
 								<td> <input id="residence_password" name="residence_password" type="password" class="form-control input-md" minlength="8" maxlength="25" <?php if ($require_password) echo 'required'; ?>> </td>
 							</tr>
 							<tr>
 								<th> Misc Information</th>
+								<td> </td>
 								<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo "'$head_residents[6]'";?> wrap="hard" rows="5" maxlength="255"><?php echo "$head_residents[6]";?></textarea>
 							</tr>
 							<tr>
 								<th> Pin Color </th>
-								<td> <input type="color" name="pincolor" id="pincolor" value=<?php echo "'$head_residents[7]'";?> style="width:50%;">
+								<td> <img id="house_pin" alt="" style="width:auto; height;auto"> </td> 
+								<td> <input type="color" name="pincolor" id="pincolor" value=<?php echo "'$head_residents[7]'";?> style="width: 100%"> </td>
 							</tr>
 							<tr>
 								<td></td>
+								<td> </td>
 								<td> <button name="submit_head_resident" type="submit" value=<?php echo "'$head_residents[0]'" ?> class="btn btn-primary btn-lg" style=" width: 100%;"> Update Profile </button> </td>
 							</tr>
 						</table> 
