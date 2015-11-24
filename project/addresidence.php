@@ -75,10 +75,6 @@ pincolor = []; //Make pin colors global
 //Should change to Community Location (if set)
 var myCenter=new google.maps.LatLng(41.7605556, -88.3200);
 
-        //this will be populated with the total lat and longitude for the average to be computed
-    center_lat = 0;
-    center_lon = 0;
-
     addresses = [];
     residence_name = [];
     head_full_names = [];
@@ -89,6 +85,8 @@ var myCenter=new google.maps.LatLng(41.7605556, -88.3200);
     //holds latitude and longitude location from database
     latitudes = [];
     longitudes = [];
+    //creates a bounds object that is extended in the main loop
+    bounds = new google.maps.LatLngBounds();
 
     //holds created markers
     markers = [];
@@ -130,9 +128,9 @@ function initialize(){
 
     <?php } ?>
     //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
-    for(i in addresses) {
-        center_lat += parseFloat(latitudes[i]);
-        center_lon += parseFloat(longitudes[i]);
+    for(i in addresses){
+        //extend the bounds object to fit the iterated marker
+        bounds.extend(new google.maps.LatLng(latitudes[i], longitudes[i]));
 
         //Change the color of each image through this function
         if (pincolor[i] == "") {
@@ -224,16 +222,10 @@ function initialize(){
 //Turns the map on.
 google.maps.event.addDomListener(window, 'load', initialize);
 
-//this function centers the map on the community based on average latitude and longitude
+//this function centers the map on the bounds object
 function centermap(){
-    var final_lat_center = (center_lat/latitudes.length);
-    var final_lon_center = (center_lon/longitudes.length);
-    //sets center position
-    map.panTo(new google.maps.LatLng(final_lat_center, final_lon_center));
-    //sets map zoom (zoom amount is up for debate)
-    map.setZoom(17);
+  map.fitBounds(bounds);
 }
-
 //this function styles and sets up the button
 function centerbutton(controlDiv, map) {
     // Set CSS for the control border.

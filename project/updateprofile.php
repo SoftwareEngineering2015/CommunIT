@@ -287,7 +287,7 @@ elseif (isset($_POST['admin_update_head_resident'])) {
 		$P->connect_db();
 
 		// Check connection
-		$sql_head_residents_insert = "INSERT INTO head_residents (fk_residence_id, first_name, last_name, emergency_contact, phone_one, email_address) VALUES ('$fk_residence_id','$first_name','$last_name', '$emergency','$phone_one','$email_address')";
+		$sql_head_residents_insert = "INSERT INTO head_residents (fk_residence_id, first_name, last_name, emergency_contact, phone_one, email_address, miscinfo, pin_color) VALUES ('$fk_residence_id','$first_name','$last_name', '$emergency','$phone_one','$email_address', '$miscinfo', '$pincolor')";
 		$P->do_query($sql_head_residents_insert);
 
 		header("location: admin.php");

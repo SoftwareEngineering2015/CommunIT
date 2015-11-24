@@ -12,6 +12,10 @@
 		header("location: admin.php");
 		exit();
 	}
+    if(($_SESSION['login_user']) == "guest"){
+		header("location: communitymap.php");
+		exit();
+	}
 
   // Create connection
   $P = new manage_db;

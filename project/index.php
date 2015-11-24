@@ -72,7 +72,7 @@ background-size: cover;
 					<div class="form-group">
 						<b for="loginID" class="col-sm-3 control-label" style="color: #000000">Login ID</b>
 						<div class="col-sm-9">
-							<input id="loginID" name="username" type="text" class="form-control" placeholder="Login ID" required="" style=""> <br/>
+							<input id="loginID" name="username" type="text" class="form-control" placeholder="Login ID" required="" style="" autofocus="autofocus"> <br/>
 						</div>
 					</div>
 

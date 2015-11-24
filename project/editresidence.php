@@ -99,15 +99,14 @@ var additional_markers = [];
     residence_name = [];
     head_resident_ids = [];
 
-    //this will be populated with the total lat and longitude for the average to be computed
-    center_lat = 0;
-    center_lon = 0;
 
   //holds parsed latlng location data
     latlng = [];
     //holds latitude and longitude location from database
     latitudes = [];
     longitudes = [];
+    //creates a bounds object that is extended in the main loop
+    bounds = new google.maps.LatLngBounds();
 
     //Holds values for the dropdown menu
     divOptions = [];
@@ -153,8 +152,8 @@ function initialize(){
     <?php } ?>
     //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
     for(i in addresses) {
-        center_lat += parseFloat(latitudes[i]);
-        center_lon += parseFloat(longitudes[i]);
+        //extend the bounds object to fit the iterated marker
+        bounds.extend(new google.maps.LatLng(latitudes[i], longitudes[i]));
 
         //Change the color of each image through this function
         if (pincolor[i] == "") {
@@ -251,14 +250,9 @@ google.maps.event.addListener(marker, 'dragend', function (event) {
 //Turns the map on.
 google.maps.event.addDomListener(window, 'load', initialize);
 
-//this function centers the map on the community based on average latitude and longitude
+//this function centers the map based on the bounds object
 function centermap(){
-    var final_lat_center = (center_lat/latitudes.length);
-    var final_lon_center = (center_lon/longitudes.length);
-    //sets center position
-    map.panTo(new google.maps.LatLng(final_lat_center, final_lon_center));
-    //sets map zoom (zoom amount is up for debate)
-    map.setZoom(17);
+  map.fitBounds(bounds);
 }
 
 //this function styles and sets up the button

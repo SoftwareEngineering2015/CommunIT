@@ -92,9 +92,6 @@ function initialize(){
     //The limit of residents per residence
     max_residents = [];
     
-    //this will be populated with the total lat and longitude for the average to be computed
-    center_lat = 0;
-    center_lon = 0;
     
     //RESIDENCE AND HEAD RESIDENT INFORMATION
     addresses = [];
@@ -118,7 +115,9 @@ function initialize(){
     latlng = [];
     //holds latitude and longitude location from database
     latitudes = [];
-    longitudes = []; 
+    longitudes = [];
+    //creates a bounds object that is extended in the main loop
+    bounds = new google.maps.LatLngBounds();
 
     head_resident_ids = [];
     head_full_names = [];
@@ -175,10 +174,10 @@ function initialize(){
     <?php } ?>
 
     //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
-    for(i in addresses) {
+    for(i in addresses){
+        //extend the bounds object to fit the iterated marker
+        bounds.extend(new google.maps.LatLng(latitudes[i], longitudes[i]));
       infowindow_status[i] = 0;
-      center_lat += parseFloat(latitudes[i]);
-      center_lon += parseFloat(longitudes[i]);
 
         //Change the color of each image through this function
         overalayColor(pincolor[i]);
@@ -336,15 +335,10 @@ function addlistener(x){ google.maps.event.addListener(markers[x], 'click',funct
     
 });}
 
-//this function centers the map on the community based on average latitude and longitude
+//this function centers the map on the community based on the bounds object
 function centermap(){
-  var final_lat_center = (center_lat/latitudes.length);
-  var final_lon_center = (center_lon/longitudes.length);
-    //sets center position
-    map.panTo(new google.maps.LatLng(final_lat_center, final_lon_center));
-    //sets map zoom (zoom amount is up for debate)
-    map.setZoom(18);
-  }
+  map.fitBounds(bounds);
+}
     //this function is called in the marker event listener, and it populates the information pane table with the correct information
     function populatetable(x){
 //----------------------------FIRST HALF OF FUNCTION ADDS TOP HALF OF THE SIDE PANEL-----------------------------------
