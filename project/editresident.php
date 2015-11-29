@@ -178,7 +178,6 @@ if (isset($_GET['resident'])){
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="js/colorpins.js"></script>
 <script>
 // Change the image to the default pin color on page load
 		$( window ).bind('load',function() {
@@ -311,6 +310,6 @@ if (isset($_GET['resident'])){
 			</div>
 		</div>
 	</div>
-
+<script type="text/javascript" src="js/colorpins.js"></script>
 </body>
 </html>

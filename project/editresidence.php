@@ -74,8 +74,6 @@ $sql_default_color = "DESCRIBE head_residents";
 
   <!-- Add the dropdown files and color pins file-->
   <link rel="stylesheet" type="text/css" href="css/dropdown.css" />
-  <script type="text/javascript" src="js/dropdown.js"></script>
-  <script type="text/javascript" src="js/colorpins.js"></script>
 
   <!-- Load In Google Maps -->
   <script>
@@ -192,7 +190,7 @@ function initialize(){
               identifier: i
           });
         }
-        optionsDiv.push(new optionDiv(divOptions[i]));
+        optionsDiv.push(new optionDiv_2(divOptions[i]));
 
         options.push(optionsDiv[i]);
 
@@ -224,7 +222,7 @@ function initialize(){
 
 //This puts a marker based on the string in submitG
 document.getElementById('submitAddress').addEventListener('click', function() {
-  geocodeAddress(geocoder, map);
+  geocodeAddress_2(geocoder, map);
 });
 google.maps.event.addListener(marker, 'dragend', function (event) {
   document.getElementById("latitude").value = this.getPosition().lat();
@@ -239,7 +237,7 @@ google.maps.event.addListener(marker, 'dragend', function (event) {
       map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
     var FindMyHouseControlDiv = document.createElement('div');
-    var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);
+    var FindMyHouseControl = new findeditinghouse(FindMyHouseControlDiv, map);
     FindMyHouseControlDiv.index = 1;
         //puts the centering button on the map
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
@@ -247,107 +245,7 @@ google.maps.event.addListener(marker, 'dragend', function (event) {
 }
 //----------------------END OF INITIALIZE FUNCTION
 
-//Turns the map on.
-google.maps.event.addDomListener(window, 'load', initialize);
-
-//this function centers the map based on the bounds object
-function centermap(){
-  map.fitBounds(bounds);
-}
-
-//this function styles and sets up the button
-function centerbutton(controlDiv, map) {
-    // Set CSS for the control border.
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#3399FF';
-    controlUI.style.border = '2px solid #00000';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
-    controlUI.title = 'Click to recenter the map on your community';
-    controlDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior.
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(250,250,250)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Center on Your Community';
-    controlUI.appendChild(controlText);
-
-    // Setup the click event listeners: calls the centermap function
-    controlUI.addEventListener('click', function() {
-        centermap();
-    });
-}
-//this function styles and sets up the button
-function findmyhouse(controlDiv, map) {
-    // Set CSS for the control border.
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#3399FF';
-    controlUI.style.border = '2px solid #00000';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
-    controlUI.title = 'Click to find the house you are editing.';
-    controlDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior.
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(250,250,250)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Find Editing House';
-    controlUI.appendChild(controlText);
-
-    // Setup the click event listeners: calls the centermap function
-    controlUI.addEventListener('click', function() {
-      var houseLatitude = document.getElementById('latitude').value;
-      var houseLongitude = document.getElementById('longitude').value;
-      
-        //sets center position
-        map.panTo(new google.maps.LatLng(houseLatitude, houseLongitude));
-        //sets map zoom (zoom amount is up for debate)
-        map.setZoom(18);
-    });
-}
-
-    function optionDiv(options){
-      var control = document.createElement('DIV');
-      control.className = "dropDownItemDiv";
-      control.title = options.title;
-      control.id = options.id;
-      control.innerHTML = options.name;
-      control.action = function() { 
-          map.panTo(options.latlng);
-          /*infowindow.setContent(infowindows[options.identifier]);
-          infowindow.open(map,markers[options.identifier]); 
-          populatetable(options.identifier);
-          panorama = new google.maps.StreetViewPanorama(
-          document.getElementById('street-view'),
-          {
-            position: options.latlng,
-            pov: {heading: 0, pitch: 0},
-            zoom: 1,
-            linksControl: false,
-            addressControl: false
-          });*/
-        };
-      google.maps.event.addDomListener(control,'click', control.action);
-      return control;
-     }
-
-function geocodeAddress(geocoder, resultsMap) {
+function geocodeAddress_2(geocoder, resultsMap) {
 
   clearMarkers();
   var address = document.getElementById('address').value;
@@ -383,19 +281,8 @@ google.maps.event.addListener(marker, 'dragend', function (event) {
 });
 });
 }
-
-// Sets the map on all markers in the array.
-function setMapOnAll(map) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(map);
-  }
-}
-
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-  setMapOnAll(null);
-}
-function show_confirm(residence_id){
+      
+function show_confirm_2(residence_id){
 
           // shows the modal on button press
           $('#confirm_modal').modal('show');
@@ -405,7 +292,8 @@ function show_confirm(residence_id){
           document.getElementById("submit_longitude").innerHTML = document.getElementById("longitude").value;
           document.getElementById("update_residence").value = <?php echo $residence; ?>;
       }
-
+      //Turns the map on.
+      google.maps.event.addDomListener(window, 'load', initialize);
 
       </script>
 
@@ -453,7 +341,7 @@ function show_confirm(residence_id){
       <tr>
         <th> </th> 
         <td>
-          <button type="button" onclick="show_confirm()" class="btn btn-primary btn-lg" style="  width: 100%;"> Update Residence </button>
+          <button type="button" onclick="show_confirm_2()" class="btn btn-primary btn-lg" style="  width: 100%;"> Update Residence </button>
         </td>
       </tr>
     </table>
@@ -495,7 +383,10 @@ function show_confirm(residence_id){
 
         </div>
       </div>
-    </form> 
-
+    </form>
+    <script type="text/javascript" src="js/dropdown.js"></script>
+    <script type="text/javascript" src="js/colorpins.js"></script>
+    <script type="text/javascript" src="js/map.js"></script>
+         
   </body>
   </html>

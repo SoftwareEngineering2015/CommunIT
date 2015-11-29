@@ -60,8 +60,6 @@
     }
 
   </style>
-  <script type="text/javascript" src="js/dropdown.js"></script>
-  <script type="text/javascript" src="js/colorpins.js"></script>
 
   <!-- Load In Google Maps -->
   <script>
@@ -210,7 +208,7 @@ function initialize(){
       map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
       var FindMyHouseControlDiv = document.createElement('div');
-      var FindMyHouseControl = new findmyhouse(FindMyHouseControlDiv, map);
+      var FindMyHouseControl = new findeditinghouse(FindMyHouseControlDiv, map);
       FindMyHouseControlDiv.index = 1;
         //puts the centering button on the map
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
@@ -222,174 +220,7 @@ function initialize(){
 //Turns the map on.
 google.maps.event.addDomListener(window, 'load', initialize);
 
-//this function centers the map on the bounds object
-function centermap(){
-  map.fitBounds(bounds);
-}
-//this function styles and sets up the button
-function centerbutton(controlDiv, map) {
-    // Set CSS for the control border.
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#3399FF';
-    controlUI.style.border = '2px solid #00000';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
-    controlUI.title = 'Click to recenter the map on your community';
-    controlDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior.
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(250,250,250)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Center On Your Community';
-    controlUI.appendChild(controlText);
-
-    // Setup the click event listeners: calls the centermap function
-    controlUI.addEventListener('click', function() {
-        centermap();
-    });
-}
-
-//this function styles and sets up the button
-function findmyhouse(controlDiv, map) {
-    // Set CSS for the control border.
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#3399FF';
-    controlUI.style.border = '2px solid #00000';
-    controlUI.style.borderRadius = '3px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
-    controlUI.title = 'Click to find the house you are editing.';
-    controlDiv.appendChild(controlUI);
-
-    // Set CSS for the control interior.
-    var controlText = document.createElement('div');
-    controlText.style.color = 'rgb(250,250,250)';
-    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    controlText.style.fontSize = '16px';
-    controlText.style.lineHeight = '38px';
-    controlText.style.paddingLeft = '5px';
-    controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Find Editing House';
-    controlUI.appendChild(controlText);
-
-    // Setup the click event listeners: calls the centermap function
-    controlUI.addEventListener('click', function() {
-      var houseLatitude = document.getElementById('latitude').value;
-      var houseLongitude = document.getElementById('longitude').value;
-      
-        if (houseLatitude != "" && houseLongitude != "") {
-          //sets center position
-          map.panTo(new google.maps.LatLng(houseLatitude, houseLongitude));
-          //sets map zoom (zoom amount is up for debate)
-          map.setZoom(18);
-        }
-    });
-}
-
-    function optionDiv(options){
-      var control = document.createElement('DIV');
-      control.className = "dropDownItemDiv";
-      control.title = options.title;
-      control.id = options.id;
-      control.innerHTML = options.name;
-      control.action = function() { 
-          map.panTo(options.latlng);
-          /*infowindow.setContent(infowindows[options.identifier]);
-          infowindow.open(map,markers[options.identifier]); 
-          populatetable(options.identifier);
-          panorama = new google.maps.StreetViewPanorama(
-          document.getElementById('street-view'),
-          {
-            position: options.latlng,
-            pov: {heading: 0, pitch: 0},
-            zoom: 1,
-            linksControl: false,
-            addressControl: false
-          });*/
-        };
-      google.maps.event.addDomListener(control,'click', control.action);
-      return control;
-     }
-
 var marker_new = [];
-
-function geocodeAddress(geocoder, resultsMap) {
-
-  clearMarkers();
-  var address = document.getElementById('address').value;
-  geocoder.geocode({'address': address}, function(results, status) {
-    if (status === google.maps.GeocoderStatus.OK) {
-      resultsMap.panTo(results[0].geometry.location);
-      resultsMap.setZoom(18);
-//Sets a Marker at the locations in the Geocoder search
-var marker = new google.maps.Marker({
-  map: resultsMap,
-  draggable: true,
-  icon: iconbase + 'house_pin02.png',
-  position: results[0].geometry.location
-});
-marker_new.push(marker);
-
-  document.getElementById("latitude").value = marker.getPosition().lat();
-  document.getElementById("longitude").value = marker.getPosition().lng();
-
-
-// Zoom to 15 when clicking on marker and opens the infow window if its closed
-google.maps.event.addListener(marker,'click',function() {
-  map.setZoom(18);
-  map.panTo(marker.getPosition());
-});
-
-} else {
-  alert('Geocode was not successful for the following reason: ' + status);
-}
-
-google.maps.event.addListener(marker, 'dragend', function (event) {
-  document.getElementById("latitude").value = this.getPosition().lat();
-  document.getElementById("longitude").value = this.getPosition().lng();
-});
-});
-}
-
-// Sets the map on all markers in the array.
-function setMapOnAll(map) {
-  for (var i = 0; i < marker_new.length; i++) {
-    marker_new[i].setMap(map);
-  }
-}
-
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-  setMapOnAll(null);
-}
-
-function show_confirm(){
-  var latitude = document.getElementById("latitude").value;
-  var longitude = document.getElementById("longitude").value;
-  if( latitude == "" || longitude =="" ){
-   alert("Latitude and Longitude need a value.");
-   return false;
- } else {
-          // shows the modal on button press
-          $('#confirm_modal').modal('show');
-          document.getElementById("submit_residence_name").innerHTML = document.getElementById("residence_name").value;
-          document.getElementById("submit_address").innerHTML = document.getElementById("address").value;
-          document.getElementById("submit_latitude").innerHTML = document.getElementById("latitude").value;
-          document.getElementById("submit_longitude").innerHTML = document.getElementById("longitude").value;
-        }
-      }
-
-
       </script>
 
     </head>
@@ -479,7 +310,9 @@ function show_confirm(){
 
           </div>
         </div>
-      </form> 
-
+      </form>
+      <script type="text/javascript" src="js/dropdown.js"></script>
+      <script type="text/javascript" src="js/colorpins.js"></script>
+      <script type="text/javascript" src="js/map.js"></script>
     </body>
     </html>

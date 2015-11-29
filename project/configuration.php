@@ -38,7 +38,6 @@
 	  <!DOCTYPE html>
 	  <html>
 	  <head>
-	  	<script type="text/javascript" src="js/colorpins.js"></script>
 	  	<script>
 		// Change the image to the default pin color on page load
 		$( window ).bind('load',function() {
@@ -282,6 +281,7 @@
 						</div>
 					</div>
 				</form>
+            <script type="text/javascript" src="js/colorpins.js"></script>
 
 </body>
 </html>
