@@ -252,7 +252,7 @@ if (isset($_GET['resident'])){
 			</form> 
 
 			<div class="col-md-7" <?php echo $hide_elements; ?>> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
-				<h3> Sub Resident Information </h3>
+				<h3> Resident Information </h3>
 				<?php echo $sub_error; ?>
 				<table class="table table-striped table-hover ">
 					<tr>

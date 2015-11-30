@@ -1,10 +1,11 @@
 
 <?php
-
+//holds the database connection credentials.
+include('db_config.php');
 // Establishing Connection with Server by passing server_name, user_id and password as a parameter
-$connection = mysql_connect("127.0.0.1", "root", "");
+$connection = mysql_connect($server, $user, $pass);
 // Selecting Database
-$db = mysql_select_db("communit", $connection);
+$db = mysql_select_db( $mydb, $connection);
 session_start();// Starting Session
 // Storing Session
 $user_check=$_SESSION['login_user'];
@@ -17,25 +18,5 @@ mysql_close($connection); // Closing Connection
 header('Location: index.php'); // Redirecting To Home Page
 }
 
-
-/*
-include('db_class.php');
-
-session_start();
-
-$P = new manage_db;
-$P->connect_db();
-
-$user_check=$_SESSION['login_user'];
-
-$login_session = $P->userCheck($user_check);
-
-if(!isset($login_session)){
-header('Location: index.php'); // Redirecting To Home Page
-}
-
-$P->close_db();
-
-*/
 
 ?>

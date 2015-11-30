@@ -228,20 +228,21 @@ google.maps.event.addListener(marker, 'dragend', function (event) {
   document.getElementById("latitude").value = this.getPosition().lat();
   document.getElementById("longitude").value = this.getPosition().lng();
 });
+    if(additional_markers.length != 0){
+          //these next four lines are for the centering button
+          var centerControlDiv = document.createElement('div');
 
-      //these next four lines are for the centering button
-      var centerControlDiv = document.createElement('div');
-      var centerControl = new centerbutton(centerControlDiv, map);
-      centerControlDiv.index = 1;
-      //puts the centering button on the map
-      map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
-
-    var FindMyHouseControlDiv = document.createElement('div');
-    var FindMyHouseControl = new findeditinghouse(FindMyHouseControlDiv, map);
-    FindMyHouseControlDiv.index = 1;
-        //puts the centering button on the map
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
-
+          var centerControl = new centerbutton(centerControlDiv, map);
+          centerControlDiv.index = 1;
+          //puts the centering button on the map
+          map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+    }
+        var FindMyHouseControlDiv = document.createElement('div');
+        var FindMyHouseControl = new findeditinghouse(FindMyHouseControlDiv, map);
+        FindMyHouseControlDiv.index = 1;
+            //puts the centering button on the map
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(FindMyHouseControlDiv);
+    
 }
 //----------------------END OF INITIALIZE FUNCTION
 

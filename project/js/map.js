@@ -1,5 +1,5 @@
 //This function accepts an index from the iterated for loop. This function then creates a click listener based on the objects in the arrays at the passed index
-function addlistener(x){ google.maps.event.addListener(markers[x], 'click',function(){
+function addlistener(x, currentuser){ google.maps.event.addListener(markers[x], 'click',function(){
     //this loop sets all markers that are not markers[x] to 0 (not clicked)
     for(i in addresses){
         if(i!=x)
@@ -8,7 +8,7 @@ function addlistener(x){ google.maps.event.addListener(markers[x], 'click',funct
     //invoked if the infowindow is currently NOT open on markers[x]
     if(infowindow_status[x]==0){
         //populate the side panel with information
-        populatetable(x);
+        populatetable(x, currentuser);
         //pan the map to the lat/lng of markers[x]
         map.panTo(latlng[x]);
 
@@ -52,7 +52,7 @@ function centermap(){
 }
 
 //this function is called in the marker event listener, and it populates the information pane table with the correct information
-function populatetable(x){
+function populatetable(x, currentuser){
     //----------------------------FIRST HALF OF FUNCTION ADDS TOP HALF OF THE SIDE PANEL-----------------------------------
     //these call various ids in the information pane and add html to them
 
@@ -98,7 +98,7 @@ function populatetable(x){
     }
 
     residentsSidePanelText = "<tr>" + headname + headphone + heademail + "</tr>";
-    
+if( currentuser != "guest"){
     //this loop iterates through all sub-residents and puts the correct sub-residents in a table with the id of sub_residents
     //this loop is dependent on the fact that we will not allow any head residents to ever have more than the max sub residents, otherwise this loop will potentially not function properly
     //if(($_SESSION['login_user']) != "guest"){
@@ -120,6 +120,7 @@ function populatetable(x){
         }
         i++;
     }
+}
   //}
     //populates the sub_residents table with the looped information
     document.getElementById("sub_residents").innerHTML = "<tr><th style='font-size: 125%;text-align: center;'>Residents </th><th style='font-size: 125%;text-align: center;'>Phone</th><th style='font-size: 125%;text-align: center;'>E-mail</th></tr>"+residentsSidePanelText;

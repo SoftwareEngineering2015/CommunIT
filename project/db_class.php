@@ -1,13 +1,16 @@
 <?php
+
+
 class manage_db {
   function __construct( $DBG = false ) {
     $this->DBG = $DBG;
   }
   function connect_db(){
-     $server = '127.0.0.1';
-     $user = 'root';
-     $pass = '';
-     $mydb = 'communit';
+    include('db_config.php');
+ //    $server = '127.0.0.1';
+   //  $user = 'root';
+     //$pass = '';
+     //$mydb = 'communit';
      $this->DBH = mysqli_connect($server, $user, $pass, $mydb ) 
          or die ("Cannot connect to $server using $user Errst=" .  mysql_error());
 

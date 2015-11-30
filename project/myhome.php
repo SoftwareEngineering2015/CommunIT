@@ -85,7 +85,7 @@
 				</table> 
 			</div>
 			<div class="col-md-6">
-				<h3> Sub Resident Information </h3>
+				<h3> Resident Information </h3>
 				<table class="table table-striped table-hover ">
 					<tr>
 						<th> First Name </th>

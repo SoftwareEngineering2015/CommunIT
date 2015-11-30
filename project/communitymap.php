@@ -28,7 +28,7 @@
   ?>
 
   <style>
-  body, html {
+    body, html {
       height: 100%;
       width: 100%;
     }
@@ -60,15 +60,15 @@ function initialize(){
     map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
     var geocoder = new google.maps.Geocoder();
 
- <?php
+    <?php
 // Create connection
- $P = new manage_db;
- $P->connect_db();
+    $P = new manage_db;
+    $P->connect_db();
 //Gets the information of a residence and it's head resident 
- $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address, miscinfo, pin_color FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY username='$login_session' DESC";
- $P->do_query($sqlResidences);
- $resultResidences = mysql_query($sqlResidences);    
- ?>
+    $sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address, miscinfo, pin_color FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY username='$login_session' DESC";
+    $P->do_query($sqlResidences);
+    $resultResidences = mysql_query($sqlResidences);    
+    ?>
 
     //Gets the information of the sub residents
     <?php
@@ -174,7 +174,7 @@ function initialize(){
     for(i in addresses){
         //extend the bounds object to fit the iterated marker
         bounds.extend(new google.maps.LatLng(latitudes[i], longitudes[i]));
-      infowindow_status[i] = 0;
+        infowindow_status[i] = 0;
 
         //Change the color of each image through this function
         overalayColor(pincolor[i]);
@@ -192,7 +192,7 @@ function initialize(){
         infowindows.push('<div style="font-size: 120%"><span style="font-size: 100%; font-weight: bold;">' + head_full_names[i] +  '<br/></span><span style="font-size: 100%; font-weight: bold;">' + addresses[i] + '</span><br/><span style="font-size: 100%; font-weight: bold; color:  #FF6666;">' +emergencies[i]+'</span></div>');
 
         //invoke the addlistener function
-        addlistener(i);
+        addlistener(i, '<?php echo($_SESSION['login_user']) ?>');
 
         //start process to set up custom drop down
         //create the options that respond to click
@@ -270,13 +270,14 @@ function initialize(){
 
     }
     //this is a click listener that closes the infowindow when the map is clicked. Dragging the map does NOT close the infowindow. 
+    
     google.maps.event.addListener(map, 'click',function(){
         //this loop resets all infowindow counters to zero
         for(i in addresses)
-            infowindow_status[i] = 0;
+          infowindow_status[i] = 0;
         //closes the infowindow, if open
         infowindow.close();
-    });
+      });
 
   }
 //----------------------END OF INITIALIZE FUNCTION
@@ -315,7 +316,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </tr>
 
   <table id='misc_panel'class="table table-striped table-hover">
-  
+
   </table>
   
   <table id='sub_residents' class="table table-striped table-hover" style="text-align: center;">
