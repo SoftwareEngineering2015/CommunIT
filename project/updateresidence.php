@@ -15,8 +15,13 @@ if(isset($_POST['add_new_residence'])) {
 		$residence_name = $_POST['residence_name'];
 	}
 	$address = $_POST['address'];
-	$latitude = $_POST['latitude'];
-	$longitude = $_POST['longitude'];
+	if ($_POST['latitude'] != "" && $_POST['longitude'] != "") {
+		$latitude = $_POST['latitude'];
+		$longitude = $_POST['longitude'];
+	} else {
+		header("location: addresidence.php?error=latlng");
+		exit; // Just in case, exit the file so the rest of the code will never run
+	}
 
 
     $password = "password";

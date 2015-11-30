@@ -25,6 +25,9 @@
     if (isset($_GET['error']) && $_GET['error'] == 'exists') {
       $error = "<span style='color:red;'> Residence name already exists. </span><br />";
     }
+    if (isset($_GET['error']) && $_GET['error'] == 'latlng') {
+      $error = "<span style='color:red;'> Latitude and longitude must be set. </span><br />";
+    }
 
 // Create connection
     $P = new manage_db;
