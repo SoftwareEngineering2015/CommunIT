@@ -136,7 +136,8 @@ function centerbutton(controlDiv, map){
     controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
     controlUI.style.cursor = 'pointer';
     controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
+    controlUI.style.textAlign = 'center';
+    controlUI.style.marginRight = '15px';
     controlUI.title = 'Click to recenter the map on your community';
     controlDiv.appendChild(controlUI);
 
@@ -167,7 +168,7 @@ function findmyhouse(controlDiv, map) {
     controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
     controlUI.style.cursor = 'pointer';
     controlUI.style.marginBottom = '22px';
-    controlUI.style.textAlign = 'right';
+    controlUI.style.textAlign = 'center';
     controlUI.title = 'Click to find your house in your community';
     controlDiv.appendChild(controlUI);
 

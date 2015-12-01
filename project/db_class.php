@@ -7,10 +7,6 @@ class manage_db {
   }
   function connect_db(){
     include('db_config.php');
- //    $server = '127.0.0.1';
-   //  $user = 'root';
-     //$pass = '';
-     //$mydb = 'communit';
      $this->DBH = mysqli_connect($server, $user, $pass, $mydb ) 
          or die ("Cannot connect to $server using $user Errst=" .  mysql_error());
 
