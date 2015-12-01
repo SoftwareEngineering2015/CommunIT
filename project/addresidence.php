@@ -28,6 +28,9 @@
     if (isset($_GET['error']) && $_GET['error'] == 'latlng') {
       $error = "<span style='color:red;'> Latitude and longitude must be set. </span><br />";
     }
+    if (isset($_GET['error']) && $_GET['error'] == 'alphanum') {
+      $error = "<span style='color:red;'> Residence name must consist of only letters and numbers. </span><br />";
+    }
 
 // Create connection
     $P = new manage_db;

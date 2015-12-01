@@ -127,7 +127,7 @@ function initialize(){
   var marker = new google.maps.Marker({
     map: map,
     draggable: true,
-    title: (<?php echo "'$username'" ?>),
+    title: ("<?php echo $username ?>"),
     icon: iconbase + 'house_pin02.png',
     position: myCenter,
     animation: google.maps.Animation.DROP

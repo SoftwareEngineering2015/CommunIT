@@ -11,6 +11,9 @@ if(isset($_POST['add_new_residence'])) {
 	if(preg_match('/\s/', $_POST['residence_name'])) {
 		header("location: addresidence.php?error=space");
 		exit; // Just in case, exit the file so the rest of the code will never run
+	}elseif(preg_match('/[^a-z0-9]/i', $_POST['residence_name'] )) {
+		header("location: addresidence.php?error=alphanum");
+		exit; // Just in case, exit the file so the rest of the code will never run
 	} else {
 		$residence_name = $_POST['residence_name'];
 	}
@@ -137,8 +140,11 @@ if(isset($_POST['add_new_residence'])) {
 		// Do individual queries for each input since each input is not required 
 		// Trim the input of the form so that blank data will not be inputed into the database
 		if (trim($_POST['residence_name']) != "") {
-			if(preg_match('/\s/', $_POST['residence_name'])) {
+			if(preg_match('/\s/', $_POST['residence_name']) ) {
 				header("location: editresidence.php?residence=$residence_id&error=space");
+				exit; // Just in case, exit the file so the rest of the code will never run
+			}elseif(preg_match('/[^a-z0-9]/i', $_POST['residence_name'] )) {
+				header("location: editresidence.php?residence=$residence_id&error=alphanum");
 				exit; // Just in case, exit the file so the rest of the code will never run
 			} else {
 				$residence_name=$_POST['residence_name'];
