@@ -73,7 +73,7 @@ function populatetable(x, currentuser){
     if(miscinfo[x]=="<div></div>"){
         document.getElementById("misc_panel").innerHTML = "";
     }else{
-        document.getElementById("misc_panel").innerHTML = "<tr><th style='font-weight: bold;  text-align: center; text-align:Center; font-size: 110%;'>Misc</th></tr> <tr><td style='text-indent: 25%;'>" +miscinfo[x]+  "</td></tr>";
+        document.getElementById("misc_panel").innerHTML = "<tr><th style='font-weight: bold; text-align:Center; font-size: 110%;'>Misc</th></tr> <tr><td style='text-align:Center;'>" +miscinfo[x]+  "</td></tr>";
     }
 
     //---------------------THIS SECOND HALF OF THE FUNCTION ADDS THE BOTTOM HALF OF THE SIDE PANEL-------------------------

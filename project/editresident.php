@@ -235,7 +235,7 @@ if (isset($_GET['resident'])){
 						<tr>
 							<th> Misc Information</th>
 							<td> </td>
-							<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo "'$head_residents[6]'";?> wrap="hard" rows="5" maxlength="255"><?php echo "$head_residents[6]";?></textarea>
+							<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo "'$head_residents[6]'";?> wrap="soft" rows="5" maxlength="255"><?php echo "$head_residents[6]";?></textarea>
 						</tr>
 						<tr>
 							<th> Pin Color </th>

@@ -163,7 +163,7 @@ function initialize(){
     phone_one.push(<?php echo '"'. $row['phone_one'] .'"'?>);
     email_address.push(<?php echo '"'. $row['email_address'] .'"'?>);
 
-    <?php $miscString = "<div>" . preg_replace( "/\r|\n/", "</div><div>", $row['miscinfo'] ) . "</div>"; ?>
+    <?php $miscString = "<div>" . preg_replace( "/\r|\n|\n\n/", "</div><div>", $row['miscinfo'] ) . "</div>"; ?>
     miscinfo.push(<?php echo '"'. $miscString .'"'?>);
 
     pincolor.push(<?php echo '"'. $row['pin_color'] .'"'?>);

@@ -6,7 +6,8 @@ class template {
   }
  
   function show_template( ) {
-  	print "<html>\n<head> <title> $this->TITLE </title></head>";
+  	print "<html>\n<head> <title> $this->TITLE </title>
+     <link rel='icon' type='image/icon' href='images/favicon.ico'></head>";
   	print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
    }
  }
