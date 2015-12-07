@@ -2,17 +2,20 @@
 <html>
 <head>
 
-	<?php
+<?php
 
   require_once( "template_class.php");       // css and headers
   $H = new template( "My Home" );
   $H->show_template( );
 
-  	if(($_SESSION['login_user']) == "admin"){
+  // If the user is admin take them back to the admin page
+  if(($_SESSION['login_user']) == "admin"){
 		header("location: admin.php");
 		exit();
 	}
-    if(($_SESSION['login_user']) == "guest"){
+
+  // If the user is a guest take them to the community map page
+  if(($_SESSION['login_user']) == "guest"){
 		header("location: communitymap.php");
 		exit();
 	}
@@ -21,29 +24,40 @@
   $P = new manage_db;
   $P->connect_db();
 
+  // Set up the query to get the head resident information
   $sql_head_residents = "SELECT * FROM head_residents INNER JOIN residences ON head_residents.fk_residence_id = residences.residence_id WHERE username='$login_session'";
   $P->do_query($sql_head_residents);
   $head_residents_result = mysql_query($sql_head_residents); 
 
   $head_residents = array(); //Holds head residents' information
 
+  //Set up the error variable
   $error = "";
 
+  // if the emergency information was wrong (set in the url) display the error message
   if (isset($_GET['error']) && $_GET['error'] == 'emergency') {
 	$error = "<span style='color:red;'> Emergency contact number must be in xxx-xxx-xxxx format. </span><br />";
   }
+
+  // if the phone information was wrong (set in the url) display the error message
   if (isset($_GET['error']) && $_GET['error'] == 'phone') {
 	$error = "<span style='color:red;'> Additional phone number must be in xxx-xxx-xxxx format. </span><br />";
   }
+
+  // if the email information was wrong (set in the url) display the error message
   if (isset($_GET['error']) && $_GET['error'] == 'email') {
 	$error = "<span style='color:red;'> E-mail address must be a valid e-mail. </span><br />";
   }
 
+  // Setup the sub resident error variable
   $sub_error = "";
 
+  // if the phone information was wrong (set in the url) display the error message
   if (isset($_GET['sub_error']) && $_GET['sub_error'] == 'phone') {
 	$sub_error = "<span style='color:red;'> Sub Resident phone number must be in xxx-xxx-xxxx format. </span><br />";
   }
+
+  // if the email information was wrong (set in the url) display the error message
   if (isset($_GET['sub_error']) && $_GET['sub_error'] == 'email') {
 	$sub_error = "<span style='color:red;'> Sub Resident e-mail address must be a valid e-mail. </span><br />";
   }
@@ -52,8 +66,9 @@
   // Checks to see if there is a head resident for the residence  
   if(mysql_num_rows($head_residents_result)==0) {
 
-  	echo "<script type='text/javascript'>$(window).load(function(){ $('#myModal').modal('show'); }); </script>"; // Loads the popup window on page load
+  	echo "<script type='text/javascript'>$(window).load(function(){ $('#myModal').modal('show'); }); </script>"; // Displays the welcome modal for a new user
 
+  	// Set up the query to get the residence id 
   	$sql_residence_id = "SELECT residence_id FROM residences WHERE username='$login_session'";
   	$P->do_query($sql_residence_id);
   	$residence_id_result = mysql_query($sql_residence_id); 
@@ -66,7 +81,7 @@
 
   	}
 
-  	$hide_elements = "style='display:none'";
+  	$hide_elements = "style='display:none'"; // dont display the sub resident information 
   	$require_first_name = true; // Variable that will be used later to require first name for head resident
   	$require_last_name = true; // Variable that will be used later to require last name for head resident
   	$require_emergency = true; // Variable that will be used later to require emergency contact for head resident
@@ -80,11 +95,15 @@
 	array_push($head_residents, "");
 	array_push($head_residents, "");
 
+	// Get the default color information
 	$sql_default_color = "DESCRIBE head_residents";
 	$P->do_query($sql_default_color);
 	$default_color_result = mysql_query($sql_default_color); 
+
+	// Get the default pin color
 	while ($row = mysql_fetch_assoc($default_color_result))
 	  {
+	  	// Specify the field that we want
 	  	if ($row['Field'] == 'pin_color') { 
 	  			array_push($head_residents, $row['Default']);
 	  	}
@@ -93,7 +112,8 @@
 	
   } else { // This section is for if there is a head resident registered to the residence
 
-  	$hide_elements = "";
+
+  	$hide_elements = ""; // This will allow the sub resident information to be displayed
 
   	$require_first_name = false; // Required first name is not needed when updating head resident data
   	$require_last_name = false; // Required last name is not needed when updating head resident data
@@ -114,12 +134,14 @@
   		array_push($head_residents, $row['pin_color']); // Current pin color
   	}
 
+  	// Query to get the user password
   	$sql_residence_password = "SELECT password FROM residences WHERE username='$login_session'";
   	$P->do_query($sql_residence_password);
   	$residence_password_result = mysql_query($sql_residence_password);
+
   	while ($row = mysql_fetch_assoc($residence_password_result))
   	{
-  		array_push($head_residents, $row['password']); // Head resident id; used for updating columns for the current user
+  		array_push($head_residents, $row['password']); // password of the user
   		
   	}
 
@@ -127,6 +149,8 @@
   	$sql_max_per_residence = "SELECT max_per_residence FROM configuration";
   	$P->do_query($sql_max_per_residence);
   	$max_per_residence_result = mysql_query($sql_max_per_residence);
+
+  	// Store the max number per residence
   	while ($row = mysql_fetch_assoc($max_per_residence_result))
   	{
   		$max_per_residence = $row['max_per_residence'];
@@ -141,7 +165,7 @@
   ?>
 </head>
 <script>
-// Change the image to the default pin color on page load
+		// Change the image to the default pin color on page load
 		$( window ).bind('load',function() {
     		pin_color =  document.getElementById('pincolor').value;
     		overalayColor(pin_color);
@@ -224,7 +248,7 @@
 							<tr>
 								<th> Misc Information</th>
 								<td> </td>
-								<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo "'$head_residents[6]'";?> wrap="soft" rows="5" maxlength="255"><?php echo "$head_residents[6]";?></textarea>
+								<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo "'$head_residents[6]'";?> wrap="soft" rows="5" maxlength="255" ><?php echo "$head_residents[6]";?></textarea>
 							</tr>
 							<tr>
 								<th> Pin Color </th>
@@ -256,11 +280,13 @@
 						<form action="updateprofile.php" method="POST">
 							<?php
 
-							$hide_add_new_sub_resident = "";
+							$hide_add_new_sub_resident = ""; //Used to display or hide the add new sub resident field
 							$counter = 0;
+
 						// Displays the sub resident information
 							while ($row = mysql_fetch_assoc($sub_residents_result))
 							{
+
 								$sub_residents_id =  $row ['sub_residents_id'];
 								$first_name =  $row ['first_name'];
 								$last_name =  $row ['last_name'];
@@ -269,17 +295,28 @@
 								echo "<tr> <td> <input name='update_sub_resident_first_name:".$sub_residents_id."' type='text' value=" . $first_name . " placeholder=" . $first_name . " class='form-control input-md' > </td>";
 								echo "<td> <input name='update_sub_resident_last_name:".$sub_residents_id."' type='text' value=" . $last_name . " placeholder=" . $last_name . " class='form-control input-md' > </td> ";
 								echo "<td> <input name='update_sub_resident_phone_number:".$sub_residents_id."' type='tel'";
+								
+								// if the phone number is set display it
 								if (isset($phone_number))
 									echo "value='$phone_number' placeholder='$phone_number'";
 								echo "class='form-control input-md' > </td>";
 								echo "<td> <input name='update_sub_resident_email_address:".$sub_residents_id."' type='email'";
+								
+								// if the email is set display it 
 								if (isset($email_address))
 									echo "value='$email_address' placeholder='$email_address'";
 								echo "class='form-control input-md' > </td>";
+								
+								//Setup the update sub resident button
 								echo "<td><button name='update_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-primary btn-sm glyphicon glyphicon-pencil' style='   width: 100%;'></button>";
+								
+								//Setup the delete sub resident button
 								echo "<button name='delete_sub_resident' type='submit' value=". $sub_residents_id . ":" . $head_residents[0] . " class='btn btn-danger btn-sm glyphicon glyphicon-remove' style='   width: 100%;'> </button> </td></tr>";
-								$counter = $counter + 1;
+								
+								$counter = $counter + 1; //Used to make sure the max amount of sub residents is accounted for
 							}
+
+							// If the max per residence is less than the counter display the add sub resident information
 							if ($max_per_residence <= $counter) {
 									$hide_add_new_sub_resident = "style = 'display:none;'";
 								}

@@ -7,17 +7,22 @@ if(isset($_POST['add_new_residence'])) {
 	$P = new manage_db;
 	$P->connect_db();
 
-	// Define variables
+	// Check if there is a space in the residence name
 	if(preg_match('/\s/', $_POST['residence_name'])) {
 		header("location: addresidence.php?error=space");
 		exit; // Just in case, exit the file so the rest of the code will never run
-	}elseif(preg_match('/[^a-z0-9]/i', $_POST['residence_name'] )) {
+	}
+	// Check if the residence name is in alphanum format
+	elseif(preg_match('/[^a-z0-9]/i', $_POST['residence_name'] )) {
 		header("location: addresidence.php?error=alphanum");
 		exit; // Just in case, exit the file so the rest of the code will never run
-	} else {
-		$residence_name = $_POST['residence_name'];
+	} else { 
+		$residence_name = $_POST['residence_name']; // Store the residence name
 	}
-	$address = $_POST['address'];
+
+	$address = $_POST['address']; //Store the address
+
+	//Make sure the lat and long are set in the form
 	if ($_POST['latitude'] != "" && $_POST['longitude'] != "") {
 		$latitude = $_POST['latitude'];
 		$longitude = $_POST['longitude'];
@@ -26,7 +31,7 @@ if(isset($_POST['add_new_residence'])) {
 		exit; // Just in case, exit the file so the rest of the code will never run
 	}
 
-
+	//This is the function that gives the user a random password
     $password = "password";
     /*$total = 8;
 	while ($total != 0) {
@@ -91,6 +96,7 @@ if(isset($_POST['add_new_residence'])) {
 	$longitude = stripslashes($longitude);
 	$password = stripslashes($password);
 
+	// To protect MySQL injection for Security purpose
 	$residence_name = mysql_real_escape_string($residence_name);
 	$address = mysql_real_escape_string($address);
 	$latitude = mysql_real_escape_string($latitude);
@@ -99,33 +105,15 @@ if(isset($_POST['add_new_residence'])) {
 
 	// Check connection
 	$sql_add_new_residence = "INSERT INTO residences (address, latitude, longitude, username, password) VALUES ('$address','$latitude','$longitude', '$residence_name','$password')";
-	 $P->do_residence_query($sql_add_new_residence, 'addresidence.php?error=exists');
-	/*
-	$result = $P->do_query($sql_add_new_residence);
-	
-	if($result){
-		
-		//header('addresidence.php?error="cows"');
-	}else{
-		//header('location: addresidence.php?errormessage='.$residence_name.' Already Exists');
-		echo
-		'<body onload="document.errormessage.submit()">
-		<form action="addresidence.php" method="POST" name="errormessage">
-		<input name="errormessage" type="hidden" value="Error goes here"></input>
-		</form></body>';
-		exit();
-	}
-	*/
-
-	
+	 $P->do_residence_query($sql_add_new_residence, 'addresidence.php?error=exists');	
 
 	header("location: admin.php");
 		exit; // Just in case, exit the file so the rest of the code will never run
 
 	}
 
-// Run this code if a delete head resident button was hit
-	elseif(isset($_POST['update_residence'])) {
+// Run this code if the admin is updating a residence information
+elseif(isset($_POST['update_residence'])) {
 
 		include('db_class.php');
 		$P = new manage_db;
@@ -140,13 +128,16 @@ if(isset($_POST['add_new_residence'])) {
 		// Do individual queries for each input since each input is not required 
 		// Trim the input of the form so that blank data will not be inputed into the database
 		if (trim($_POST['residence_name']) != "") {
+			//Check if there are spaces in the residence name
 			if(preg_match('/\s/', $_POST['residence_name']) ) {
 				header("location: editresidence.php?residence=$residence_id&error=space");
 				exit; // Just in case, exit the file so the rest of the code will never run
-			}elseif(preg_match('/[^a-z0-9]/i', $_POST['residence_name'] )) {
+			}
+			//Check that the residence name is in alphanum format
+			elseif(preg_match('/[^a-z0-9]/i', $_POST['residence_name'] )) {
 				header("location: editresidence.php?residence=$residence_id&error=alphanum");
 				exit; // Just in case, exit the file so the rest of the code will never run
-			} else {
+			} else { 
 				$residence_name=$_POST['residence_name'];
 				$residence_name = stripslashes($residence_name);
 				$residence_name = mysql_real_escape_string($residence_name);
@@ -154,6 +145,7 @@ if(isset($_POST['add_new_residence'])) {
 				$P->do_residence_query($sql_residence_update, "editresidence.php?residence=$residence_id&error=exists");
 			}
 		}
+		// Trim the input of the form so that blank data will not be inputed into the database
 		if (trim($_POST['address']) != "") {
 			$address=$_POST['address'];
 			$address = stripslashes($address);
@@ -161,6 +153,7 @@ if(isset($_POST['add_new_residence'])) {
 			$sql_residence_update = "UPDATE residences SET address = '$address' WHERE residence_id = '$residence_id'";
 			$P->do_query($sql_residence_update);
 		}
+		// Trim the input of the form so that blank data will not be inputed into the database
 		if (trim($_POST['latitude']) != "") {
 			$latitude=$_POST['latitude'];
 			$latitude = stripslashes($latitude);
@@ -168,6 +161,7 @@ if(isset($_POST['add_new_residence'])) {
 			$sql_residence_update = "UPDATE residences SET latitude = '$latitude' WHERE residence_id = '$residence_id'";
 			$P->do_query($sql_residence_update);
 		}
+		// Trim the input of the form so that blank data will not be inputed into the database
 		if (trim($_POST['longitude']) != "") {
 			$longitude=$_POST['longitude'];
 			$longitude = stripslashes($longitude);

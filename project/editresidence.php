@@ -89,7 +89,7 @@ var latitude = <?php  if (isset($latitude)){echo $latitude ;}?>;
 var longitude = <?php if (isset($longitude)){echo $longitude ;}?>;
 
 var myCenter=new google.maps.LatLng(latitude, longitude);
-var markers = [];
+var marker_new = [];
 var additional_markers = [];
 
     addresses = [];
@@ -132,7 +132,7 @@ function initialize(){
     position: myCenter,
     animation: google.maps.Animation.DROP
   }); 
-  markers.push(marker);
+  marker_new.push(marker);
 
 
     //populates residence data from database
@@ -258,10 +258,10 @@ function geocodeAddress_2(geocoder, resultsMap) {
 var marker = new google.maps.Marker({
   map: resultsMap,
   draggable: true,
-  icon: iconbase + 'house_pin.png',
+  icon: iconbase + 'house_pin02.png',
   position: results[0].geometry.location
 });
-markers.push(marker);
+marker_new.push(marker);
 
   document.getElementById("latitude").value = marker.getPosition().lat();
   document.getElementById("longitude").value = marker.getPosition().lng();

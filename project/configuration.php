@@ -1,44 +1,55 @@
 <?php
 
-	  require_once( "template_class.php");       // css and headers
-	  $H = new template( "Administration" );
-	  $H->show_template( );
+	require_once( "template_class.php");       // css and headers
+	$H = new template( "Administration" );
+	$H->show_template( ); // Sets up the template for the page
 
-	  if(($_SESSION['login_user']) != "admin"){
-	  	header("location: myhome.php");
+	// If the user is not an admin redirect them to the appropriate page
+	if(($_SESSION['login_user']) != "admin"){
+		header("location: myhome.php");
 	  	exit();
-	  }
+	}
 
-	  $P = new manage_db;
-	  $P->connect_db();
+	// Connect to the database
+	$P = new manage_db;
+	$P->connect_db();
 
-	  $sql_configuration = "SELECT * FROM configuration";
-	  $P->do_query($sql_configuration);
-	  $configuration_results = mysql_query($sql_configuration); 
+	// Get the configuration information
+	$sql_configuration = "SELECT * FROM configuration";
+	$P->do_query($sql_configuration);
+	$configuration_results = mysql_query($sql_configuration); 
 
-	  $configuration = array();
-		// Displays the head resident information
-	  while ($row = mysql_fetch_assoc($configuration_results))
-	  {
+	// Initialize the array that will hold the configuration information
+	$configuration = array();
+
+	// Stores the information from the query in the array 
+	while ($row = mysql_fetch_assoc($configuration_results))
+	{
 	  	array_push($configuration, $row['community_name']);
 	  	array_push($configuration, $row['max_per_residence']);
-	  }
+	}
 
+	// Get the default color information 
 	$sql_default_color = "DESCRIBE head_residents";
 	$P->do_query($sql_default_color);
 	$default_color_result = mysql_query($sql_default_color); 
+
+	// Stores the color information in the array
 	while ($row = mysql_fetch_assoc($default_color_result))
-	  {
+	{
+	  	// This specifies the field in the query that we want the information from
 	  	if ($row['Field'] == 'pin_color') { 
 	  		array_push($configuration, $row['Default']);
 	  	}
-	  }
+	}
 
-	  ?>
-	  <!DOCTYPE html>
-	  <html>
-	  <head>
-	  	<script>
+?>
+
+<!DOCTYPE html>
+ <html>
+  <head>
+  	<script>
+
 		// Change the image to the default pin color on page load
 		$( window ).bind('load',function() {
     		pin_color =  document.getElementById('default_pin_color').value;
@@ -55,71 +66,72 @@
 			});
 		});
 
-		// function : show_confirm()
+		// Displays the modal for the edit admin password
 		function edit_admin_password(old_password){
     		// shows the modal on button press
     		$('#edit_admin_password').modal('show');
     		document.getElementById("old_admin_password").innerHTML = old_password;
     	}
 
-		// function : show_confirm()
+		// Displays the modal for the edit guest password
 		function edit_guest_password(old_password){
     		// shows the modal on button press
     		$('#edit_guest_password').modal('show');
     		document.getElementById("old_guest_password").innerHTML = old_password;
     	}
-    	//pass total # of characters, and []
+
+    	// This function generates a random password
     	function makepassword(total, chars){
     		if(total!=0){
-        //this switch statement selects a random character to be insteted into the character array
-        var added = 'A';
-        switch(1 + parseInt((Math.random() * ((46 - 1) + 1)))){
-        	case 1: added = 'a';break;
-        	case 2: added = 'b';break;
-        	case 3: added = 'c';break;
-        	case 4: added = 'd';break;
-        	case 5: added = 'e';break;
-        	case 6: added = 'f';break;
-        	case 7: added = 'g';break;
-        	case 8: added = 'h';break;
-        	case 9: added = 'i';break;
-        	case 10: added = 'j';break;
-        	case 11: added = 'k';break;
-        	case 12: added = 'l';break;
-        	case 13: added = 'm';break;
-        	case 14: added = 'n';break;
-        	case 15: added = 'o';break;
-        	case 16: added = 'p';break;
-        	case 17: added = 'q';break;
-        	case 18: added = 'r';break;
-        	case 19: added = 's';break;
-        	case 20: added = 't';break;
-        	case 21: added = 'u';break;
-        	case 22: added = 'v';break;
-        	case 23: added = 'w';break;
-        	case 24: added = 'x';break;
-        	case 25: added = 'y';break;
-        	case 26: added = 'z';break;
-        	case 27: added = '1';break;
-        	case 28: added = '2';break;
-        	case 29: added = '3';break;
-        	case 30: added = '4';break;
-        	case 31: added = '5';break;
-        	case 32: added = '6';break;
-        	case 33: added = '7';break;
-        	case 34: added = '8';break;
-        	case 35: added = '9';break;
-        	case 36: added = '0';break;
-        	case 37: added = '1';break;
-        	case 38: added = '2';break;
-        	case 39: added = '3';break;
-        	case 40: added = '4';break;
-        	case 41: added = '5';break;
-        	case 42: added = '6';break;
-        	case 43: added = '7';break;
-        	case 44: added = '8';break;
-        	case 45: added = '9';break;
-        	case 46: added = '0';break;
+       		//this switch statement selects a random character to be insteted into the character array
+        	var added = 'A';
+        	switch(1 + parseInt((Math.random() * ((46 - 1) + 1)))){
+        		case 1: added = 'a';break;
+        		case 2: added = 'b';break;
+        		case 3: added = 'c';break;
+        		case 4: added = 'd';break;
+        		case 5: added = 'e';break;
+        		case 6: added = 'f';break;
+        		case 7: added = 'g';break;
+        		case 8: added = 'h';break;
+        		case 9: added = 'i';break;
+        		case 10: added = 'j';break;
+        		case 11: added = 'k';break;
+        		case 12: added = 'l';break;
+        		case 13: added = 'm';break;
+        		case 14: added = 'n';break;
+        		case 15: added = 'o';break;
+        		case 16: added = 'p';break;
+        		case 17: added = 'q';break;
+        		case 18: added = 'r';break;
+        		case 19: added = 's';break;
+        		case 20: added = 't';break;
+        		case 21: added = 'u';break;
+        		case 22: added = 'v';break;
+        		case 23: added = 'w';break;
+        		case 24: added = 'x';break;
+        		case 25: added = 'y';break;
+        		case 26: added = 'z';break;
+        		case 27: added = '1';break;
+        		case 28: added = '2';break;
+        		case 29: added = '3';break;
+        		case 30: added = '4';break;
+        		case 31: added = '5';break;
+        		case 32: added = '6';break;
+        		case 33: added = '7';break;
+        		case 34: added = '8';break;
+        		case 35: added = '9';break;
+        		case 36: added = '0';break;
+        		case 37: added = '1';break;
+        		case 38: added = '2';break;
+        		case 39: added = '3';break;
+        		case 40: added = '4';break;
+        		case 41: added = '5';break;
+        		case 42: added = '6';break;
+        		case 43: added = '7';break;
+        		case 44: added = '8';break;
+        		case 45: added = '9';break;
+        		case 46: added = '0';break;
         	}
         	chars.push(added);
         	makepassword((total-1), chars);
@@ -129,18 +141,19 @@
 		return chars.toString().replace(/,/g,'');
 	}
 
-	// function : generate_password()
+	// This runs the generate password function and stores the random password in the input field
 	function generate_password(password_field){
     	// generate a password and fill the field with the value
     	var rndm_password = makepassword(8,[]);
     	document.getElementById(password_field).value = rndm_password;
 	}
-	// function : generate_password()
+
+	// This clears the password input field so that a new password can be stored in it
 	function clear_password_field(password_field){
 		document.getElementById(password_field).value = "";
 	}
-	</script>
 
+	</script>
 </head>
 <body>
 
@@ -190,22 +203,27 @@
 						$P->connect_db();
 
 						$sql_admin_guest = "SELECT * FROM residences WHERE username = 'admin' OR username = 'guest'";
-						//$P->do_query($sql_head_residents);
 						$head_admin_guest_result = mysql_query($sql_admin_guest); 
+						
 						// Displays the head resident information
 						while ($row = mysql_fetch_assoc($head_admin_guest_result))
 						{
-
+							//Setup the buttons in the configuration pahe
 							echo "<tr> <td> " . $row['username'] . "</td>";
+							
+							// Sets up the admin buttons 
 							if ($row['username'] == "admin") {
 								echo "<td><button onclick=edit_admin_password('". $row['password'] ."') type='button' class='btn btn-primary btn-sm' style='  width: 100%;'> <b> Change Password </b> </button> </td><td colspan='4'> </td> </tr>";
 								continue;
 							}
+
+							//Sets up the guest buttons
 							if ($row['username'] == "guest") {
 								echo "<td><button onclick=edit_guest_password('". $row['password'] ."') type='button' class='btn btn-primary btn-sm' style='  width: 100%;'> <b> Change Password </b> </button> </td><td colspan='4'> </td> </tr>";
 								continue;
 							}
 						}
+						
 						?>
 					</table>
 				</div>

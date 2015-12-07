@@ -1,46 +1,56 @@
 <?php
 
+// This checks to see if the resident id is set and residence id is set so thr program knows which residence the admin is updating or what head resident the admin is updating
 if (!isset($_GET['resident']) && !isset($_GET['residence']) ){
-	header("location: admin.php");
+	header("location: admin.php"); //Return the admin if neither are set
 	exit;
 }
 
+//If they are both set then return the admin because only one instance can be updated
 if (isset($_GET['resident']) && isset($_GET['residence']) ){
 	header("location: admin.php");
 	exit;
 }
 
-if (isset($_GET['residence'])){
-	  require_once( "template_class.php");       // css and headers
-	  $H = new template( "Administration" );
-	  $H->show_template( );
 
-	  if(($_SESSION['login_user']) != "admin"){
+// If the residence id is set in the url then that means that the admin is adding a new head resident to the residence
+if (isset($_GET['residence'])){
+	require_once( "template_class.php");       // css and headers
+	$H = new template( "Administration" );
+	$H->show_template( );
+
+	// If the user is not an admin then redirect them
+	if(($_SESSION['login_user']) != "admin"){
 	  	header("location: myhome.php");
 	  	exit();
-	  }
+	}
 
-	  $residence = $_GET['residence'];
+	$residence = $_GET['residence']; //Get the residence id in the url
 
-	  $error = "";
+	$error = ""; //Setup the error variable
 
+	// If the emergency error is set in the url print the error message 
   	if (isset($_GET['error']) && $_GET['error'] == 'emergency') {
 		$error = "<span style='color:red;'> Emergency contact number must be in xxx-xxx-xxxx format. </span><br />";
   	}
+  	// if the phone error is set in the url then print the error message
   	if (isset($_GET['error']) && $_GET['error'] == 'phone') {
 		$error = "<span style='color:red;'> Additional phone number must be in xxx-xxx-xxxx format. </span><br />";
   	}
+  	// If the email error is set in the url then print the error message
   	if (isset($_GET['error']) && $_GET['error'] == 'email') {
 		$error = "<span style='color:red;'> E-mail address must be a valid e-mail. </span><br />";
   	}
 
 
-	    // Create connection
-	  $P = new manage_db;
-	  $P->connect_db();
-	  $sql_head_residents = "SELECT * FROM residences WHERE residence_id='$residence'";
-	  $P->do_query($sql_head_residents);
-	  $head_residents_result = mysql_query($sql_head_residents); 
+	// Create connection
+	$P = new manage_db;
+	$P->connect_db();
+
+	// Check if the residence id set in the url exists
+	$sql_head_residents = "SELECT * FROM residences WHERE residence_id='$residence'";
+	$P->do_query($sql_head_residents);
+	$head_residents_result = mysql_query($sql_head_residents); 
 
 
 
@@ -48,7 +58,7 @@ if (isset($_GET['residence'])){
   	if(mysql_num_rows($head_residents_result)==0) {
   		header("location: admin.php");
   		exit;
-  	} else {
+  	} else { //Run this the residence does exist
   		$sql_head_residents = "SELECT * FROM head_residents WHERE fk_residence_id='$residence'";
 	  	$P->do_query($sql_head_residents);
 	  	$head_residents_result = mysql_query($sql_head_residents);
@@ -56,14 +66,14 @@ if (isset($_GET['residence'])){
   			header("location: admin.php");
   			exit;
   		} else {
-  			$hide_elements = "style='display:none'";
+  			$hide_elements = "style='display:none'"; //Hide the elements if adding a new head resident
 
   			$require_first_name = true; // Variable that will be used later to require first name for head resident
   			$require_last_name = true; // Variable that will be used later to require last name for head resident
 			$require_emergency = true; // Variable that will be used later to require emergency contact for head resident
 
-			$head_residents = array();
-			array_push($head_residents, "N:" .$residence);
+			$head_residents = array(); // Setup the array
+			array_push($head_residents, "N:" .$residence); //Specify that it is a new head resident that we are adding
 			
 			// Puts empty space in the array because this array is used to display the current information of the head resident
 			array_push($head_residents, "");
@@ -73,6 +83,7 @@ if (isset($_GET['residence'])){
 			array_push($head_residents, "");
 			array_push($head_residents, "");
 
+			//Get the default pin color value
 			$sql_default_color = "DESCRIBE head_residents";
 			$P->do_query($sql_default_color);
 			$default_color_result = mysql_query($sql_default_color); 
@@ -89,56 +100,64 @@ if (isset($_GET['residence'])){
 
 }
 
+// If the resident id is set in the url then run this code
 if (isset($_GET['resident'])){
-	  require_once( "template_class.php");       // css and headers
-	  $H = new template( "Administration" );
-	  $H->show_template( );
+	require_once( "template_class.php");       // css and headers
+	$H = new template( "Administration" );
+	$H->show_template( );
 
-	  if(($_SESSION['login_user']) != "admin"){
+	//If the user is not an admin then redirect them
+	if(($_SESSION['login_user']) != "admin"){
 	  	header("location: myhome.php");
 	  	exit();
-	  }
+	}
 
-	  $resident = $_GET['resident'];
-	   // Create connection
-	  $P = new manage_db;
-	  $P->connect_db();
+	$resident = $_GET['resident']; //Get the id of the resident in the url
+	// Create connection
+	$P = new manage_db;
+	$P->connect_db();
 
-	  $sql_head_residents = "SELECT * FROM head_residents WHERE head_resident_id='$resident'";
-	  $P->do_query($sql_head_residents);
-	  $head_residents_result = mysql_query($sql_head_residents); 
+	//Get the information of the head resident
+	$sql_head_residents = "SELECT * FROM head_residents WHERE head_resident_id='$resident'";
+	$P->do_query($sql_head_residents);
+	$head_residents_result = mysql_query($sql_head_residents); 
 
-  $head_residents = array(); //Holds head residents' information
+  	$head_residents = array(); //Holds head residents' information
 
-  $error = "";
+  	$error = ""; //Set up the error message
 
+  	//Print the error message for an incorrect emergency number
   	if (isset($_GET['error']) && $_GET['error'] == 'emergency') {
 		$error = "<span style='color:red;'> Emergency contact number must be in xxx-xxx-xxxx format. </span><br />";
   	}
+  	//Print the error message for incorrect phone number
   	if (isset($_GET['error']) && $_GET['error'] == 'phone') {
 		$error = "<span style='color:red;'> Additional phone number must be in xxx-xxx-xxxx format. </span><br />";
   	}
+  	//Print this for an incorrect email address
   	if (isset($_GET['error']) && $_GET['error'] == 'email') {
 		$error = "<span style='color:red;'> E-mail address must be a valid e-mail. </span><br />";
   	}
 
-  $sub_error = "";
+  	$sub_error = ""; // Set up the sub resident error message
 
+  	//Print the error message for incorrect phone number
   	if (isset($_GET['sub_error']) && $_GET['sub_error'] == 'phone') {
 		$sub_error = "<span style='color:red;'> Sub Resident phone number must be in xxx-xxx-xxxx format. </span><br />";
   	}
+  	//Print this for an incorrect email address
   	if (isset($_GET['sub_error']) && $_GET['sub_error'] == 'email') {
 		$sub_error = "<span style='color:red;'> Sub Resident e-mail address must be a valid e-mail. </span><br />";
   	}
 
-  // Checks to see if there is a head resident for the residence  
-  if(mysql_num_rows($head_residents_result)==0) {
-  	header("location: admin.php");
-  	exit;
+  	// Checks to see if there is a head resident for the residence  
+  	if(mysql_num_rows($head_residents_result)==0) {
+  		header("location: admin.php");
+  		exit;
 
-  } else { // This section is for if there is a head resident registered to the residence
+  	} else { // This section is for if there is a head resident registered to the residence
 
-  	$hide_elements = '';
+  	$hide_elements = ''; //Do not hide the sub resident information
   	$require_first_name = false; // Required first name is not needed when updating head resident data
   	$require_last_name = false; // Required last name is not needed when updating head resident data
   	$require_emergency = false; // Required emergency contact is not needed when updating head resident data
@@ -157,9 +176,11 @@ if (isset($_GET['resident'])){
   		array_push($head_residents, $row['pin_color']); // Current misc information
   	}
 
+  	//Get the max residents per residence number
   	$sql_max_per_residence = "SELECT max_per_residence FROM configuration";
   	$P->do_query($sql_max_per_residence);
   	$max_per_residence_result = mysql_query($sql_max_per_residence);
+  	//Store the max resident per residence number
   	while ($row = mysql_fetch_assoc($max_per_residence_result))
   	{
   		$max_per_residence = $row['max_per_residence'];
@@ -266,7 +287,7 @@ if (isset($_GET['resident'])){
 					<form action="updateprofile.php" method="POST">
 						<?php
 
-						$hide_add_new_sub_resident = "";
+						$hide_add_new_sub_resident = ""; //Do not hide the add new sub resident inputs
 						$counter = 0;
 						// Displays the sub resident information
 						while ($row = mysql_fetch_assoc($sub_residents_result))
@@ -291,8 +312,9 @@ if (isset($_GET['resident'])){
 							
 							$counter = $counter + 1;
 						}
+							//If the max residents per residence is less than the counter than they cannot add a new sub resident
 							if ($max_per_residence <= $counter) {
-									$hide_add_new_sub_resident = "style = 'display:none;'";
+									$hide_add_new_sub_resident = "style = 'display:none;'"; //Hide the add new sub resident inputs
 							}
 						?>
 					</form>

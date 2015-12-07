@@ -5,6 +5,7 @@ include('db_class.php');
 	$P = new manage_db;
 	$P->connect_db();
 
+	// Trim the input of the form so that blank data will not be inputed into the database
 	if (trim($_POST['community_name']) != "") {
 			$community_name=$_POST['community_name'];
 			$community_name = stripslashes($community_name);
@@ -12,6 +13,8 @@ include('db_class.php');
 			$sql_update_configuration = "UPDATE configuration SET community_name = '$community_name'";
 			$P->do_query($sql_update_configuration);
 		}
+		
+	// Trim the input of the form so that blank data will not be inputed into the database	
 	if (trim($_POST['max_per_residence']) != "") {
 			$max_per_residence=$_POST['max_per_residence'];
 			$max_per_residence = stripslashes($max_per_residence);
@@ -20,6 +23,7 @@ include('db_class.php');
 			$P->do_query($sql_update_configuration);
 		}
 
+	// Store the pin color in the database
 	$default_pin_color=$_POST['default_pin_color'];
 	$default_pin_color = stripslashes($default_pin_color);
 	$default_pin_color = mysql_real_escape_string($default_pin_color);

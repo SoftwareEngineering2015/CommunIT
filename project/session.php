@@ -2,11 +2,11 @@
 <?php
 //holds the database connection credentials.
 //include('db_config.php');
+// Establishing Connection with Server by passing server_name, user_id and password as a parameter
 	 $server = '127.0.0.1';
      $user = 'root';
      $pass = '';
      $mydb = 'communit';
-// Establishing Connection with Server by passing server_name, user_id and password as a parameter
 $connection = mysql_connect($server, $user, $pass);
 // Selecting Database
 $db = mysql_select_db( $mydb, $connection);

@@ -5,9 +5,9 @@
 	<?php
   require_once( "template_class.php");       // css and headers
   $H = new template( "Administration" );
-  $H->show_template( );
+  $H->show_template( ); // Set the template to the adminstration
 
-
+  // If the user is not an admin take them to the homepage
   if(($_SESSION['login_user']) != "admin"){
   	header("location: index.php");
   	exit();
@@ -24,6 +24,7 @@
 		<div class="container-fluid"> <!-- Hides this div / table if there isn't a head resident registered to the residence -->
 			<table class="table table-striped table-nonfluid">
 				<h3> Residence Information </h3>
+				<!-- Headers for residence information -->
 				<tr>
 					<th> Residence </th>
 					<th> Address </th>
@@ -35,42 +36,53 @@
 					<th> </th>
 					<th> </th>
 				</tr>
+
 				<?php
 
 				// Create connection
 				$P = new manage_db;
 				$P->connect_db();
+				
 				$sql_head_residents = "SELECT * FROM residences LEFT JOIN head_residents ON residences.residence_id = head_residents.fk_residence_id WHERE username != 'admin' AND username != 'guest' ORDER BY head_resident_id, address DESC";
-				//$P->do_query($sql_head_residents);
 				$head_residents_result = mysql_query($sql_head_residents); 
+				
 				// Displays the head resident information
 				while ($row = mysql_fetch_assoc($head_residents_result))
 				{
 
+					// Prints the information into the table
 					echo "<tr> <td> " . $row['username'] . "</td>";
 					echo "<td>" . $row['address'] . "</td> ";
 					echo "<td>" . $row['latitude'] . "</td> ";
 					echo "<td>" . $row['longitude'] . "</td> ";
+
+					// Setup the button for editing password; set the on click action to open up with the residence id so the handler will know which residence password is being changed
 					echo "<td><button onclick=edit_residence_password('". $row['password'] ."','" . $row['residence_id']. "') type='button' class='btn btn-primary btn-sm' style='  width: 100%;'> <b> Change Password </b> </button> </td>";
 					
-					/*echo "<td>" . $row['first_name'] . "</td> ";
-					echo "<td>" . $row['last_name'] . "</td> ";
-					echo "<td>" . $row['emergency_contact'] . "</td> ";
-					echo "<td>" . $row['phone_one'] . "</td> ";
-					echo "<td>" . $row['email_address'] . "</td> ";
-					echo "<td>" . $row['date_added'] . "</td> ";*/
-					
-
-					// Delete button for each head resident row; Value for the button holds the id of the sub resident and the id of the head resident, separated by the colon ( neeeded for the delete query)
+					// If the head resident is set display these buttons
 					if(isset($row['head_resident_id'])) {
+						
+						// This button takes the admin to the edit residence page of the residence that they want to edit the information; specified by the id in the url set in the href
 						echo "<td><a href='editresidence.php?residence=". $row["residence_id"] ."' class='btn btn-info btn-sm' style='  width: 100%;'><b> Edit Residence </b></a> </td>";
+						
+						// Delete button for each head resident row; Value for the button holds the id of the sub resident and the id of the head resident, separated by the colon ( neeeded for the delete query)
 						echo "<td><button onclick='show_delete(". $row['residence_id'] .")' type='button' class='btn btn-danger btn-sm' style='  width: 100%;'> <b> Delete Residence </b> </button> </td>";
+						
+						// This button takes the admin to the edit resident page of the resident that they want to edit; specified by the id in the url set in the href
 						echo "<td><a href='editresident.php?resident=". $row["head_resident_id"] ."' class='btn btn-warning btn-sm' style='  width: 100%;'><b> Edit Residents </b></a> </td>";
+						
+						// This button will clear all residents for this residence specified by the id in the show clear function
 						echo "<td><button onclick='show_clear(". $row['head_resident_id'] .")' type='button' class='btn btn-success btn-sm' style='  width: 100%;'> <b> Clear Head Resident</b> </button> </td></tr>";
 
-					} else {
+					} else { // If the head resident is not set for the residence set up these buttons
+
+						// This button takes the admin to the edit residence page of the residence that they want to edit the information; specified by the id in the url set in the href 
 						echo "<td><a href='editresidence.php?residence=". $row["residence_id"] ."'  class='btn btn-info btn-sm' style='  width: 100%;'><b> Edit Residence </b></a> </td>";
+						
+						// Delete button for each head resident row; Value for the button holds the id of the sub resident and the id of the head resident, separated by the colon ( neeeded for the delete query)
 						echo "<td><button onclick='show_delete(". $row['residence_id'] .")' type='button' class='btn btn-danger btn-sm' style='  width: 100%;'> <b> Delete Residence </b> </button> </td>";
+						
+						// This button will send the user to the edit resident page to add a new head resident 
 						echo "<td><a href='editresident.php?residence=". $row["residence_id"] ."'  class='btn btn-warning btn-sm' style='  width: 100%;'><b> Add Head Resident </b> </button></a> </td><td></td></tr>";
 						
 					}
@@ -82,43 +94,31 @@
 	</div>
 </div>
 <script>
-// function : show_confirm()
-function edit_admin_password(old_password){
-    // shows the modal on button press
-    $('#edit_admin_password').modal('show');
-    document.getElementById("old_admin_password").innerHTML = old_password;
 
-}
-
-// function : show_confirm()
-function edit_guest_password(old_password){
-    // shows the modal on button press
-    $('#edit_guest_password').modal('show');
-    document.getElementById("old_guest_password").innerHTML = old_password;
-    
-}
-// function : show_confirm()
+// Displays the modal where the admin can edit the residence password
 function edit_residence_password(old_password, residence_id){
     // shows the modal on button press
     $('#edit_residence_password').modal('show');
-    document.getElementById("old_residence_password").innerHTML = old_password;
-    document.getElementById("admin_change_residence_password").value = residence_id;
+    document.getElementById("old_residence_password").innerHTML = old_password; // Displays the old password into the table in the modal
+    document.getElementById("admin_change_residence_password").value = residence_id; // Sets the value of the button in the modal to be the id of the residence they are changing 
     
 }
 
-// function : show_confirm()
+// Displays the modal of the residence they want to clear the information of
 function show_clear(head_resident_id){
     // shows the modal on button press
     $('#confirm_clear').modal('show');
-    $('#delete_head_resident').val(head_resident_id);
+    $('#delete_head_resident').val(head_resident_id); // Set the button to the id of the residence
 }
-// function : show_confirm()
+
+// Displays the modal of the residence they want to delete
 function show_delete(residence_id){
     // shows the modal on button press
     $('#confirm_delete').modal('show');
-    $('#delete_residence').val(residence_id);
+    $('#delete_residence').val(residence_id); // Sets the button to the id of the residence
 }
 
+// This is the function that is used to generate a password when the admin clicks the generate password button
 //pass total # of characters, and []
 function makepassword(total, chars){
     if(total!=0){
@@ -180,13 +180,14 @@ function makepassword(total, chars){
     return chars.toString().replace(/,/g,'');
 }
 
-// function : generate_password()
+// This function calls the generate password function and displays the result in the input field
 function generate_password(password_field){
     // generate a password and fill the field with the value
     var rndm_password = makepassword(8,[]);
-    document.getElementById(password_field).value = rndm_password;
+    document.getElementById(password_field).value = rndm_password; // set the generated password in the input field
 }
-// function : generate_password()
+
+// When the modal is closed clear the password input field
 function clear_password_field(password_field){
     document.getElementById(password_field).value = "";
 }
