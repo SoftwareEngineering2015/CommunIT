@@ -32,8 +32,8 @@ if(isset($_POST['add_new_residence'])) {
 	}
 
 	//This is the function that gives the user a random password
-    $password = "password";
-    /*$total = 8;
+    //$password = "password";
+    $total = 8;
 	while ($total != 0) {
         //this switch statement selects a random character to be insteted into the character array
         $added = 'A';
@@ -87,7 +87,7 @@ if(isset($_POST['add_new_residence'])) {
         }
         $password = $password . $added;
         $total = $total - 1;
-    }*/
+    }
 
 	// To protect MySQL injection for Security purpose
 	$residence_name = stripslashes($residence_name);

@@ -22,7 +22,7 @@ class template {
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="communitymap.php" >CommunIT</a>
+          <a class="navbar-brand" href="index.php">CommunIT</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

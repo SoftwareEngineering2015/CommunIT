@@ -58,15 +58,18 @@ function populatetable(x, currentuser){
 
     document.getElementById("head_resident_panel").innerHTML = "<b>"+head_full_names[x]+"</b>";
     document.getElementById("address_panel").innerHTML = addresses[x];
-    document.getElementById("em_phone_panel").innerHTML = "<td>Emergency Contact:</td><td style='text-align:center;'>" + emergencies[x] + "</td>";
+    document.getElementById("em_phone_panel").innerHTML = "<td>Contact Phone Number:</td><td style='text-align:center;'>" + emergencies[x] + "</td>";
 
     if(phone_one[x]==""){
-        document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Phone Number:</td><td style='text-align: center; color:#B8B8B8;'>Unavailable</td>";
+        //document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Additional Phone Number:</td><td style='text-align: center; color:#B8B8B8;'>Unavailable</td>";
+        document.getElementById("phone_panel").innerHTML = "";
+    
     }else{
         document.getElementById("phone_panel").innerHTML = "<td style='font-weight: bold;'>Phone Number:</td><td style='text-align: center;'>" + phone_one[x] + "</td>";
     }
     if(email_address[x]==""){
-        document.getElementById("email_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='color:#B8B8B8;text-align: center;'>Unavailable</td>";
+        //document.getElementById("email_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='color:#B8B8B8;text-align: center;'>Unavailable</td>";
+        document.getElementById("email_panel").innerHTML = "";
     }else{
         document.getElementById("email_panel").innerHTML = "<td style='font-weight: bold;'>E-mail:</td><td style='text-align: center;'>" + "<a href='mailto:" + email_address[x] + "'>" + email_address[x] + "</a></td>";
     }
@@ -85,7 +88,7 @@ function populatetable(x, currentuser){
     var heademail;
     headname = "<td>" + head_full_names[x] + "</td>";
     headphone = "<td>" + phone_one[x] + "</td>";
-    heademail = "<td>" + email_address[x] + "</td>";
+    heademail = "<td><a href='mailto:" + email_address[i] + "'>" + email_address[i] + "</a></td>";
 
     if(head_full_names[x]==""){
         headname = "<td style='color:#B8B8B8;'>Unavailable</td>";
@@ -109,7 +112,8 @@ if( currentuser != "guest"){
         if(sub_head_tie[i] == head_resident_ids[x]){
             subname = "<td>" + sub_full_names[i] + "</td>";
             subphone = "<td>" + sub_phone_numbers[i] + "</td>";
-            subemail = "<td>" + sub_emails[i] + "</td>";
+            subemail = "<td><a href='mailto:" + sub_emails[i] + "'>" + sub_emails[i] + "</a></td>";
+            
             if(sub_phone_numbers[i]==""){
               subphone = "<td style='color:#B8B8B8;'>Unavailable</td>"
             }

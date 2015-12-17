@@ -70,6 +70,12 @@ function initialize(){
     $resultResidences = mysql_query($sqlResidences);    
     ?>
 
+    <?php
+    $sqlResidencesDropPin = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', last_name, head_resident_id FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY last_name DESC";
+    $P->do_query($sqlResidencesDropPin);
+    $resultResidencesDropPin = mysql_query($sqlResidencesDropPin);    
+    ?>
+
     //Gets the information of the sub residents
     <?php
     $sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number, email_address, fk_head_id FROM sub_residents";
@@ -132,6 +138,11 @@ function initialize(){
     divOptions = [];
     optionsDiv = [];
     options = [];
+
+    head_resident_ids_droppin = [];
+    head_full_names_droppin = [];
+    head_last_name_droppin = [];
+
     
     //populates configuration data from database
     <?php while ($row3 = mysql_fetch_assoc($resultConfig)) { ?>
@@ -156,19 +167,25 @@ function initialize(){
       emergencies.push(<?php echo '"'. $row['emergency_contact'] .'"'?>);
       head_resident_ids.push(<?php echo '"'. $row['head_resident_id'] .'"'?>);
       head_full_names.push(<?php echo '"'. $row['head_full_name'] .'"'?>);
-    //populates the latlng array by creating an object based on the queryd data
-    latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
-    longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
-    latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
-    phone_one.push(<?php echo '"'. $row['phone_one'] .'"'?>);
-    email_address.push(<?php echo '"'. $row['email_address'] .'"'?>);
+      //populates the latlng array by creating an object based on the queryd data
+      latitudes.push(<?php echo '"'. $row['latitude'] .'"'?>);
+      longitudes.push(<?php echo '"'. $row['longitude'] .'"'?>); 
+      latlng.push(new google.maps.LatLng((<?php echo '"'. $row['latitude'] .'"'?>), (<?php echo '"'. $row['longitude'] .'"'?>)));
+      phone_one.push(<?php echo '"'. $row['phone_one'] .'"'?>);
+      email_address.push(<?php echo '"'. $row['email_address'] .'"'?>);
 
-    <?php $miscString = "<div>" . preg_replace( "/\r|\n|\n\n/", "</div><div>", $row['miscinfo'] ) . "</div>"; ?>
-    miscinfo.push(<?php echo '"'. $miscString .'"'?>);
+      <?php $miscString = "<div>" . preg_replace( "/\r|\n|\n\n/", "</div><div>", $row['miscinfo'] ) . "</div>"; ?>
+      miscinfo.push(<?php echo '"'. $miscString .'"'?>);
 
-    pincolor.push(<?php echo '"'. $row['pin_color'] .'"'?>);
+      pincolor.push(<?php echo '"'. $row['pin_color'] .'"'?>);
 
-    <?php } ?>
+      <?php } ?>
+
+      <?php while ($row = mysql_fetch_assoc($resultResidencesDropPin)) { ?>
+        head_resident_ids_droppin.push(<?php echo '"'. $row['head_resident_id'] .'"'?>);
+        head_full_names_droppin.push(<?php echo '"'. $row['head_full_name'] .'"'?>);
+        head_last_name_droppin.push(<?php echo '"'. $row['last_name'] .'"'?>);
+        <?php } ?>
 
     //this loop will create all of the markers and infowindow content for those markers, then invoke the addlistener function
     for(i in addresses){
@@ -183,27 +200,30 @@ function initialize(){
           map: map, 
           position: latlng[i],
           title: (head_full_names[i] + "\n" + addresses[i]),
-         // hue: '#19A3FF',
          //Place changed image as the icon
          icon: fullimg,
          animation: google.maps.Animation.DROP
 
        }));
-        infowindows.push('<div style="font-size: 120%"><span style="font-size: 100%; font-weight: bold;">' + head_full_names[i] +  '<br/></span><span style="font-size: 100%; font-weight: bold;">' + addresses[i] + '</span><br/><span style="font-size: 100%; font-weight: bold; color:  #FF6666;">' +emergencies[i]+'</span></div>');
+        infowindows.push('<div style="font-size: 120%"><span style="font-size: 100%; font-weight: bold;">' + head_full_names[i] +  '<br/></span><span style="font-size: 100%; <!--font-weight: bold;-->">' + addresses[i] + '</span><br/><span style="font-size: 100%; font-weight: bold; color:  #006699;">' +emergencies[i]+'</span></div>');
 
         //invoke the addlistener function
         addlistener(i, '<?php echo($_SESSION['login_user']) ?>');
 
         //start process to set up custom drop down
         //create the options that respond to click
-        divOptions.push({
-          gmap: map,
-          name: head_full_names[i],
-          title: "Residence of " + head_full_names[i],
-          id: head_resident_ids[i],
-          latlng: latlng[i],
-          identifier: i
-        });
+        for (d in head_resident_ids_droppin){
+          if ( head_full_names_droppin[d] == head_full_names[i]){
+            divOptions.push({
+              gmap: map,
+              name: head_full_names_droppin[d],
+              title: "Residence of " + head_full_names_droppin[d],
+              id: head_resident_ids[d],
+              latlng: latlng[i],
+              identifier: i
+            });
+          }
+        }
 
         optionsDiv.push(new optionDiv(divOptions[i]));
 
@@ -290,14 +310,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 <body>
 
-  <div class="container" style="width:100%; height:95%;">
-    <div class="col-sm-4" style="background-color: #19A3FF; height:100%;">
+  <div class="container" style="width:100%; height:95%; overflow:auto;">
+    <div class="col-sm-4" style="background-color: #19A3FF; height:100%; overflow:auto;">
       <div id='community_name' style="text-align: center; color: #FFFFFF; text-style: bold;
       text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
       font-size: 300%; font-weight: bold;">
     </div>
 
-    <div id='street-view' class="col-sm-12" style="background-color: #EEEEEE; height: 20%; width: 100%; text-align: center; font-size: 25px; font-weight: bold;">
+    <div id='street-view' class="col-sm-12" style="background-color: #EEEEEE;  min-height: 175px; height:20% width: 100%; text-align: center; font-size: 25px; font-weight: bold;">
      Select a Residence
    </div>
    <div> &nbsp </div>
@@ -308,7 +328,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </br>
 </br>
 <table class="table table-striped table-hover">
-  <tr id='em_phone_panel' style="color: #FF6666; font-weight: bold;">
+  <tr id='em_phone_panel' style="color: #006699; font-weight: bold;">
   </tr>
   <tr id='phone_panel'>
   </tr>
@@ -321,8 +341,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
   
   <table id='sub_residents' class="table table-striped table-hover" style="text-align: center;">
   </table>
+
 </table> 
+
 </div>
+<div>&nbsp</div>
 </div>
 
 <!--Google Map Div-->
@@ -333,5 +356,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
 <script type="text/javascript" src="js/map.js"></script>
 
 </body>
+
+<div id="container">
+ <div id="footer"> </div>
+</div>
 
 </html>

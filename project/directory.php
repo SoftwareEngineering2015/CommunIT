@@ -12,7 +12,7 @@ $H->show_template( );
 $P = new manage_db;
 $P->connect_db();
 //Gets the information of a residence and it's head resident 
-$sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY address";
+$sqlResidences = "SELECT CONCAT(first_name, ' ', last_name) as 'head_full_name', head_resident_id, address, latitude, longitude, emergency_contact, phone_one, email_address FROM residences INNER JOIN head_residents ON head_residents.fk_residence_id = residences.residence_id WHERE address IS NOT NULL ORDER BY last_name ";
 $P->do_query($sqlResidences);
 $resultResidences = mysql_query($sqlResidences);    
  // $row = mysql_fetch_assoc($resultResidences)
@@ -128,7 +128,7 @@ if(($_SESSION['login_user']) != "guest"){
 								</tr>
 								");
 
-				$sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number, email_address FROM sub_residents WHERE fk_head_id = ".$row['head_resident_id']."";
+				$sqlResidents = "SELECT CONCAT(first_name, ' ', last_name) as 'sub_full_name', phone_number, email_address FROM sub_residents WHERE fk_head_id = ".$row['head_resident_id']." ORDER BY last_name";
 				$P->do_query($sqlResidents);
 				$resultResidents = mysql_query($sqlResidents);  
 // $row2 = mysql_fetch_assoc($resultResidents);

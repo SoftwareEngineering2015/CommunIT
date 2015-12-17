@@ -92,6 +92,11 @@ background-size: cover;
 				<span><?php echo $error; ?></span>
 				</form>
 			</div>
+			<div style="text-align: center;">
+
+			<a href="disclaimer.php" class="btn btn-primary btn-xs" >View Disclaimer</a>
+			<p></p>
+			</div>
 			</div>
 		</div>
 	</div>

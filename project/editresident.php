@@ -231,12 +231,12 @@ if (isset($_GET['resident'])){
 						<tr>
                             <th> First Name <?php if ($require_first_name) echo '<span style="color:red">*</span>'; ?></th>
                             <td> </td>
-							<td> <input id="head_resident_first_name" name="head_resident_first_name" value=<?php echo "'$head_residents[1]'";?> placeholder=<?php echo "'$head_residents[1]'";?> type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
+							<td> <input id="head_resident_first_name" name="head_resident_first_name" value=<?php echo ("$head_residents[1]");?> placeholder=<?php echo ("$head_residents[1]");?> type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
 						</tr>
 						<tr>
 							<th> Last Name <?php if ($require_last_name) echo '<span style="color:red">*</span>'; ?></th>
 							<td> </td>
-							<td> <input id="head_resident_last_name" name="head_resident_last_name" value=<?php echo "'$head_residents[2]'";?> placeholder=<?php echo "'$head_residents[2]'";?> type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
+							<td> <input id="head_resident_last_name" name="head_resident_last_name" value=<?php echo ("$head_residents[2]");?> placeholder=<?php echo ("$head_residents[2]");?> type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
 						</tr>
 						<tr>
 							<th> Emergency Contact Number <?php if ($require_emergency) echo '<span style="color:red">*</span>'; ?></th>
@@ -256,7 +256,7 @@ if (isset($_GET['resident'])){
 						<tr>
 							<th> Misc Information</th>
 							<td> </td>
-							<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo "'$head_residents[6]'";?> wrap="soft" rows="5" maxlength="255"><?php echo "$head_residents[6]";?></textarea>
+							<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo ("$head_residents[6]");?> wrap="soft" rows="5" maxlength="255"><?php echo ("$head_residents[6]");?></textarea>
 						</tr>
 						<tr>
 							<th> Pin Color </th>
