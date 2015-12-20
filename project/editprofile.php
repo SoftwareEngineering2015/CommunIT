@@ -36,7 +36,7 @@
 
   // if the emergency information was wrong (set in the url) display the error message
   if (isset($_GET['error']) && $_GET['error'] == 'emergency') {
-	$error = "<span style='color:red;'> Emergency contact number must be in xxx-xxx-xxxx format. </span><br />";
+	$error = "<span style='color:red;'> Contact Phone Number must be in xxx-xxx-xxxx format. </span><br />";
   }
 
   // if the phone information was wrong (set in the url) display the error message

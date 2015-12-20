@@ -88,7 +88,7 @@ function populatetable(x, currentuser){
     var heademail;
     headname = "<td>" + head_full_names[x] + "</td>";
     headphone = "<td>" + phone_one[x] + "</td>";
-    heademail = "<td><a href='mailto:" + email_address[i] + "'>" + email_address[i] + "</a></td>";
+    heademail = "<td><a href='mailto:" + email_address[x] + "'>" + email_address[x] + "</a></td>";
 
     if(head_full_names[x]==""){
         headname = "<td style='color:#B8B8B8;'>Unavailable</td>";

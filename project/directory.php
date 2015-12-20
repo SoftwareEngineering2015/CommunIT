@@ -98,11 +98,11 @@ if(($_SESSION['login_user']) != "guest"){
 									<td>".$row['address']."</td>
 								</tr>
 								<tr>
-									<th>Emergency Contact</th>
+									<th>Phone Number One</th>
 									<td>".$row['emergency_contact']."</td>
 								</tr>
 								<tr>
-									<th>Phone Number</th>
+									<th>Phone Number Two</th>
 									<td>".$row['phone_one']."</td>
 								</tr>
 								<tr>
@@ -164,11 +164,11 @@ if(($_SESSION['login_user']) != "guest"){
 					<table class='table table-hover'>
 						<thead>
 							<tr>
-								<th>Address</th>
-								<th>Emergency Contact</th>
 								<th>Head Resident</th>
-								<th>Phone Number</th>
+								<th>Phone Number One</th>
+								<th>Phone Number Two</th>
 								<th>E-Mail Address</th>
+								<th>Address</th>
 							</tr>
 							<tbody>
 								");
@@ -185,15 +185,15 @@ if(($_SESSION['login_user']) != "guest"){
 				print("
 
 					<tr>
-						<td>".$row['address']."</td>
+						<td>".$row['head_full_name']."</td>
 
 						<td>".$row['emergency_contact']."</td>
-
-						<td>".$row['head_full_name']."</td>
 
 						<td>".$row['phone_one']."</td>
 
 						<td>".$row['email_address']."</td>
+
+						<td>".$row['address']."</td>
 					</tr>
 					");
 
@@ -217,11 +217,11 @@ if(($_SESSION['login_user']) != "guest"){
 					<table class='table table-hover'>
 						<thead>
 							<tr>
-								<th>Address</th>
-								<th>Emergency Contact</th>
 								<th>Head Resident</th>
-								<th>Phone Number</th>
+								<th>Phone Number One</th>
+								<th>Phone Number Two</th>
 								<th>E-Mail Address</th>
+								<th>Address</th>
 							</tr>
 							<tbody>
 								");
@@ -238,21 +238,17 @@ if(($_SESSION['login_user']) != "guest"){
 				print("
 
 					<tr>
-						<td>".$row['address']."</td>
+						<td>".$row['head_full_name']."</td>
 
 						<td>".$row['emergency_contact']."</td>
-
-						<td>".$row['head_full_name']."</td>
 
 						<td>".$row['phone_one']."</td>
 
 						<td>".$row['email_address']."</td>
+
+						<td>".$row['address']."</td>
 					</tr>
 					");
-
-
-
-
 			}
 
 			print("

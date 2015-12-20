@@ -128,7 +128,7 @@ if (isset($_GET['resident'])){
 
   	//Print the error message for an incorrect emergency number
   	if (isset($_GET['error']) && $_GET['error'] == 'emergency') {
-		$error = "<span style='color:red;'> Emergency contact number must be in xxx-xxx-xxxx format. </span><br />";
+		$error = "<span style='color:red;'> Contact Phone Number must be in xxx-xxx-xxxx format. </span><br />";
   	}
   	//Print the error message for incorrect phone number
   	if (isset($_GET['error']) && $_GET['error'] == 'phone') {
@@ -231,32 +231,32 @@ if (isset($_GET['resident'])){
 						<tr>
                             <th> First Name <?php if ($require_first_name) echo '<span style="color:red">*</span>'; ?></th>
                             <td> </td>
-							<td> <input id="head_resident_first_name" name="head_resident_first_name" value=<?php echo ("$head_residents[1]");?> placeholder=<?php echo ("$head_residents[1]");?> type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
+							<td> <input id="head_resident_first_name" name="head_resident_first_name" value="<?php echo ("$head_residents[1]");?>" placeholder="<?php echo ("$head_residents[1]");?>" type="text" class="form-control input-md" <?php if ($require_first_name) echo 'required'; ?> > </td>
 						</tr>
 						<tr>
 							<th> Last Name <?php if ($require_last_name) echo '<span style="color:red">*</span>'; ?></th>
 							<td> </td>
-							<td> <input id="head_resident_last_name" name="head_resident_last_name" value=<?php echo ("$head_residents[2]");?> placeholder=<?php echo ("$head_residents[2]");?> type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
+							<td> <input id="head_resident_last_name" name="head_resident_last_name" value="<?php echo ("$head_residents[2]");?>" placeholder="<?php echo ("$head_residents[2]");?>" type="text" class="form-control input-md" <?php if ($require_last_name) echo 'required'; ?>> </td>
 						</tr>
 						<tr>
-							<th> Emergency Contact Number <?php if ($require_emergency) echo '<span style="color:red">*</span>'; ?></th>
+							<th> Contact Phone Number <?php if ($require_emergency) echo '<span style="color:red">*</span>'; ?></th>
 							<td> </td>
-							<td> <input pattern='\d{3}[\-]\d{3}[\-]\d{4}' title='xxx-xxx-xxxx' id="head_resident_emergency" name="head_resident_emergency" value=<?php echo "'$head_residents[3]'";?> placeholder=<?php echo "'$head_residents[3]'";?> type="tel" class="form-control input-md" <?php if ($require_emergency) echo 'required'; ?>> </td>
+							<td> <input pattern='\d{3}[\-]\d{3}[\-]\d{4}' title='xxx-xxx-xxxx' id="head_resident_emergency" name="head_resident_emergency" value="<?php echo "$head_residents[3]";?>" placeholder=<?php echo "'$head_residents[3]'";?> type="tel" class="form-control input-md" <?php if ($require_emergency) echo 'required'; ?>> </td>
 						</tr>
 						<tr>
 							<th> Additional Phone Number </th>
 							<td> </td>
-							<td> <input id="head_resident_phone_one" name="head_resident_phone_one" value=<?php echo "'$head_residents[4]'";?> placeholder=<?php echo "'$head_residents[4]'";?> type="tel" class="form-control input-md"> </td>
+							<td> <input id="head_resident_phone_one" name="head_resident_phone_one" value="<?php echo "$head_residents[4]";?>" placeholder="<?php echo "$head_residents[4]";?>" type="tel" class="form-control input-md"> </td>
 						</tr>
 						<tr>
 							<th> E-mail Address </th>
 							<td> </td>
-							<td> <input id="head_resident_email_address" name="head_resident_email_address" value=<?php echo "'$head_residents[5]'";?> placeholder=<?php echo "'$head_residents[5]'";?> type="email" class="form-control input-md"> </td>
+							<td> <input id="head_resident_email_address" name="head_resident_email_address" value="<?php echo "$head_residents[5]";?>" placeholder="<?php echo "$head_residents[5]";?>" type="email" class="form-control input-md"> </td>
 						</tr>
 						<tr>
 							<th> Misc Information</th>
 							<td> </td>
-							<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder=<?php echo ("$head_residents[6]");?> wrap="soft" rows="5" maxlength="255"><?php echo ("$head_residents[6]");?></textarea>
+							<td> <textarea class="form-control" name="miscinfo" id="miscinfo" placeholder="<?php echo ("$head_residents[6]");?>" wrap="soft" rows="5" maxlength="255"><?php echo ("$head_residents[6]");?></textarea>
 						</tr>
 						<tr>
 							<th> Pin Color </th>
