@@ -1,4 +1,4 @@
-# Project01
+# CommunIT
 CommunIT is a web-based community management application superimposed upon Google Maps. 
 
 The application is focused on allowing residents within a community (e.g. neighborhood) to view the information of the residents around them. 
