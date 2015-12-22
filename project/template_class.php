@@ -7,7 +7,8 @@ class template {
 
   function show_template( ) {
     print "<html>\n<head> <title> $this->TITLE </title>
-    <link rel='icon' type='image/icon' href='images/favicon.ico'></head>";
+    <link rel='icon' type='image/icon' href='images/favicon.ico'>
+    <meta name='google' value='notranslate'> </head>";
     print "<link rel='stylesheet' type='text/css' href='css/bootstrap.css'>";
     print "<script src='js/jquery-1.11.3.js'></script>";
     print "<script src='js/bootstrap.min.js'></script>";
